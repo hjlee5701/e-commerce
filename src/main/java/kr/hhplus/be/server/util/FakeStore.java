@@ -3,6 +3,9 @@ package kr.hhplus.be.server.util;
 import kr.hhplus.be.server.domain.coupon.dto.CouponResponse;
 import kr.hhplus.be.server.domain.memberPoint.dto.ChargePointResponse;
 import kr.hhplus.be.server.domain.memberPoint.dto.MemberPointResponse;
+import kr.hhplus.be.server.domain.order.dto.OrderItemResponse;
+import kr.hhplus.be.server.domain.order.dto.OrderResponse;
+import kr.hhplus.be.server.domain.order.dto.PaymentResponse;
 import kr.hhplus.be.server.domain.product.dto.ProductResponse;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +36,16 @@ public class FakeStore {
         return List.of(
                 new CouponResponse(1L, 50L, "선착순 할인 쿠폰A", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "ISSUED"),
                 new CouponResponse(2L, 10L, "선착순 할인 쿠폰B", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "USED")
+        );
+    }
+
+    public OrderResponse order() {
+        return new OrderResponse(
+                1L, "COMPLETED", LocalDateTime.now(), BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), "ISSUED",
+                List.of(
+                        new OrderItemResponse(1L, "상의", BigDecimal.valueOf(50000), 1)
+                ),
+                new PaymentResponse(1L, "COMPLETED", BigDecimal.valueOf(40000))
         );
     }
 }
