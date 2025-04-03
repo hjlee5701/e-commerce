@@ -12,6 +12,7 @@ public enum SuccessCode implements Code {
     ISSUE_COUPON("200","쿠폰 발급 성공했습니다."),
     CHECK_HOLDING_COUPON("200","쿠폰 목록 조회 성공했습니다."),
     ORDER("200","주문 성공했습니다."),
+    FIND_POPULAR_PRODUCT("200","인기 상품 목록 조회 성공했습니다."),
 
     ;
     private final String code;
