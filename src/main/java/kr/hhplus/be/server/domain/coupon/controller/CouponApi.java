@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hhplus.be.server.domain.coupon.dto.CouponResponse;
 import kr.hhplus.be.server.global.response.ApiResult;
-import kr.hhplus.be.server.global.response.SuccessCode;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,6 +25,17 @@ public interface CouponApi {
     })
     ResponseEntity<ApiResult<CouponResponse>> issue(
             @Parameter(description = "쿠폰 아이디") Long couponId,
+            @Parameter(description = "사용자 아이디") Long memberId
+    );
+
+
+    @Operation(summary = "쿠폰 목록 조회", description = "보유 쿠폰 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "쿠폰 목록 조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", description = "존재 하지 않는 사용자", content = @Content()),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content())
+    })
+    ResponseEntity<ApiResult<List<CouponResponse>>> checkHoldingCoupon(
             @Parameter(description = "사용자 아이디") Long memberId
     );
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class FakeStore {
@@ -25,6 +26,13 @@ public class FakeStore {
     }
 
     public CouponResponse coupon() {
-        return new CouponResponse(1L, 50L, "선착순 할인 쿠폰", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "ISSUED")
+        return new CouponResponse(1L, 50L, "선착순 할인 쿠폰", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "ISSUED");
+    }
+
+    public List<CouponResponse> couponList() {
+        return List.of(
+                new CouponResponse(1L, 50L, "선착순 할인 쿠폰A", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "ISSUED"),
+                new CouponResponse(2L, 10L, "선착순 할인 쿠폰B", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "USED")
+        );
     }
 }
