@@ -1,11 +1,13 @@
 package kr.hhplus.be.server.util;
 
+import kr.hhplus.be.server.domain.coupon.dto.CouponResponse;
 import kr.hhplus.be.server.domain.memberPoint.dto.ChargePointResponse;
 import kr.hhplus.be.server.domain.memberPoint.dto.MemberPointResponse;
 import kr.hhplus.be.server.domain.product.dto.ProductResponse;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Component
 public class FakeStore {
@@ -20,5 +22,9 @@ public class FakeStore {
 
     public ProductResponse product() {
         return new ProductResponse(1L, "상의", BigDecimal.valueOf(10000), 200);
+    }
+
+    public CouponResponse coupon() {
+        return new CouponResponse(1L, 50L, "선착순 할인 쿠폰", LocalDateTime.now(), LocalDateTime.now().plusDays(7), "ISSUED")
     }
 }
