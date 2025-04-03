@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.memberPoint.controller;
 
 import kr.hhplus.be.server.domain.memberPoint.dto.ChargePointRequest;
 import kr.hhplus.be.server.domain.memberPoint.dto.ChargePointResponse;
+import kr.hhplus.be.server.domain.memberPoint.dto.MemberPointResponse;
 import kr.hhplus.be.server.global.response.ApiResult;
 import kr.hhplus.be.server.global.response.SuccessCode;
 import kr.hhplus.be.server.util.FakeStore;
@@ -30,5 +31,15 @@ public class MemberPointController implements MemberPointApi {
                 .body(ApiResult.of(SuccessCode.CHARGE, data));
     }
 
+    @Override
+    @GetMapping("{id}")
+    public ResponseEntity<ApiResult<MemberPointResponse>> checkBalance(
+            @PathVariable("id") Long memberId
+    ) {
+        MemberPointResponse data = fakeStore.memberPoint();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResult.of(SuccessCode.BALANCE_CHECK, data));
+    }
 }
 
