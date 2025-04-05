@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SuccessCode implements Code {
-    CHARGE("200", "충전에 성공했습니다."),
-    BALANCE_CHECK("200","보유 금액 조회 성공했습니다."),
-    FIND_PRODUCT("200","상품 목록 조회에 성공했습니다."),
-    ISSUE_COUPON("200","쿠폰 발급 성공했습니다."),
-    CHECK_HOLDING_COUPON("200","쿠폰 목록 조회 성공했습니다."),
-    ORDER("200","주문 성공했습니다."),
-    FIND_POPULAR_PRODUCT("200","인기 상품 목록 조회 성공했습니다."),
+    CHARGE("SUCCESS", "충전에 성공했습니다."),
+    BALANCE_CHECK("SUCCESS","보유 금액 조회 성공했습니다."),
+    FIND_PRODUCT("SUCCESS","상품 목록 조회에 성공했습니다."),
+    ISSUE_COUPON("SUCCESS","쿠폰 발급 성공했습니다."),
+    CHECK_HOLDING_COUPON("SUCCESS","쿠폰 목록 조회 성공했습니다."),
+    ORDER("SUCCESS","주문 성공했습니다."),
+    FIND_POPULAR_PRODUCT("SUCCESS","인기 상품 목록 조회 성공했습니다."),
 
     ;
     private final String code;

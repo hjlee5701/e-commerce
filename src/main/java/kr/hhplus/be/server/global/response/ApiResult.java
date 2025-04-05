@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApiResult<T> {
 
-    @Schema(example = "200")
+    @Schema(title = "응답 코드", example = "SUCCESS")
     private String code;
     @Schema(example = "성공 메시지")
     private String message;
