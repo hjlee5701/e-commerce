@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.memberPoint.dto.MemberPointResponse;
 import kr.hhplus.be.server.domain.order.dto.OrderItemResponse;
 import kr.hhplus.be.server.domain.order.dto.OrderResponse;
 import kr.hhplus.be.server.domain.order.dto.PopularProductResponse;
+import kr.hhplus.be.server.domain.payment.dto.OrderPaymentResponse;
 import kr.hhplus.be.server.domain.product.dto.ProductResponse;
 import org.springframework.stereotype.Component;
 
@@ -51,5 +52,9 @@ public class FakeStore {
         return List.of(
                 new PopularProductResponse(1, 1L, "상의", BigDecimal.valueOf(10000), 300, LocalDateTime.now())
         );
+    }
+
+    public OrderPaymentResponse orderPayment() {
+        return new OrderPaymentResponse(1L, 1L, BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(40000), "COMPLETED");
     }
 }
