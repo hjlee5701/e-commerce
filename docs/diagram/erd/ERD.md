@@ -1,9 +1,10 @@
+# ERD
+
 ```mermaid
 erDiagram
     MEMBER {
         Long id
         String userId
-        Long memberPointId
         LocalDateTime regAt
     }
     MEMBER_POINT {
@@ -12,7 +13,7 @@ erDiagram
     }
     MEMBER_POINT_HISTORY {
         Long id
-        String memberId
+        Long memberId
         BigDecimal amount
         TransactionType type
     }
@@ -32,7 +33,7 @@ erDiagram
     ORDER {
         Long id
         Long memberId
-        Long paymentId
+        Long couponItemId
         BigDecimal totalAmount
         OrderStatus status
         LocalDateTime orderAt
@@ -43,7 +44,7 @@ erDiagram
         Long productId
         String title
         int quantity
-        int price
+        BigDecimal price
     }
     ORDER_STATISTIC {
         Long id
@@ -54,7 +55,10 @@ erDiagram
     PAYMENT {
         Long id
         Long orderId
-        Long totalAmount
+        Long couponItemId
+        BigDecimal originalAmount
+        BigDecimal discountAmount
+        BigDecimal finalAmount
         PaymentStatus status
     }
     COUPON {
@@ -70,17 +74,21 @@ erDiagram
     COUPON_ITEM {
         Long id
         Long memberId
-        CouponStatus status
+        Long couponId
+        CouponItemStatus status
     }
 
     MEMBER ||--|| MEMBER_POINT : has
     MEMBER ||--o| COUPON_ITEM : has
     MEMBER ||--o| ORDER : places
     ORDER ||--|| PAYMENT : has
+    ORDER ||--o| COUPON_ITEM : has
     ORDER ||--o| ORDER_ITEM : contains
     PRODUCT ||--o| PRODUCT_STOCK : has
     ORDER_ITEM }o--|| PRODUCT : contains
+    PRODUCT ||--o| ORDER_STATISTIC : has
     COUPON ||--o| COUPON_ITEM : has
+    PAYMENT ||--o| COUPON_ITEM : uses
     MEMBER_POINT ||--o| MEMBER_POINT_HISTORY : has
 
 ```
