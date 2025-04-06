@@ -5,8 +5,7 @@ classDiagram
 
 class Member {
     +Long id
-    +String memberId
-    +Long userPointId
+    +String userId
     +LocalDateTime regAt
     +hasCoupons()
     
@@ -20,7 +19,7 @@ class MemberPoint {
 }
 class MemberPointHistory {
     +Long id
-    +String memberId
+    +Long memberId
     +BigDecimal amount
     +TransactionType type
     +addChargeHistory()
@@ -48,6 +47,7 @@ class ProductStock {
 class Order {
     +Long id
     +Long memberId
+    +Long couponItemId
     +BigDecimal totalAmount
     +OrderStatus status
     +LocalDateTime orderAt
@@ -64,7 +64,7 @@ class OrderItem {
     +Long productId
     +String title
     +int quantity
-    +int price
+    +BigDecimal price
 }
 
 class OrderStatistic {
@@ -77,7 +77,10 @@ class OrderStatistic {
 class Payment {
     +Long id
     +Long orderId
-    +Long totalAmount
+    +Long couponItemId
+    +BigDecimal originalAmount
+    +BigDecimal discountAmount
+    +BigDecimal finalAmount
     +PaymentStatus status
     +applyCoupon(amount)
     +completed()
@@ -97,22 +100,52 @@ class Coupon {
     +isExpired()
     +discount()
 }
+
+class CouponStatus {
+    <<enumeration>>
+    ACTIVE
+    SOLD_OUT
+    EXPIRED
+}
+
 class CouponItem {
     +Long id
     +Long memberId
-    +CouponStatus status
+    +Long couponId
+    +CouponItemStatus status
     +use()
     +isUsed()
 }
 
+class CouponItemStatus {
+    <<enumeration>>
+    USABLE
+    USED
+    EXPIRED
+}
+
+Coupon --> CouponStatus
+CouponItem --> CouponItemStatus
+Product "1" -- "0..*" OrderStatistic
 Member "1" -- "1" MemberPoint : has
 MemberPoint "1" -- "0..*" MemberPointHistory : has
 Member "1" -- "0..*" Order : places
 Order "1" -- "0..*" OrderItem : contains
 Product "1" -- "0..*" OrderItem : contains
 Order "1" -- "1" Payment : contains
+Order "1" -- "0..1" CouponItem : has
 Product "1" -- "0..*" ProductStock : has
 Coupon "1" -- "0..*" CouponItem : has
-Member "1" -- "0.." CouponItem : has
-
+Member "1" -- "0..*" CouponItem : has
+Payment "1" -- "0..1" CouponItem : has
 ```
+---
+## 정책
+- 쿠폰 상태
+  - 선착순 쿠폰 발급 시작 : `ACTIVE`
+  - 선착순 쿠폰 소진 : `SOLD_OUT`
+  - 선착순 쿠폰 기한 만료 : `EXPIRED`
+- 쿠폰 아이템 상태
+  - 쿠폰 사용 가능 : `USABLE`
+  - 쿠폰 사용 완료 : `USED`
+  - 쿠폰 기한 만료 : `EXPIRED`
