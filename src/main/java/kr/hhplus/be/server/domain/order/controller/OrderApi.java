@@ -19,9 +19,7 @@ public interface OrderApi {
             @ApiResponse(responseCode = "200", description = "주문 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 상품", content = @Content()),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자", content = @Content()),
-            @ApiResponse(responseCode = "400", description = "보유 금액 초과 주문", content = @Content()),
-            @ApiResponse(responseCode = "400", description = "상품 재고 부족", content = @Content()),
-            @ApiResponse(responseCode = "400", description = "주문 실패", content = @Content()),
+            @ApiResponse(responseCode = "400", description = "유효하지 않는 쿠폰 / 상품 재고 부족 / 주문 실패", content = @Content()),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content())
     })
     ResponseEntity<ApiResult<OrderResponse>> order(
