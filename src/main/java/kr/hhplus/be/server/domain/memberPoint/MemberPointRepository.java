@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import kr.hhplus.be.server.domain.memberPoint.MemberPoint;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

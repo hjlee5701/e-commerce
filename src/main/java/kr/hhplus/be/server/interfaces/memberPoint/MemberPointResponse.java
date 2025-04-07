@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.memberPoint;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.memberPoint.MemberPointResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,9 @@ public class MemberPointResponse {
 
         @Schema(title = "보유 금액", example = "20000")
         private BigDecimal balance;
+
+        public static MemberPointResponse.Balance of(MemberPointResult.Balance result) {
+            return new MemberPointResponse.Balance(result.getMemberId(), result.getBalance());
+        }
     }
 }
