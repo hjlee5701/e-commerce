@@ -34,7 +34,7 @@ public class MemberPoint {
     }
 
     private void validateAmount(BigDecimal amount) {
-        if (amount.add(balance).compareTo(MAX_POINT_BALANCE) > 0) {
+        if (amount.add(balance).compareTo(MAX_CHARGE_AMOUNT) > 0) {
             throw new InvalidBalanceException();
         }
     }

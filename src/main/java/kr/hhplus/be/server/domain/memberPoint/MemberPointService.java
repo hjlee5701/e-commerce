@@ -14,7 +14,7 @@ public class MemberPointService {
 
     public MemberPointInfo.Balance charge(MemberPointCommand.Charge command) {
         // 충전 금액 검증
-        if (command.getAmount().compareTo(MemberPointPolicy.MAX_POINT_BALANCE) >= 0) {
+        if (command.getAmount().compareTo(MemberPointPolicy.MAX_CHARGE_AMOUNT) >= 0) {
             throw new InvalidAmountException();
         }
         // 금액 조회
