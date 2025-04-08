@@ -3,12 +3,14 @@ package kr.hhplus.be.server.domain.memberPoint;
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.member.Member;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @Entity
 public class MemberPointHistory {
 
