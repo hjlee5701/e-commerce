@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.interfaces.common;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

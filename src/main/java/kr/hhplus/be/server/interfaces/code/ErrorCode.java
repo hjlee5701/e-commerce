@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.common;
+package kr.hhplus.be.server.interfaces.code;
 
 import org.springframework.http.HttpStatus;
 
