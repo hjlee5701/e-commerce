@@ -2,11 +2,14 @@ package kr.hhplus.be.server.domain.memberPoint;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.domain.memberPoint.exception.InvalidBalanceException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
+import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +29,13 @@ public class MemberPoint {
 
     public void charge(MemberPointCommand.Charge command) {
         this.balance = this.balance.add(command.getAmount());
-//        validateBalance(balance);
+        validateAmount(command.getAmount());
         this.member = command.getMember();
+    }
+
+    private void validateAmount(BigDecimal amount) {
+        if (amount.add(balance).compareTo(MAX_POINT_BALANCE) > 0) {
+            throw new InvalidBalanceException();
+        }
     }
 }
