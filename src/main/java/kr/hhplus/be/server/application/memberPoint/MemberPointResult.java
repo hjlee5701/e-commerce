@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class MemberPointResult {
     @Getter
     @AllArgsConstructor
-    public static class Balance {
+    public static class ChargeBalance {
         private Long memberId;
         private BigDecimal balance;
     }

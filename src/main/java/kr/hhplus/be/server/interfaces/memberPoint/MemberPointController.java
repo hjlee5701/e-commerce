@@ -21,13 +21,13 @@ public class MemberPointController implements MemberPointApi {
 
     @Override
     @PatchMapping("{id}/charge")
-    public ResponseEntity<ApiResult<MemberPointResponse.Balance>> charge(
+    public ResponseEntity<ApiResult<MemberPointResponse.ChargeBalance>> charge(
             @PathVariable("id") Long memberId,
             @RequestBody MemberPointRequest.Charge request
     ) {
 
-        MemberPointResult.Balance result = facade.charge(request.toCriteria(memberId));
-        var data = MemberPointResponse.Balance.of(result);
+        MemberPointResult.ChargeBalance result = facade.charge(request.toCriteria(memberId));
+        var data = MemberPointResponse.ChargeBalance.of(result);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResult.of(SuccessCode.CHARGE, data));

@@ -15,15 +15,15 @@ public class MemberPointResponse {
     @Getter
     @AllArgsConstructor
     @Schema(title = "사용자 보유 금액 응답")
-    public static class Balance {
+    public static class ChargeBalance {
         @Schema(title = "사용자 아이디", example = "1")
         private Long memberId;
 
         @Schema(title = "보유 금액", example = "20000")
         private BigDecimal balance;
 
-        public static MemberPointResponse.Balance of(MemberPointResult.Balance result) {
-            return new MemberPointResponse.Balance(result.getMemberId(), result.getBalance());
+        public static ChargeBalance of(MemberPointResult.ChargeBalance result) {
+            return new ChargeBalance(result.getMemberId(), result.getBalance());
         }
     }
 }

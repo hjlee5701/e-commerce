@@ -19,7 +19,7 @@ public interface MemberPointApi {
             @ApiResponse(responseCode = "400", description = "충전 정책 위반", content = @Content()),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content())
     })
-    ResponseEntity<ApiResult<MemberPointResponse.Balance>> charge(
+    ResponseEntity<ApiResult<MemberPointResponse.ChargeBalance>> charge(
             @Parameter(description = "사용자 아이디") Long memberId,
             @Parameter(description = "충전 요청 정보") MemberPointRequest.Charge chargePointRequest
     );

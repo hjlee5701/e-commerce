@@ -14,7 +14,7 @@ public class MemberPointFacade {
     private final MemberPointService memberPointService;
     private final MemberPointHistoryService memberPointHistoryService;
 
-    public MemberPointResult.Balance charge(MemberPointCriteria.Charge criteria) {
+    public MemberPointResult.ChargeBalance charge(MemberPointCriteria.Charge criteria) {
 
         Member member = memberService.findMemberById(criteria.toFindMemberCommand());
 
@@ -23,7 +23,7 @@ public class MemberPointFacade {
 
         memberPointHistoryService.createChargeHistory(command);
 
-        return new MemberPointResult.Balance(criteria.getMemberId(), info.getBalance());
+        return new MemberPointResult.ChargeBalance(criteria.getMemberId(), info.getBalance());
     }
 
 }

@@ -15,8 +15,8 @@ import java.util.List;
 @Component
 public class FakeStore {
 
-    public MemberPointResponse.Balance balance() {
-        return new MemberPointResponse.Balance(1L, BigDecimal.valueOf(20000));
+    public MemberPointResponse.ChargeBalance balance() {
+        return new MemberPointResponse.ChargeBalance(1L, BigDecimal.valueOf(20000));
     }
 
     public ProductResponse.Detail product() {
