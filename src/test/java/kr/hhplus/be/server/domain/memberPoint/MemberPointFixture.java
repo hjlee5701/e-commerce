@@ -22,4 +22,11 @@ public class MemberPointFixture implements TestFixture<MemberPoint> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
+    public MemberPoint maxBalanceMemberPoint() {
+        MemberPoint entity = new MemberPoint();
+        this.balance = MemberPointPolicy.MAX_BALANCE_AMOUNT;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
 }
