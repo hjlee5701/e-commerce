@@ -1,5 +1,8 @@
 package kr.hhplus.be.server.interfaces.product;
 
+import kr.hhplus.be.server.domain.product.ProductCommand;
+import kr.hhplus.be.server.domain.product.ProductInfo;
+import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.interfaces.common.ApiResult;
 import kr.hhplus.be.server.interfaces.common.SuccessCode;
 import kr.hhplus.be.server.util.FakeStore;
@@ -19,16 +22,19 @@ import java.util.List;
 public class ProductController implements ProductApi {
 
     private final FakeStore fakeStore;
+    private final ProductService service;
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<ApiResult<ProductResponse.Detail>> findProduct (
             @PathVariable("id") Long productId
     ) {
-        ProductResponse.Detail response = fakeStore.product();
+        ProductInfo.Detail result = service.getProductDetail(new ProductCommand.Detail(productId));
+        var data = ProductResponse.Detail.of(result);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResult.of(SuccessCode.FIND_PRODUCT, response));
+                .body(ApiResult.of(SuccessCode.FIND_PRODUCT, data));
     }
 
     @Override
