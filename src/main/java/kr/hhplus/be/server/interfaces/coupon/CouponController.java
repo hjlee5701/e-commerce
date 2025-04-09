@@ -1,5 +1,8 @@
 package kr.hhplus.be.server.interfaces.coupon;
 
+import kr.hhplus.be.server.domain.coupon.CouponCommand;
+import kr.hhplus.be.server.domain.coupon.CouponInfo;
+import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.interfaces.common.ApiResult;
 import kr.hhplus.be.server.interfaces.common.SuccessCode;
 import kr.hhplus.be.server.util.FakeStore;
@@ -8,7 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -16,6 +22,7 @@ import java.util.List;
 public class CouponController implements CouponApi {
 
     private final FakeStore fakeStore;
+    private final CouponService couponService;
 
     @Override
     @PostMapping("{couponId}/member/{id}")
@@ -32,12 +39,19 @@ public class CouponController implements CouponApi {
 
     @Override
     @GetMapping("{id}")
-    public ResponseEntity<ApiResult<List<CouponResponse.Issued>>> checkHoldingCoupon(
+    public ResponseEntity<ApiResult<List<CouponResponse.Issued>>> findHoldingCoupon(
             @PathVariable("id") Long memberId
     ) {
-        List<CouponResponse.Issued> responses = fakeStore.couponList();
+        List<CouponInfo.Issued> responses = couponService.findHoldingCoupons(new CouponCommand.Holdings(memberId));
+
+        var data = Optional.ofNullable(responses)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(CouponResponse.Issued::from)
+                .collect(Collectors.toList());
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResult.of(SuccessCode.CHECK_HOLDING_COUPON, responses));
+                .body(ApiResult.of(SuccessCode.FIND_HOLDING_COUPON, data));
     }
 }

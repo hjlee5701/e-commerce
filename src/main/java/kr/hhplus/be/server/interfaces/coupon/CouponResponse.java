@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ public class CouponResponse {
 
     @Getter
     @AllArgsConstructor
-    @Schema(title = "발급한 쿠폰 응답")
+    @Schema(title = "발급된 쿠폰 응답")
     public static class Issued {
         @Schema(title = "쿠폰 아이디", example = "1", description = "쿠폰 아이디입니다.")
         private Long couponId;
@@ -32,6 +33,17 @@ public class CouponResponse {
 
         @Schema(title = "쿠폰 상태", example = "ISSUED", description = "(ISSUED, USED)")
         private String couponStatus;
+
+        public static Issued from(CouponInfo.Issued info) {
+            return new Issued(
+                    info.getCouponId(),
+                    info.getCouponItemId(),
+                    info.getTitle(),
+                    info.getIssuedAt(),
+                    info.getExpiredAt(),
+                    info.getCouponStatus()
+            );
+        }
     }
 
 }
