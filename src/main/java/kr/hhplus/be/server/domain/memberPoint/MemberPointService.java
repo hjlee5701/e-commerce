@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
 import kr.hhplus.be.server.domain.memberPoint.exception.InvalidAmountException;
+import kr.hhplus.be.server.domain.memberPoint.exception.MemberPointNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,14 @@ public class MemberPointService {
         // 충전
         memberPoint.charge(command);
         memberPointRepository.save(memberPoint);
+
+        return MemberPointInfo.Balance.of(memberPoint);
+    }
+
+    public MemberPointInfo.Balance getBalance(Long memberId) {
+        // 금액 조회
+        MemberPoint memberPoint = memberPointRepository.findByMemberId(memberId)
+                .orElseThrow(MemberPointNotFoundException::new);
 
         return MemberPointInfo.Balance.of(memberPoint);
     }

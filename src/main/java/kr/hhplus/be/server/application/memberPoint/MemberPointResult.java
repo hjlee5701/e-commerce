@@ -14,4 +14,10 @@ public class MemberPointResult {
         private Long memberId;
         private BigDecimal balance;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Balance {
+        private BigDecimal balance;
+    }
 }
