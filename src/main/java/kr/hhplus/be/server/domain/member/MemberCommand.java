@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class MemberCommand {
+
+
     @Getter
     @AllArgsConstructor
     public static class Find {
