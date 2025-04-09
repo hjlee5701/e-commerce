@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.application.memberPoint;
 
 import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,10 @@ public class MemberPointCriteria {
 
         public MemberPointCommand.Charge toCommand(Member member) {
             return new MemberPointCommand.Charge(memberId, member, amount);
+        }
+
+        public MemberCommand.Find toFindMemberCommand() {
+            return new MemberCommand.Find(memberId);
         }
     }
 }

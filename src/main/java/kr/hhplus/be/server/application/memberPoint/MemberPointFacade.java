@@ -16,7 +16,7 @@ public class MemberPointFacade {
 
     public MemberPointResult.Balance charge(MemberPointCriteria.Charge criteria) {
 
-        Member member = memberService.findMember(criteria.getMemberId());
+        Member member = memberService.findMemberById(criteria.toFindMemberCommand());
 
         MemberPointCommand.Charge command = criteria.toCommand(member);
         MemberPointInfo.Balance info = memberPointService.charge(command);
