@@ -10,6 +10,8 @@ import lombok.experimental.Accessors;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -22,7 +24,7 @@ public class OrderFixture implements TestFixture<Order> {
 
     private OrderStatus status = OrderStatus.PENDING;
 
-    private LocalDateTime orderedAt = LocalDateTime.now();
+    private LocalDateTime orderedAt = FIXED_NOW;
 
     @Override
     public Order create() {
