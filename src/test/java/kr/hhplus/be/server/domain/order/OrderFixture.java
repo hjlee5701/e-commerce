@@ -30,4 +30,11 @@ public class OrderFixture implements TestFixture<Order> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
+    public Order createWithStatus(OrderStatus orderStatus) {
+        Order entity = new Order();
+        this.status = orderStatus;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
 }
