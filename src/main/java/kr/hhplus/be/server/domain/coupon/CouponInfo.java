@@ -27,7 +27,7 @@ public class CouponInfo {
                     coupon.getTitle(),
                     coupon.getIssuedAt(),
                     coupon.getExpiredAt(),
-                    couponItem.getCouponItemStatus().name()
+                    couponItem.getStatus().name()
             );
 
         }

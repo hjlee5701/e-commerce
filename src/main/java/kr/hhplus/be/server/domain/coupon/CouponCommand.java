@@ -10,4 +10,9 @@ public class CouponCommand {
     public static class Holdings {
         private Long memberId;
     }
+    @AllArgsConstructor
+    @Getter
+    public static class UsableCoupon {
+        private Long couponItemId;
+    }
 }

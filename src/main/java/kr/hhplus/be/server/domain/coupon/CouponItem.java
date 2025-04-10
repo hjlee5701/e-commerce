@@ -21,5 +21,11 @@ public class CouponItem {
     private Coupon coupon;
 
     @Enumerated(EnumType.STRING)
-    private CouponItemStatus couponItemStatus;
+    private CouponItemStatus status;
+
+    public void isUsable() {
+        if (status != CouponItemStatus.USABLE) {
+            throw new UnUsableCouponItemException();
+        }
+    }
 }

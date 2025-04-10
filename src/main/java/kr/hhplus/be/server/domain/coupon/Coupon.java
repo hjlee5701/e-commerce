@@ -23,7 +23,7 @@ public class Coupon {
     private BigDecimal discountAmount;
 
     @Enumerated(EnumType.STRING)
-    private CouponStatus couponStatus;
+    private CouponStatus status;
 
     LocalDateTime issuedAt;
 

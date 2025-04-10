@@ -24,4 +24,12 @@ public class CouponService {
                 .map(CouponInfo.Issued::from)
                 .collect(Collectors.toList());
     }
+
+    public CouponItem getUsableCoupon(CouponCommand.UsableCoupon command) {
+        CouponItem couponItem = couponItemRepository.findById(command.getCouponItemId())
+                .orElseThrow(CouponItemNotFoundException::new);
+        couponItem.isUsable();
+        return couponItem;
+
+    }
 }
