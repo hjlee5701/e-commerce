@@ -36,6 +36,7 @@ public class Payment {
             throw new NotPendingPaymentException(status.name());
         }
         this.status = PaymentStatus.COMPLETED;
+        order.markAsPaid();
     }
 }
 

@@ -38,9 +38,6 @@ public class PaymentFacade {
         // 결제 완료
         payment.markAsPaid();
 
-        // 주문 상태 변경
-        order.completePayment(payment.getFinalAmount());
-
         return PaymentResult.Paid.of(payment, order.getId());
 
     }
