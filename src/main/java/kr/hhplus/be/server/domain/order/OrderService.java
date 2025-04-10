@@ -30,6 +30,10 @@ public class OrderService {
         return OrderInfo.Created.of(order, orderItems);
     }
 
+    public Order findByOrderId(OrderCommand.Find command) {
+        return orderRepository.findById(command.getOrderId())
+                .orElseThrow(OrderNotFoundException::new);
+    }
 
 
 }

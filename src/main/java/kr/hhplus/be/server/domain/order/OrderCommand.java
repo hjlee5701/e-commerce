@@ -27,4 +27,11 @@ public class OrderCommand {
         private BigDecimal price;
         private int quantity;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Find {
+        private Long orderId;
+    }
+
 }
