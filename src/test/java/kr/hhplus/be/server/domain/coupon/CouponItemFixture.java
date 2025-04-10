@@ -43,4 +43,11 @@ public class CouponItemFixture implements TestFixture<CouponItem> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
+    public CouponItem createWithOwner(Member memberA) {
+        CouponItem entity = new CouponItem();
+        this.member = memberA;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
 }

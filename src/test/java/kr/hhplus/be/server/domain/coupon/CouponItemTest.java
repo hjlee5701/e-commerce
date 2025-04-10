@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.domain.member.MemberFixture;
 import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER;
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,6 +65,20 @@ public class CouponItemTest {
         assertThatThrownBy(() -> couponItem.apply(FIXED_NOW))
                 .isInstanceOf(UnUsableCouponItemException.class)
                 .hasMessageContaining(CouponErrorCode.UNUSABLE_COUPON_ITEM.getMessage());
+    }
+
+    @DisplayName("쿠폰 아이템 소유자가 아닌 경우 예외 발생")
+    @Test
+    void 쿠폰_아이템_소유자가_아닌경우_예외() {
+        // given
+        Member memberA = new Member(1L, "testerA", FIXED_NOW);
+        Member memberB = new Member(2L, "testerB", FIXED_NOW);
+        CouponItem couponItem = new CouponItemFixture().createWithOwner(memberA);
+
+        // when & then
+        assertThatThrownBy(() -> couponItem.checkOwner(memberB))
+                .isInstanceOf(CouponItemAccessDeniedException.class)
+                .hasMessageContaining(CouponErrorCode.COUPON_ITEM_ACCESS_DENIED.getMessage());
     }
 
 }

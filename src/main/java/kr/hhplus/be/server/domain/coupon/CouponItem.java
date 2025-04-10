@@ -39,4 +39,10 @@ public class CouponItem {
         status = CouponItemStatus.USED;
         return coupon.getDiscountAmount();
     }
+
+    public void checkOwner(Member member) {
+        if (!this.member.getId().equals(member.getId())) {
+            throw new CouponItemAccessDeniedException();
+        }
+    }
 }

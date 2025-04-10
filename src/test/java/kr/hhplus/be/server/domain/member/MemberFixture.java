@@ -20,4 +20,5 @@ public class MemberFixture implements TestFixture<Member> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
 }
