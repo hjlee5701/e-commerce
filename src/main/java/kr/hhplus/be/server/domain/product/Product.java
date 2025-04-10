@@ -22,10 +22,13 @@ public class Product {
 
     private int quantity;
 
-    public void decrease(Integer orderQuantity) {
-        if (this.quantity < orderQuantity) {
+    public void decrease(Integer decreaseQuantity) {
+        if (decreaseQuantity <= 0) {
+            throw new InvalidDecreaseQuantityException();
+        }
+        if (this.quantity < decreaseQuantity) {
             throw new InsufficientStockException(title);
         }
-        quantity -= orderQuantity;
+        quantity -= decreaseQuantity;
     }
 }
