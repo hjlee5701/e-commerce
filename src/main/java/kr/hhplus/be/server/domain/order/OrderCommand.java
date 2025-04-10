@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.product.Product;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,6 @@ public class OrderCommand {
     @AllArgsConstructor
     public static class Create {
         private Member member;
-        private CouponItem couponItem;
         private List<ItemCreate> orderItems;
         private BigDecimal totalAmount;
     }

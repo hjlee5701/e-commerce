@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.coupon.CouponCommand;
-import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.order.OrderCommand;
@@ -21,7 +19,6 @@ public class OrderCriteria {
     @AllArgsConstructor
     public static class Create {
         private Long memberId;
-        private Long couponItemId;
         private List<ItemCreate> orderItems;
 
         public static Create of(Long memberId, OrderRequest.Create request) {
@@ -29,7 +26,7 @@ public class OrderCriteria {
                     product -> new ItemCreate(product.getProductId(), product.getQuantity())
             ).toList();
             return new Create(
-                    memberId, request.getCouponItemId(), itemCriteria
+                    memberId, itemCriteria
             );
         }
 
@@ -37,9 +34,6 @@ public class OrderCriteria {
             return new MemberCommand.Find(memberId);
         }
 
-        public CouponCommand.UsableCoupon toGetUsableCouponCommand() {
-            return new CouponCommand.UsableCoupon(couponItemId);
-        }
 
         public ProductCommand.Decrease toDecreaseStockCommand() {
             Map<Long, Integer> productMap = orderItems.stream()
@@ -50,7 +44,7 @@ public class OrderCriteria {
             return new ProductCommand.Decrease(productMap);
         }
 
-        public OrderCommand.Create toCreateOrderCommand(Member member, CouponItem couponItem, ProductInfo.Decreased productInfo) {
+        public OrderCommand.Create toCreateOrderCommand(Member member, ProductInfo.Decreased productInfo) {
             List<OrderCommand.ItemCreate> itemCommands = productInfo.getItems().stream()
                     .map(info -> new OrderCommand.ItemCreate(
                             info.getProduct(),
@@ -58,7 +52,7 @@ public class OrderCriteria {
                             info.getOrderQuantity()))
                     .toList();
 
-            return new OrderCommand.Create(member, couponItem, itemCommands, productInfo.getTotalAmount());
+            return new OrderCommand.Create(member, itemCommands, productInfo.getTotalAmount());
         }
 
     }

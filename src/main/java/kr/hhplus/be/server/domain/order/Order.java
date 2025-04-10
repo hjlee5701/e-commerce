@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,10 +21,6 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COUPON_ITEM_ID")
-    private CouponItem couponItem;
 
     private BigDecimal totalAmount;
 

@@ -6,7 +6,6 @@ public class OrderFactory {
         return new Order(
                 1L,
                 command.getMember(),
-                command.getCouponItem(),
                 command.getTotalAmount(),
                 OrderStatus.PENDING
         );
