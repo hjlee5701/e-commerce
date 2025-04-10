@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
+import java.time.LocalDateTime;
+
 public class OrderFactory {
 
     public static Order create(OrderCommand.Create command) {
@@ -7,7 +9,8 @@ public class OrderFactory {
                 1L,
                 command.getMember(),
                 command.getTotalAmount(),
-                OrderStatus.PENDING
+                OrderStatus.PENDING,
+                LocalDateTime.now()
         );
     }
 

@@ -39,7 +39,7 @@ public class OrderResponse {
                             item.getProductId(), item.getTitle(), item.getPrice(), item.getQuantity()
                     ))
                     .toList();
-            return new Created(result.getOrderId(), result.getOrderStatus(), result.getTotalAmount(), null, orderItems);
+            return new Created(result.getOrderId(), result.getOrderStatus(), result.getTotalAmount(), result.getOrderedAt(), orderItems);
         }
     }
 

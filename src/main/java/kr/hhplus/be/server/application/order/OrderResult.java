@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderResult {
@@ -15,6 +16,7 @@ public class OrderResult {
         private Long orderId;
         private String orderStatus;
         private BigDecimal totalAmount;
+        private LocalDateTime orderedAt;
         private List<ItemCreated> orderItems;
 
         public static Created of(OrderInfo.Created info) {
@@ -29,6 +31,7 @@ public class OrderResult {
                     info.getOrderId(),
                     info.getOrderStatus(),
                     info.getTotalAmount(),
+                    info.getOrderedAt(),
                     items
             );
         }
