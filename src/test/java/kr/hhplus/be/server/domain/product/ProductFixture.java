@@ -34,8 +34,9 @@ public class ProductFixture implements TestFixture<Product> {
 
     public Product createWithStock(int quantity) {
         Product entity = new Product();
-        FixtureReflectionUtils.reflect(entity, this);
+        this.id += 1;
         this.quantity = quantity;
+        FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
 }
