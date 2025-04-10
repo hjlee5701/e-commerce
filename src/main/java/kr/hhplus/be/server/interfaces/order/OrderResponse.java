@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.order.OrderResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -30,13 +31,22 @@ public class OrderResponse {
         private LocalDateTime orderAt;
 
         @Schema(title = "주문 상품 목록", description = "주문한 상품 리스트")
-        private List<CreatedItem> orderItems;
+        private List<ItemCreated> orderItems;
+
+        public static Created of(OrderResult.Created result) {
+            List<ItemCreated> orderItems = result.getOrderItems().stream()
+                    .map(item -> new ItemCreated(
+                            item.getProductId(), item.getTitle(), item.getPrice(), item.getQuantity()
+                    ))
+                    .toList();
+            return new Created(result.getOrderId(), result.getOrderStatus(), result.getTotalAmount(), null, orderItems);
+        }
     }
 
     @Getter
     @AllArgsConstructor
     @Schema(title = "주문한 상품 정보 반환")
-    public static class CreatedItem {
+    public static class ItemCreated {
         @Schema(title = "상품 아이디", example = "1")
         private Long productId;
 

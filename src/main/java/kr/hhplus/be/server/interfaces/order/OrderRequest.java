@@ -19,7 +19,7 @@ public class OrderRequest {
         private Long couponItemId;
 
         @Schema(title = "상품 목록", description = "주문 요청한 상품 리스트")
-        private List<ItemCreate> orderProducts;
+        private List<ItemCreate> orderItems;
     }
 
     @Getter
