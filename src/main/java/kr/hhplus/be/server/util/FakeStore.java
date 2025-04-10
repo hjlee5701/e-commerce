@@ -2,7 +2,6 @@ package kr.hhplus.be.server.util;
 
 import kr.hhplus.be.server.interfaces.coupon.CouponResponse;
 import kr.hhplus.be.server.interfaces.memberPoint.MemberPointResponse;
-import kr.hhplus.be.server.interfaces.order.OrderItemResponse;
 import kr.hhplus.be.server.interfaces.order.OrderResponse;
 import kr.hhplus.be.server.interfaces.payment.PaymentResponse;
 import kr.hhplus.be.server.interfaces.product.ProductResponse;
@@ -39,7 +38,7 @@ public class FakeStore {
         return new OrderResponse.Created(
                 1L, "COMPLETED", BigDecimal.valueOf(50000), LocalDateTime.now(),
                 List.of(
-                        new OrderItemResponse.Item(1L, "상의", BigDecimal.valueOf(50000), 1)
+                        new OrderResponse.CreatedItem(1L, "상의", BigDecimal.valueOf(50000), 1)
                 ));
     }
 

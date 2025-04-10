@@ -30,7 +30,25 @@ public class OrderResponse {
         private LocalDateTime orderAt;
 
         @Schema(title = "주문 상품 목록", description = "주문한 상품 리스트")
-        private List<OrderItemResponse.Item> orderItems;
+        private List<CreatedItem> orderItems;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Schema(title = "주문한 상품 정보 반환")
+    public static class CreatedItem {
+        @Schema(title = "상품 아이디", example = "1")
+        private Long productId;
+
+        @Schema(title = "상품명", example = "상의")
+        private String title;
+
+        @Schema(title = "상품 가격", example = "10000")
+        private BigDecimal price;
+
+        @Schema(title = "주문 수량", example = "1")
+        private Integer quantity;
+
     }
 
 }

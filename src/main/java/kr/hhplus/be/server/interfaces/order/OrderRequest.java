@@ -19,6 +19,18 @@ public class OrderRequest {
         private Long couponItemId;
 
         @Schema(title = "상품 목록", description = "주문 요청한 상품 리스트")
-        private List<OrderItemRequest.Item> orderItems;
+        private List<ItemCreate> orderProducts;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Schema(title = "주문 요청한 상품 정보")
+    public static class ItemCreate {
+        @Schema(title = "상품 아이디", example = "1")
+        private Long productId;
+
+        @Schema(title = "주문 수량", example = "1")
+        private Integer quantity;
+
     }
 }
