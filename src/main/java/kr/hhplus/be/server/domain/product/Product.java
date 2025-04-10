@@ -21,4 +21,11 @@ public class Product {
     private BigDecimal price;
 
     private int quantity;
+
+    public void decrease(Integer orderQuantity) {
+        if (this.quantity < orderQuantity) {
+            throw new InsufficientStockException(title);
+        }
+        quantity -= orderQuantity;
+    }
 }
