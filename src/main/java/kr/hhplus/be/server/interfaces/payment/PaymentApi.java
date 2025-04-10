@@ -19,8 +19,9 @@ public interface PaymentApi {
             @ApiResponse(responseCode = "400", description = "유효하지 않는 쿠폰 / 보유 금액 초과 주문 / 결제 실패", content = @Content()),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content())
     })
-    public ResponseEntity<ApiResult<PaymentResponse.Created>> orderPayment(
-            @Parameter(description = "주문 아이디") Long orderId
+    public ResponseEntity<ApiResult<PaymentResponse.Paid>> orderPayment(
+            @Parameter(description = "주문 아이디") Long orderId,
+            @Parameter(description = "결제 요청") PaymentRequest.Pay request
     );
 
 

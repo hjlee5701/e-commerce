@@ -12,7 +12,7 @@ public class CouponCommand {
     }
     @AllArgsConstructor
     @Getter
-    public static class UsableCoupon {
+    public static class Find {
         private Long couponItemId;
     }
 }

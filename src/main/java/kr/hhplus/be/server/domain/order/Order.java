@@ -30,4 +30,24 @@ public class Order {
 
     private LocalDateTime orderedAt;
 
+
+    public void completePayment(BigDecimal finalAmount) {
+        updateFinalAmount(finalAmount);
+        markAsPaid();
+    }
+
+    public void updateFinalAmount(BigDecimal finalAmount) {
+        this.totalAmount = finalAmount.compareTo(BigDecimal.ZERO) < 0
+                ? BigDecimal.ZERO
+                : finalAmount;
+    }
+
+
+
+    public void markAsPaid() {
+        if (status != OrderStatus.PENDING) {
+            throw new NotPendingOrderException(status.name());
+        }
+        status = OrderStatus.PAID;
+    }
 }

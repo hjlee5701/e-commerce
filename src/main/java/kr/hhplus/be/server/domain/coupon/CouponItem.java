@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.member.Member;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 public class CouponItem {
@@ -23,9 +26,17 @@ public class CouponItem {
     @Enumerated(EnumType.STRING)
     private CouponItemStatus status;
 
-    public void isUsable() {
+    private void validateUsable() {
         if (status != CouponItemStatus.USABLE) {
             throw new UnUsableCouponItemException();
         }
+    }
+
+    public BigDecimal apply(LocalDateTime orderedAt) {
+        validateUsable();
+        coupon.validateTime(orderedAt);
+
+        status = CouponItemStatus.USED;
+        return coupon.getDiscountAmount();
     }
 }

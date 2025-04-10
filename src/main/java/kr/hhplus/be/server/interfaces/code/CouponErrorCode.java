@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum CouponErrorCode implements ErrorCode {
     COUPON_ITEM_NOT_FOUND("C_001", "쿠폰 아이템 정보가 존재하지 않습니다.", HttpStatus.NOT_FOUND),
     UNUSABLE_COUPON_ITEM("C_002", "사용할 수 없는 쿠폰입니다.", HttpStatus.CONFLICT),
+    COUPON_NOT_YET_ACTIVE("C_003", "쿠폰은 '%s' 이후부터 사용 가능합니다.", HttpStatus.CONFLICT),
+    COUPON_EXPIRED("C_004", "쿠폰 유효기간 ('%s') 이 지났습니다.", HttpStatus.CONFLICT)
     ;
 
     private final String code;

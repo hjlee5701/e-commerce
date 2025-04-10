@@ -29,4 +29,15 @@ public class Coupon {
 
     LocalDateTime expiredAt;
 
+    public void validateTime(LocalDateTime orderedAt) {
+        if (status == CouponStatus.EXPIRED || orderedAt.isAfter(expiredAt)) {
+            throw new CouponExpiredException(expiredAt);
+        }
+
+        if (status == CouponStatus.INACTIVE || orderedAt.isBefore(issuedAt)) {
+            throw new CouponNotYetActiveException(issuedAt);
+        }
+
+
+    }
 }

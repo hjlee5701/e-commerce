@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.payment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.payment.PaymentResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ public class PaymentResponse {
     @Getter
     @AllArgsConstructor
     @Schema(title = "주문 결제 생성 응답")
-    public static class Created {
+    public static class Paid {
 
         @Schema(title = "주문 아이디", example = "1")
         private Long orderId;
@@ -33,5 +34,9 @@ public class PaymentResponse {
 
         @Schema(title = "결제 상태", example = "COMPLETED", description = "결제 진행 상태")
         private String paymentStatus;
+
+        public static Paid of(PaymentResult.Paid result) {
+            return new Paid(result.getOrderId(), result.getPaymentId(), result.getOriginalAmount(), result.getDiscountAmount(), result.getFinalAmount(), result.getPaymentStatus());
+        }
     }
 }

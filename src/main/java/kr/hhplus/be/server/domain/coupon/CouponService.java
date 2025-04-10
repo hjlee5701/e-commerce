@@ -25,11 +25,9 @@ public class CouponService {
                 .collect(Collectors.toList());
     }
 
-    public CouponItem getUsableCoupon(CouponCommand.UsableCoupon command) {
-        CouponItem couponItem = couponItemRepository.findById(command.getCouponItemId())
+    public CouponItem findByCouponItemId(CouponCommand.Find command) {
+        return couponItemRepository.findById(command.getCouponItemId())
                 .orElseThrow(CouponItemNotFoundException::new);
-        couponItem.isUsable();
-        return couponItem;
 
     }
 }

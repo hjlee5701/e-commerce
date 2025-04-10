@@ -48,7 +48,7 @@ public class FakeStore {
         );
     }
 
-    public PaymentResponse.Created orderPayment() {
-        return new PaymentResponse.Created(1L, 1L, BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(40000), "COMPLETED");
+    public PaymentResponse.Paid orderPayment() {
+        return new PaymentResponse.Paid(1L, 1L, BigDecimal.valueOf(50000), BigDecimal.valueOf(10000), BigDecimal.valueOf(40000), "COMPLETED");
     }
 }
