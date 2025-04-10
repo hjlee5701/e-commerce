@@ -19,4 +19,12 @@ public class MemberPointCommand {
         private Member member;
         private BigDecimal amount;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Use {
+        private BigDecimal amount;
+        private Long memberId;
+
+    }
 }

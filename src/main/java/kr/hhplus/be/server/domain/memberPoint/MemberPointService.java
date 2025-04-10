@@ -40,4 +40,11 @@ public class MemberPointService {
 
         return MemberPointInfo.Balance.of(memberPoint);
     }
+
+    public void use(MemberPointCommand.Use command) {
+        MemberPoint memberPoint = memberPointRepository.findByMemberId(command.getMemberId())
+                .orElseThrow(MemberPointNotFoundException::new);
+
+        memberPoint.use(command.getAmount());
+    }
 }
