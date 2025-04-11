@@ -45,8 +45,9 @@ public class OrderFacadeTest {
     void 서비스_호출_순서가_정상적으로_보장된다() {
         // given
         BigDecimal amount = BigDecimal.valueOf(1000);
-        Product product1 = new ProductFixture().create();
-        Product product2 = new ProductFixture().create();
+        ProductFixture fixture = new ProductFixture();
+        Product product1 = fixture.create();
+        Product product2 = fixture.create();
 
         List<OrderCriteria.ItemCreate> items = List.of(
                 new OrderCriteria.ItemCreate(product1.getId(), product1.getQuantity()),
