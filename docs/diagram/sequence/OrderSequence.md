@@ -8,7 +8,7 @@ sequenceDiagram
     participant Product
     participant Order
 
-    Client->>OrderFacade: 주문 요청 (상품ID, 수량, 사용자 ID, 쿠폰 ID)
+    Client->>OrderFacade: 주문 요청 (상품ID, 수량, 사용자 ID)
     activate OrderFacade
 
     OrderFacade->>Member: 사용자 조회
@@ -17,17 +17,6 @@ sequenceDiagram
     deactivate Member
     break 사용자 없음
         OrderFacade-->>Client: 사용자 오류 응답
-    end
-    opt 요청 중, 쿠폰 ID 존재
-        OrderFacade->>Coupon: 쿠폰 조회
-        activate Coupon
-        alt 사용되었거나 만료된 쿠폰
-            Coupon-->>OrderFacade: 오류 응답
-            OrderFacade-->>Client: 쿠폰 오류 응답
-        else
-            Coupon-->>OrderFacade: 유효한 쿠폰 반환
-            deactivate Coupon
-        end
     end
 
     OrderFacade->>Product: 상품 목록 조회 (수량, 가격)

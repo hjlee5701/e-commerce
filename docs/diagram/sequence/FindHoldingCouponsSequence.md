@@ -8,15 +8,11 @@ sequenceDiagram
     Client->>Coupon: 보유 쿠폰 조회 요청 (사용자 ID)
     activate Coupon
 
-    Coupon->>Member: 사용자 존재여부 확인
-    activate Member
-    break 존재하지 않는 사용자
-        Member-->>Client: 404 사용자 오류 응답
+    Coupon->>Coupon: 사용자 ID 로 보유 쿠폰 조회
+    alt 존재하지 않는 쿠폰
+        Coupon -->> Client : 404 존재하지 않는 쿠폰 응답 
     end
-    deactivate Member
-
-    Coupon->>Coupon: 사용자 보유 쿠폰 조회
-    Coupon-->>Client: 200 쿠폰 목록 응답
+    Coupon-->>Client: 200 보유 쿠폰 목록 응답
     
 
     deactivate Coupon
