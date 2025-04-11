@@ -21,7 +21,7 @@ public class CouponFixture implements TestFixture<Coupon> {
     private int initialQuantity = 100;
     private int remainingQuantity = 50;
     private BigDecimal discountAmount = BigDecimal.TEN;
-    private CouponStatus status = CouponStatus.INACTIVE;
+    private CouponStatus status = CouponStatus.ACTIVE;
     LocalDateTime issuedAt = FIXED_NOW.minusDays(3);
     LocalDateTime expiredAt = FIXED_NOW.plusDays(3);
 
@@ -65,4 +65,12 @@ public class CouponFixture implements TestFixture<Coupon> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
+    public Coupon createWithNoRemaining() {
+        Coupon entity = new Coupon();
+        this.remainingQuantity = 0;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
+
 }
