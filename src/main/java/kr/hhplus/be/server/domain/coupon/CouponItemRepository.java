@@ -10,4 +10,6 @@ public interface CouponItemRepository {
     List<CouponItem> findAllByMemberId(Long memberId);
 
     Optional<CouponItem> findById(Long id);
+
+    CouponItem save(CouponItem couponItem);
 }

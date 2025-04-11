@@ -19,4 +19,9 @@ public class CouponItemRepositoryImpl implements CouponItemRepository {
     public Optional<CouponItem> findById(Long id) {
         return Optional.empty();
     }
+
+    @Override
+    public CouponItem save(CouponItem couponItem) {
+        return null;
+    }
 }

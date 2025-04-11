@@ -1,11 +1,13 @@
 package kr.hhplus.be.server.interfaces.coupon;
 
+import kr.hhplus.be.server.application.coupon.CouponCriteria;
+import kr.hhplus.be.server.application.coupon.CouponFacade;
+import kr.hhplus.be.server.application.coupon.CouponResult;
 import kr.hhplus.be.server.domain.coupon.CouponCommand;
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.interfaces.common.ApiResult;
 import kr.hhplus.be.server.interfaces.common.SuccessCode;
-import kr.hhplus.be.server.util.FakeStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/coupons")
 public class CouponController implements CouponApi {
 
-    private final FakeStore fakeStore;
     private final CouponService couponService;
+    private final CouponFacade facade;
 
     @Override
     @PostMapping("{couponId}/member/{id}")
@@ -30,10 +32,12 @@ public class CouponController implements CouponApi {
             @PathVariable("couponId") Long couponId,
             @PathVariable("id") Long memberId
     ) {
-        CouponResponse.Issued response = fakeStore.coupon();
+
+        CouponResult.Issued result = facade.issue(CouponCriteria.Issue.of(couponId, memberId));
+        var data = CouponResponse.Issued.of(result);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ApiResult.of(SuccessCode.ISSUE_COUPON, response));
+                .body(ApiResult.of(SuccessCode.ISSUE_COUPON, data));
     }
 
 
