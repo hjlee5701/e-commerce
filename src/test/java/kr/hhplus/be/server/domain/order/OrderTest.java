@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -76,7 +77,7 @@ public class OrderTest {
 
         // when & then
         assertThatThrownBy(order::markAsPaid)
-                .isInstanceOf(NotPendingOrderException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessageContaining(OrderStatus.CANCELLED.name());
     }
 

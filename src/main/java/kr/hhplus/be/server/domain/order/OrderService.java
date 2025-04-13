@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.interfaces.code.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class OrderService {
 
     public Order findByOrderId(OrderCommand.Find command) {
         return orderRepository.findById(command.getOrderId())
-                .orElseThrow(OrderNotFoundException::new);
+                .orElseThrow(() -> new ECommerceException(OrderErrorCode.ORDER_NOT_FOUND));
     }
 
 

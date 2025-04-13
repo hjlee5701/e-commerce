@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.product;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +20,7 @@ public class ProductTest {
 
         // when & then
         assertThatThrownBy(() -> product.decrease(decreaseQuantity))
-                .isInstanceOf(InvalidDecreaseQuantityException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(ProductErrorCode.INVALID_DECREASE_QUANTITY.getMessage());
     }
 
@@ -33,7 +34,7 @@ public class ProductTest {
 
         // when & then
         assertThatThrownBy(() -> product.decrease(decreaseQuantity))
-                .isInstanceOf(InsufficientStockException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(String.format(ProductErrorCode.INSUFFICIENT_STOCK.getMessage(), product.getTitle()));
     }
 

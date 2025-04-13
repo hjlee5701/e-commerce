@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -24,10 +26,10 @@ public class Product {
 
     public void decrease(Integer decreaseQuantity) {
         if (decreaseQuantity <= 0) {
-            throw new InvalidDecreaseQuantityException();
+            throw new ECommerceException(ProductErrorCode.INVALID_DECREASE_QUANTITY);
         }
         if (this.quantity < decreaseQuantity) {
-            throw new InsufficientStockException(title);
+            throw new ECommerceException(ProductErrorCode.INSUFFICIENT_STOCK, title);
         }
         quantity -= decreaseQuantity;
     }

@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.domain.payment;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.interfaces.code.PaymentErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +35,7 @@ public class Payment {
 
     public void markAsPaid() {
         if (this.status != PaymentStatus.PENDING) {
-            throw new NotPendingPaymentException(status.name());
+            throw new ECommerceException(PaymentErrorCode.NOT_PENDING_PAYMENT, status.name());
         }
         this.status = PaymentStatus.COMPLETED;
         order.markAsPaid();

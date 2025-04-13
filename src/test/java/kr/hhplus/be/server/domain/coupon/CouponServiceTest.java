@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ public class CouponServiceTest {
         given(couponItemRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> couponService.findByCouponItemId(new CouponCommand.Find(1L)))
-                .isInstanceOf(CouponItemNotFoundException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessageContaining(CouponErrorCode.COUPON_ITEM_NOT_FOUND.getMessage());
     }
 
@@ -50,7 +51,7 @@ public class CouponServiceTest {
 
         // when & then
         assertThatThrownBy(() -> couponService.issuable(command))
-                .isInstanceOf(CouponNotFoundException.class);
+                .isInstanceOf(ECommerceException.class);
     }
 
 }

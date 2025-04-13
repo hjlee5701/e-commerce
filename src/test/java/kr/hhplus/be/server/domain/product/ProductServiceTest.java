@@ -1,10 +1,10 @@
 package kr.hhplus.be.server.domain.product;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -49,7 +49,7 @@ public class ProductServiceTest {
 
         // then
         assertThatThrownBy(() -> productService.decreaseStock(command))
-                .isInstanceOf(ProductNotFoundException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(ProductErrorCode.PRODUCT_NOT_FOUND.getMessage());
     }
 
@@ -70,7 +70,7 @@ public class ProductServiceTest {
         ProductCommand.Decrease command = new ProductCommand.Decrease(productMap);
         // when
         assertThatThrownBy(() -> productService.decreaseStock(command))
-                .isInstanceOf(InsufficientStockException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(String.format(ProductErrorCode.INSUFFICIENT_STOCK.getMessage(), product.getTitle()));
 
         // then

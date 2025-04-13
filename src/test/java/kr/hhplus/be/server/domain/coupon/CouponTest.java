@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ public class CouponTest {
     void 유효기간을_지났거나_만료상태면_예외발생() {
         Coupon coupon = new CouponFixture().createWithExpired();
         assertThatThrownBy(() -> coupon.validateTime(FIXED_NOW))
-                .isInstanceOf(CouponExpiredException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(String.format(CouponErrorCode.COUPON_EXPIRED.getMessage(), coupon.expiredAt));
     }
 
@@ -24,7 +25,7 @@ public class CouponTest {
         Coupon coupon = new CouponFixture().createWithExpiredAt(CouponStatus.ACTIVE);
 
         assertThatThrownBy(() -> coupon.validateTime(FIXED_NOW))
-                .isInstanceOf(CouponExpiredException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(String.format(CouponErrorCode.COUPON_EXPIRED.getMessage(), coupon.expiredAt));
     }
 
@@ -34,7 +35,7 @@ public class CouponTest {
         Coupon coupon = new CouponFixture().createWithInActive();
 
         assertThatThrownBy(() -> coupon.validateTime(FIXED_NOW))
-                .isInstanceOf(CouponNotYetActiveException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(String.format(CouponErrorCode.COUPON_NOT_YET_ACTIVE.getMessage(), coupon.issuedAt));
     }
 
@@ -68,7 +69,7 @@ public class CouponTest {
 
         // when & then
         assertThatThrownBy(() -> coupon.issue(FIXED_NOW))
-                .isInstanceOf(CouponInActiveException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(CouponErrorCode.COUPON_INACTIVE.getMessage())
         ;
     }
@@ -81,7 +82,7 @@ public class CouponTest {
 
         // when & then
         assertThatThrownBy(() -> coupon.issue(FIXED_NOW))
-                .isInstanceOf(CouponExpiredException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(String.format(CouponErrorCode.COUPON_EXPIRED.getMessage(), coupon.expiredAt));
         ;
     }
@@ -93,7 +94,7 @@ public class CouponTest {
         Coupon coupon = new CouponFixture().createWithNoRemaining();
         // when & then
         assertThatThrownBy(() -> coupon.issue(FIXED_NOW))
-                .isInstanceOf(CouponHasNoRemainingException.class);
+                .isInstanceOf(ECommerceException.class);
     }
 
 

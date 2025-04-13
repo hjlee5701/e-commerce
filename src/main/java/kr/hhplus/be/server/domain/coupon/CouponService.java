@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,13 +31,13 @@ public class CouponService {
 
     public CouponItem findByCouponItemId(CouponCommand.Find command) {
         return couponItemRepository.findById(command.getCouponItemId())
-                .orElseThrow(CouponItemNotFoundException::new);
+                .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_ITEM_NOT_FOUND));
 
     }
 
     public Coupon issuable(CouponCommand.Issuable command) {
         Coupon coupon = couponRepository.findById(command.getCouponItemId())
-                .orElseThrow(CouponNotFoundException::new);
+                .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_NOT_FOUND));
 
         coupon.issue(LocalDateTime.now());
         return coupon;

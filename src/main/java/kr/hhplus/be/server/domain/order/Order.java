@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.interfaces.code.OrderErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,7 +48,7 @@ public class Order {
 
     public void markAsPaid() {
         if (status != OrderStatus.PENDING) {
-            throw new NotPendingOrderException(status.name());
+            throw new ECommerceException(OrderErrorCode.NOT_PENDING_ORDER, status.name());
         }
         status = OrderStatus.PAID;
     }

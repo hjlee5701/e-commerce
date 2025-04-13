@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.domain.coupon;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +34,7 @@ public class CouponItem {
 
     private void validateUsable() {
         if (status != CouponItemStatus.USABLE) {
-            throw new UnUsableCouponItemException();
+            throw new ECommerceException(CouponErrorCode.UNUSABLE_COUPON_ITEM);
         }
     }
 
@@ -46,7 +48,7 @@ public class CouponItem {
 
     public void checkOwner(Member member) {
         if (!this.member.getId().equals(member.getId())) {
-            throw new CouponItemAccessDeniedException();
+            throw new ECommerceException(CouponErrorCode.COUPON_ITEM_ACCESS_DENIED);
         }
     }
 }

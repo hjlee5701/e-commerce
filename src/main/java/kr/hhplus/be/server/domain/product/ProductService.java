@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.product;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ public class ProductService {
 
     public ProductInfo.Detail getProductDetail(ProductCommand.Detail command) {
         Product product = productRepository.findById(command.getProductId())
-                .orElseThrow(ProductNotFoundException::new);
+                .orElseThrow(() -> new ECommerceException(ProductErrorCode.PRODUCT_NOT_FOUND));
         return ProductInfo.Detail.of(product);
 
     }
@@ -31,7 +33,7 @@ public class ProductService {
 
         // 상품 ID 유효성 검사
         if (products.size() != productMap.size()) {
-            throw new ProductNotFoundException();
+            throw new ECommerceException(ProductErrorCode.PRODUCT_NOT_FOUND);
         }
 
         List<ProductInfo.ItemDecreased> items = new ArrayList<>();

@@ -2,9 +2,8 @@ package kr.hhplus.be.server.domain.memberPoint;
 
 import kr.hhplus.be.server.application.memberPoint.MemberPointCriteria;
 import kr.hhplus.be.server.application.memberPoint.MemberPointFacade;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.MemberService;
-import kr.hhplus.be.server.domain.member.exception.MemberNotFoundException;
-import kr.hhplus.be.server.domain.memberPoint.exception.InvalidBalanceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,10 +67,10 @@ public class MemberPointFacadeTest {
         // given
         var criteria = new MemberPointCriteria.Charge(ANY_MEMBER_ID, BigDecimal.valueOf(1000));
 
-        given(memberService.findMemberById(criteria.toFindMemberCommand())).willThrow(MemberNotFoundException.class);
+        given(memberService.findMemberById(criteria.toFindMemberCommand())).willThrow(kr.hhplus.be.server.domain.common.ECommerceException.class);
 
         // when
-        assertThatThrownBy(() -> facade.charge(criteria)).isInstanceOf(MemberNotFoundException.class);
+        assertThatThrownBy(() -> facade.charge(criteria)).isInstanceOf(kr.hhplus.be.server.domain.common.ECommerceException.class);
 
         // then
         verify(memberPointService, never()).charge(any(MemberPointCommand.Charge.class));
@@ -86,10 +85,10 @@ public class MemberPointFacadeTest {
         var criteria = new MemberPointCriteria.Charge(ANY_MEMBER_ID, BigDecimal.valueOf(1000));
 
         given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(ANY_MEMBER);
-        given(memberPointService.charge(any(MemberPointCommand.Charge.class))).willThrow(InvalidBalanceException.class);
+        given(memberPointService.charge(any(MemberPointCommand.Charge.class))).willThrow(ECommerceException.class);
 
         // when
-        assertThatThrownBy(() -> facade.charge(criteria)).isInstanceOf(InvalidBalanceException.class);
+        assertThatThrownBy(() -> facade.charge(criteria)).isInstanceOf(ECommerceException.class);
 
         // then
         verify(memberPointHistoryService, never()).createChargeHistory(any(MemberPointCommand.Charge.class));

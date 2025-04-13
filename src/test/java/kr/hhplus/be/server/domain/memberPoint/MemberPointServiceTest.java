@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import kr.hhplus.be.server.domain.memberPoint.exception.InvalidAmountException;
-import kr.hhplus.be.server.domain.memberPoint.exception.InvalidBalanceException;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ public class MemberPointServiceTest {
         );
         // when, then
         assertThatThrownBy(() -> memberPointService.charge(command))
-                .isInstanceOf(InvalidAmountException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(MemberPointErrorCode.INVALID_AMOUNT.getMessage());
     }
 
@@ -76,7 +75,7 @@ public class MemberPointServiceTest {
 
         // when, then
         assertThatThrownBy(() -> memberPointService.charge(command))
-                .isInstanceOf(InvalidBalanceException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(MemberPointErrorCode.INVALID_BALANCE.getMessage());
     }
 

@@ -1,14 +1,15 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import kr.hhplus.be.server.domain.memberPoint.exception.InvalidBalanceException;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static kr.hhplus.be.server.common.FixtureTestSupport.*;
-import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.*;
+import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER;
+import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
+import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.MAX_CHARGE_AMOUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -26,7 +27,7 @@ public class MemberPointTest {
         MemberPoint memberPoint = new MemberPointFixture().create();
 
         assertThatThrownBy(() -> memberPoint.charge(command))
-                .isInstanceOf(InvalidBalanceException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(MemberPointErrorCode.INVALID_BALANCE.getMessage());
     }
 
