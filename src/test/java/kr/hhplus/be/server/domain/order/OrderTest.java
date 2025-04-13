@@ -20,7 +20,7 @@ public class OrderTest {
         BigDecimal finalAmount = BigDecimal.valueOf(10000);
 
         // when
-        order.completePayment(finalAmount);
+        order.applyPayment(finalAmount);
 
         // then
         assertThat(order.getTotalAmount()).isEqualByComparingTo(finalAmount);
@@ -36,7 +36,7 @@ public class OrderTest {
         BigDecimal amount = BigDecimal.valueOf(10000);
 
         // when
-        order.updateFinalAmount(amount);
+        order.applyPayment(amount);
 
         // then
         assertThat(order.getTotalAmount()).isEqualByComparingTo(amount);
@@ -50,7 +50,7 @@ public class OrderTest {
         BigDecimal amount = BigDecimal.valueOf(-100);
 
         // when
-        order.updateFinalAmount(amount);
+        order.applyPayment(amount);
 
         // then
         assertThat(order.getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
@@ -61,9 +61,10 @@ public class OrderTest {
     void 상태가_PENDING이면_PAID로_변경() {
         // given
         Order order = new OrderFixture().createWithStatus(OrderStatus.PENDING);
+        BigDecimal amount = BigDecimal.valueOf(100);
 
         // when
-        order.markAsPaid();
+        order.applyPayment(amount);
 
         // then
         assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
@@ -74,9 +75,10 @@ public class OrderTest {
     void 상태가_PENDING이_아니면_예외가_발생한다() {
         // given
         Order order = new OrderFixture().createWithStatus(OrderStatus.CANCELLED);
+        BigDecimal amount = BigDecimal.valueOf(100);
 
         // when & then
-        assertThatThrownBy(order::markAsPaid)
+        assertThatThrownBy(() -> order.applyPayment(amount))
                 .isInstanceOf(ECommerceException.class)
                 .hasMessageContaining(OrderStatus.CANCELLED.name());
     }

@@ -39,4 +39,20 @@ public class PaymentFixture implements TestFixture<Payment> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
+    public Payment withFinalAmountAndOrder(BigDecimal finalAmount, Order order) {
+        Payment entity = new Payment();
+        this.order = order;
+        this.finalAmount = finalAmount;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
+
+    public Payment withAmount(BigDecimal originalAmount, BigDecimal discountAmount) {
+        Payment entity = new Payment();
+        this.originalAmount = originalAmount;
+        this.discountAmount = discountAmount;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
 }

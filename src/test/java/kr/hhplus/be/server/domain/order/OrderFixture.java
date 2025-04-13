@@ -39,4 +39,11 @@ public class OrderFixture implements TestFixture<Order> {
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
+
+    public Order withMemberId(Long memberId) {
+        Order entity = new Order();
+        this.member = new Member(memberId, "tester", FIXED_NOW);
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
 }

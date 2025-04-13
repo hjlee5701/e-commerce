@@ -11,8 +11,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class MemberFixture implements TestFixture<Member> {
 
-    private final Long id = 1L;
-    private final String userId = "tester";
+    private Long id = 1L;
+    private String userId = "tester";
 
     @Override
     public Member create() {
@@ -21,4 +21,10 @@ public class MemberFixture implements TestFixture<Member> {
         return entity;
     }
 
+    public Member withMemberId(long memberId) {
+        Member entity = new Member();
+        this.id = memberId;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
 }
