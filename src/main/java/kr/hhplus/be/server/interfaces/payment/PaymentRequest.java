@@ -17,5 +17,8 @@ public class PaymentRequest {
         @Schema(title = "쿠폰 아이디", example = "50", description = "사용자 보유 쿠폰 (필수값 아니다.)")
         private Long couponItemId;
 
+        @Schema(title = "사용자 아이디", example = "1", description = "결제 요청한 사용자 아이디")
+        private Long memberId;
+
     }
 }

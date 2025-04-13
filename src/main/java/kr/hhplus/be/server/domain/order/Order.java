@@ -33,12 +33,12 @@ public class Order {
     private LocalDateTime orderedAt;
 
 
-    public void completePayment(BigDecimal finalAmount) {
+    public void applyPayment(BigDecimal finalAmount) {
         updateFinalAmount(finalAmount);
         markAsPaid();
     }
 
-    public void updateFinalAmount(BigDecimal finalAmount) {
+    private void updateFinalAmount(BigDecimal finalAmount) {
         this.totalAmount = finalAmount.compareTo(BigDecimal.ZERO) < 0
                 ? BigDecimal.ZERO
                 : finalAmount;
@@ -46,7 +46,7 @@ public class Order {
 
 
 
-    public void markAsPaid() {
+    private void markAsPaid() {
         if (status != OrderStatus.PENDING) {
             throw new ECommerceException(OrderErrorCode.NOT_PENDING_ORDER, status.name());
         }
