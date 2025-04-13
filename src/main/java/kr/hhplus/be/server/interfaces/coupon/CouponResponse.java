@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.coupon;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.coupon.CouponResult;
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,6 +43,17 @@ public class CouponResponse {
                     info.getIssuedAt(),
                     info.getExpiredAt(),
                     info.getCouponStatus()
+            );
+        }
+
+        public static Issued of(CouponResult.Issued result) {
+            return new Issued(
+                    result.getCouponId(),
+                    result.getCouponItemId(),
+                    result.getTitle(),
+                    result.getIssuedAt(),
+                    result.getExpiredAt(),
+                    result.getCouponStatus()
             );
         }
     }

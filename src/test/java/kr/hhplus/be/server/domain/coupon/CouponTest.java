@@ -5,8 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 public class CouponTest {
 
@@ -46,5 +45,57 @@ public class CouponTest {
 
         assertThatCode(() -> coupon.validateTime(FIXED_NOW)).doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("쿠폰 정상 발급시 수량이 감소한다.")
+    void 쿠폰_정상_발급시_수량_감소() {
+        // given
+        Coupon coupon = new CouponFixture().create();
+        int beforeIssuedQuantity = coupon.getRemainingQuantity();
+
+        // when
+        coupon.issue(FIXED_NOW);
+
+        // then
+        assertThat(coupon.getRemainingQuantity()).isEqualTo(beforeIssuedQuantity-1);
+    }
+
+    @Test
+    @DisplayName("쿠폰 상태가 ACITVE 가 아니면 발급시 예외 발생한다.")
+    void 쿠폰_상태가_ACTIVE가_아니면_예외_발생() {
+        // given
+        Coupon coupon = new CouponFixture().createWithInActive();
+
+        // when & then
+        assertThatThrownBy(() -> coupon.issue(FIXED_NOW))
+                .isInstanceOf(CouponInActiveException.class)
+                .hasMessage(CouponErrorCode.COUPON_INACTIVE.getMessage())
+        ;
+    }
+
+    @Test
+    @DisplayName("발급일 기준 쿠폰 만료일 후라면, 예외 발생한다.")
+    void 발급일이_쿠폰_만료일_후라면_예외() {
+        // given
+        Coupon coupon = new CouponFixture().createWithExpiredAt(CouponStatus.ACTIVE);
+
+        // when & then
+        assertThatThrownBy(() -> coupon.issue(FIXED_NOW))
+                .isInstanceOf(CouponExpiredException.class)
+                .hasMessage(String.format(CouponErrorCode.COUPON_EXPIRED.getMessage(), coupon.expiredAt));
+        ;
+    }
+
+    @Test
+    @DisplayName("쿠폰 수량이 0 이하인 경우 예외가 발생한다.")
+    void 쿠폰_수량이_0이하면_예외가_발생한다() {
+        // given
+        Coupon coupon = new CouponFixture().createWithNoRemaining();
+        // when & then
+        assertThatThrownBy(() -> coupon.issue(FIXED_NOW))
+                .isInstanceOf(CouponHasNoRemainingException.class);
+    }
+
+
 
 }

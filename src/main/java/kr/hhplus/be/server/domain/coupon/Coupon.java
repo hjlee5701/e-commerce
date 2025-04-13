@@ -40,4 +40,31 @@ public class Coupon {
 
 
     }
+
+    public void issue(LocalDateTime now) {
+        validateStatus();
+        validateWithinPeriod(now);
+        validateQuantity();
+        remainingQuantity--;
+    }
+
+
+    private void validateStatus() {
+        if (status != CouponStatus.ACTIVE) {
+            throw new CouponInActiveException();
+        }
+    }
+
+    private void validateWithinPeriod(LocalDateTime now) {
+        if (now.isAfter(expiredAt)) {
+            throw new CouponExpiredException(expiredAt);
+        }
+    }
+
+    private void validateQuantity() {
+        if (remainingQuantity <= 0) {
+            throw new CouponHasNoRemainingException();
+        }
+    }
+
 }
