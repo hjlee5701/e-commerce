@@ -20,4 +20,13 @@ public class Member {
     private String userId;
 
     private LocalDateTime regAt;
+
+    private Member(Long memberId) {
+        this.id = memberId;
+    }
+
+    public static Member referenceById(Long memberId) {
+        return new Member(memberId);
+    }
+
 }

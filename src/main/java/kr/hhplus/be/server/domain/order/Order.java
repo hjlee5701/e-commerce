@@ -10,6 +10,11 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 @Getter
 @NoArgsConstructor
@@ -27,10 +32,36 @@ public class Order {
 
     private BigDecimal totalAmount;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     private LocalDateTime orderedAt;
+
+    public static Order create(Long memberId) {
+        requireNonNull(memberId);
+        return new Order(null, Member.referenceById(memberId), BigDecimal.ZERO, new ArrayList<>(), OrderStatus.PENDING, null);
+    }
+
+    public void addItems(List<OrderCommand.ItemCreate> products, Map<Long, Integer> orderProductMap) {
+        this.orderItems = products.stream()
+                .map(product -> {
+                    int quantity = orderProductMap.getOrDefault(product.getProductId(), 0);
+                    if (quantity <= 0) {
+                        throw new ECommerceException(OrderErrorCode.INVALID_ORDER_QUANTITY);
+                    }
+                    return OrderItem.create(this, product, quantity);
+                })
+                .toList();
+    }
+
+    public void calculateTotalAmount() {
+        this.totalAmount = orderItems.stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 
 
     public void applyPayment(BigDecimal finalAmount) {

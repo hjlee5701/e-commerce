@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.product.ProductCommand;
@@ -11,6 +10,7 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderCriteria {
@@ -44,15 +44,23 @@ public class OrderCriteria {
             return new ProductCommand.Decrease(productMap);
         }
 
-        public OrderCommand.Create toCreateOrderCommand(Member member, ProductInfo.Decreased productInfo) {
-            List<OrderCommand.ItemCreate> itemCommands = productInfo.getItems().stream()
+        public OrderCommand.Create toCreateOrderCommand(Long memberId, List<ProductInfo.Detail> productInfo) {
+            // 조회한 상품들의 정보
+            List<OrderCommand.ItemCreate> products = productInfo.stream()
                     .map(info -> new OrderCommand.ItemCreate(
-                            info.getProduct(),
+                            info.getProductId(),
+                            info.getTitle(),
                             info.getPrice(),
-                            info.getOrderQuantity()))
+                            info.getQuantity()))
                     .toList();
 
-            return new OrderCommand.Create(member, itemCommands, productInfo.getTotalAmount());
+            Map<Long, Integer> orderProductMap = orderItems.stream()// 주문 요청한 상품의 ID 및 수량
+                    .collect(Collectors.toMap(
+                            ItemCreate::getProductId,
+                            ItemCreate::getQuantity
+                    ));
+
+            return new OrderCommand.Create(memberId, products, orderProductMap);
         }
 
     }

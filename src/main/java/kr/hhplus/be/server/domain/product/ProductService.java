@@ -5,10 +5,10 @@ import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +25,7 @@ public class ProductService {
     }
 
 
-    public ProductInfo.Decreased decreaseStock(ProductCommand.Decrease command) {
+    public List<ProductInfo.Detail> decreaseStock(ProductCommand.Decrease command) {
 
         Map<Long, Integer> productMap = command.getProductMap();
         
@@ -36,24 +36,20 @@ public class ProductService {
             throw new ECommerceException(ProductErrorCode.PRODUCT_NOT_FOUND);
         }
 
-        List<ProductInfo.ItemDecreased> items = new ArrayList<>();
-        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<ProductInfo.Detail> items = new ArrayList<>();
 
         for (Product product : products) {
             Integer orderQuantity = productMap.get(product.getId());
             
             // 수량 차감
             product.decrease(orderQuantity);
-            items.add(ProductInfo.ItemDecreased.of(product, orderQuantity));
-
-            // 상품 가격 합
-            totalAmount = totalAmount.add(product.getPrice());
+            items.add(ProductInfo.Detail.of(product));
 
             // 재고 이력 저장
             ProductStock stock = ProductFactory.createOutBoundStock(product, orderQuantity);
             productStockRepository.save(stock);
         }
 
-        return ProductInfo.Decreased.of(totalAmount, items);
+        return items;
     }
 }

@@ -21,9 +21,10 @@ public class OrderInfo {
         public static Created of(Order order, List<OrderItem> orderItems) {
             List<ItemCreated> itemInfos = orderItems.stream()
                     .map(orderItem -> new ItemCreated(
-                            orderItem.getProduct().getId(),
+                            orderItem.getId(),
                             orderItem.getTitle(),
-                            orderItem.getPrice(),
+                            orderItem.getUnitPrice(),
+                            orderItem.getTotalPrice(),
                             orderItem.getQuantity()
                     ))
                     .toList();
@@ -40,9 +41,10 @@ public class OrderInfo {
     @Getter
     @AllArgsConstructor
     public static class ItemCreated {
-        private Long productId;
+        private Long orderItemId;
         private String title;
-        private BigDecimal price;
+        private BigDecimal unitPrice;
+        private BigDecimal totalPrice;
         private Integer quantity;
     }
 }

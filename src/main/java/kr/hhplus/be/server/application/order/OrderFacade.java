@@ -9,6 +9,8 @@ import kr.hhplus.be.server.domain.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class OrderFacade {
@@ -20,11 +22,14 @@ public class OrderFacade {
 
     public OrderResult.Created createOrder(OrderCriteria.Create criteria) {
 
+        // 회원 조회
         Member member = memberService.findMemberById(criteria.toFindMemberCommand());
 
-        ProductInfo.Decreased productInfo = productService.decreaseStock(criteria.toDecreaseStockCommand());
+        // 재고 감소
+        List<ProductInfo.Detail> productInfos = productService.decreaseStock(criteria.toDecreaseStockCommand());
 
-        OrderInfo.Created info = orderService.create(criteria.toCreateOrderCommand(member, productInfo));
+        // 주문 생성
+        OrderInfo.Created info = orderService.create(criteria.toCreateOrderCommand(member.getId(), productInfos));
 
         return OrderResult.Created.of(info);
     }

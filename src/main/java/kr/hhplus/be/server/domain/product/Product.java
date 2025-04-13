@@ -7,11 +7,13 @@ import jakarta.persistence.Id;
 import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class Product {
     @Id
     @GeneratedValue
@@ -23,6 +25,14 @@ public class Product {
     private BigDecimal price;
 
     private int quantity;
+
+    private Product(Long productId) {
+        this.id = productId;
+    }
+
+    public static Product referenceById(Long productId) {
+        return new Product(productId);
+    }
 
     public void decrease(Integer decreaseQuantity) {
         if (decreaseQuantity <= 0) {
