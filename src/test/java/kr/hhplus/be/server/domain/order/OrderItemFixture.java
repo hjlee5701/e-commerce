@@ -18,17 +18,22 @@ public class OrderItemFixture implements TestFixture<OrderItem> {
     private String title ="주문 상품";
     private Order order = new Order();
     private Product product = new Product();
-    private BigDecimal price = BigDecimal.ZERO;
+    private BigDecimal unitPrice = BigDecimal.ZERO;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
     private int quantity = 0;
 
     @Override
     public OrderItem create() {
         OrderItem entity = new OrderItem();
-        id += 1;
-        title = title+id;
-        price = price.add(BigDecimal.TEN);
-        quantity += 10;
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
+    }
+
+    public OrderItem withTotalPrice(BigDecimal totalPrice) {
+        OrderItem entity = new OrderItem();
+        this.totalPrice = totalPrice;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+
     }
 }

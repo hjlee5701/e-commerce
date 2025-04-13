@@ -2,6 +2,8 @@ package kr.hhplus.be.server.domain.payment;
 
 import kr.hhplus.be.server.common.FixtureReflectionUtils;
 import kr.hhplus.be.server.common.TestFixture;
+import kr.hhplus.be.server.domain.coupon.CouponItem;
+import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.order.Order;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,10 @@ public class PaymentFixture implements TestFixture<Payment> {
 
     private final Long id = 1L;
     private Order order = new Order();
+
+    private Member member = new Member();
+
+    private CouponItem couponItem = new CouponItem();
 
     private BigDecimal originalAmount = BigDecimal.ZERO;
 

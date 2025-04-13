@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -129,10 +128,10 @@ public class ProductServiceTest {
 
         ProductCommand.Decrease command = new ProductCommand.Decrease(productMap);
         // when
-        ProductInfo.Decreased info = productService.decreaseStock(command);
+        List<ProductInfo.Detail> info = productService.decreaseStock(command);
 
         // then
-        assertEquals(info.getTotalAmount(), product1.getPrice().add(product2.getPrice()));
+        assertEquals(2, info.size());
     }
 
 
