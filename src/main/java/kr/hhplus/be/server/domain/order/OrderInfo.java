@@ -16,11 +16,11 @@ public class OrderInfo {
         private String orderStatus;
         private BigDecimal totalAmount;
         private LocalDateTime orderedAt;
-        private List<ItemCreated> items;
+        private List<ItemDetail> items;
 
         public static Created of(Order order, List<OrderItem> orderItems) {
-            List<ItemCreated> itemInfos = orderItems.stream()
-                    .map(orderItem -> new ItemCreated(
+            List<ItemDetail> itemInfos = orderItems.stream()
+                    .map(orderItem -> new ItemDetail(
                             orderItem.getId(),
                             orderItem.getTitle(),
                             orderItem.getUnitPrice(),
@@ -40,11 +40,34 @@ public class OrderInfo {
 
     @Getter
     @AllArgsConstructor
-    public static class ItemCreated {
+    public static class ItemDetail {
         private Long orderItemId;
         private String title;
         private BigDecimal unitPrice;
         private BigDecimal totalPrice;
         private Integer quantity;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Detail {
+        private Long orderId;
+        private Long orderMemberId;
+        private List<ItemDetail> orderItems;
+        private OrderStatus status;
+        private LocalDateTime orderAt;
+
+        public static Detail of(Order order) {
+            List<ItemDetail> itemInfos = order.getOrderItems().stream()
+                    .map(orderItem -> new ItemDetail(
+                            orderItem.getId(),
+                            orderItem.getTitle(),
+                            orderItem.getUnitPrice(),
+                            orderItem.getTotalPrice(),
+                            orderItem.getQuantity()
+                    ))
+                    .toList();
+            return new Detail(order.getId(), order.getMember().getId(), itemInfos, order.getStatus(), order.getOrderedAt());
+        }
     }
 }

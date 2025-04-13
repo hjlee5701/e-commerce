@@ -1,8 +1,11 @@
 package kr.hhplus.be.server.application.memberPoint;
 
-import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
-import kr.hhplus.be.server.domain.memberPoint.*;
+import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;
+import kr.hhplus.be.server.domain.memberPoint.MemberPointHistoryService;
+import kr.hhplus.be.server.domain.memberPoint.MemberPointInfo;
+import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,9 @@ public class MemberPointFacade {
 
     public MemberPointResult.ChargeBalance charge(MemberPointCriteria.Charge criteria) {
 
-        Member member = memberService.findMemberById(criteria.toFindMemberCommand());
+        MemberInfo.Detail memberInfo = memberService.findMemberById(criteria.toFindMemberCommand());
 
-        MemberPointCommand.Charge command = criteria.toCommand(member);
+        MemberPointCommand.Charge command = criteria.toCommand(memberInfo);
         MemberPointInfo.Balance info = memberPointService.charge(command);
 
         memberPointHistoryService.createChargeHistory(command);

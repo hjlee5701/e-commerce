@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.interfaces.code.OrderErrorCode;
+import kr.hhplus.be.server.interfaces.code.PaymentErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,5 +83,12 @@ public class Order {
             throw new ECommerceException(OrderErrorCode.NOT_PENDING_ORDER, status.name());
         }
         status = OrderStatus.PAID;
+    }
+
+    public void checkOrderer(Long memberId) {
+        if (!member.getId().equals(memberId)) {
+            throw new ECommerceException(OrderErrorCode.NO_ORDERER);
+
+        }
     }
 }

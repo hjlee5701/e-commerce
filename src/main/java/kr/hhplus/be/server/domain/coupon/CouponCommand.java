@@ -19,8 +19,8 @@ public class CouponCommand {
     @AllArgsConstructor
     @Getter
     public static class Issue {
-        private Coupon coupon;
-        private Member member;
+        private Long couponId;
+        private Long memberId;
 
     }
 

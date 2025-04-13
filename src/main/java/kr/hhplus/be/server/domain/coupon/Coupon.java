@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class Coupon {
     @Id
     @GeneratedValue
@@ -31,6 +33,14 @@ public class Coupon {
     LocalDateTime issuedAt;
 
     LocalDateTime expiredAt;
+
+    private Coupon(Long couponId) {
+        this.id = couponId;
+    }
+
+    public static Coupon referenceById(Long couponId) {
+        return new Coupon(couponId);
+    }
 
     public void validateTime(LocalDateTime orderedAt) {
         if (status == CouponStatus.EXPIRED || orderedAt.isAfter(expiredAt)) {

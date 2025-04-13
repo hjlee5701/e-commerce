@@ -23,7 +23,7 @@ public class MemberPointService {
 
         // 금액 없을 경우, 초기화
         MemberPoint memberPoint = mayMemberPoint.orElseGet(
-                () -> MemberPointFactory.createInitialPoint(command.getMember())
+                () -> MemberPointFactory.createInitialPoint(command.getMemberId())
         );
 
         // 충전

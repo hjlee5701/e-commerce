@@ -8,6 +8,7 @@ import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -16,7 +16,7 @@ public class MemberPointCommand {
     @AllArgsConstructor
     public static class Charge {
         private Long memberId;
-        private Member member;
+        private Long requestMemberId;
         private BigDecimal amount;
     }
 

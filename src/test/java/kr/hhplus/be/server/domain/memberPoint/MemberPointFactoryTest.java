@@ -15,7 +15,7 @@ public class MemberPointFactoryTest {
     @Test
     void 초기_금액_생성시_0원() {
         // given & when
-        MemberPoint point = MemberPointFactory.createInitialPoint(ANY_MEMBER);
+        MemberPoint point = MemberPointFactory.createInitialPoint(ANY_MEMBER_ID);
 
         // then
         assertThat(point.getBalance()).isEqualByComparingTo(BigDecimal.ZERO);

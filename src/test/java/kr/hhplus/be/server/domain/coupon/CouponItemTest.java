@@ -77,7 +77,7 @@ public class CouponItemTest {
         CouponItem couponItem = new CouponItemFixture().createWithOwner(memberA);
 
         // when & then
-        assertThatThrownBy(() -> couponItem.checkOwner(memberB))
+        assertThatThrownBy(() -> couponItem.checkOwner(memberB.getId()))
                 .isInstanceOf(ECommerceException.class)
                 .hasMessageContaining(CouponErrorCode.COUPON_ITEM_ACCESS_DENIED.getMessage());
     }

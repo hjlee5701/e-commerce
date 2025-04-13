@@ -45,16 +45,17 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
-    public static Payment create(Order order, Member paymentMember) {
+    public static Payment create(Order order, Long requestMemberId) {
         requireNonNull(order);
-        requireNonNull(paymentMember);
-        validatePaymentMember(order.getMember(), paymentMember);
+        requireNonNull(order.getMember());
+        requireNonNull(requestMemberId);
+        validatePaymentMember(order.getMember().getId(), requestMemberId);
         BigDecimal orderTotalAmount = order.getTotalAmount();
-        return new Payment(null, order, null, paymentMember, orderTotalAmount, BigDecimal.ZERO, orderTotalAmount, PaymentStatus.PENDING);
+        return new Payment(null, order, null, Member.referenceById(requestMemberId), orderTotalAmount, BigDecimal.ZERO, orderTotalAmount, PaymentStatus.PENDING);
     }
 
-    private static void validatePaymentMember(Member orderMember, Member paymentMember) {
-        if (!orderMember.getId().equals(paymentMember.getId())) {
+    private static void validatePaymentMember(Long orderMemberId, Long requestMemberId) {
+        if (!orderMemberId.equals(requestMemberId)) {
             throw new ECommerceException(PaymentErrorCode.UNMATCHED_ORDER_MEMBER);
         }
     }

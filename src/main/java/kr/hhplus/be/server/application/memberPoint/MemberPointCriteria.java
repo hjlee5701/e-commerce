@@ -2,6 +2,7 @@ package kr.hhplus.be.server.application.memberPoint;
 
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberCommand;
+import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,10 +17,11 @@ public class MemberPointCriteria {
     @AllArgsConstructor
     public static class Charge {
         private Long memberId;
+        private Long requestMemberId;
         private BigDecimal amount;
 
-        public MemberPointCommand.Charge toCommand(Member member) {
-            return new MemberPointCommand.Charge(memberId, member, amount);
+        public MemberPointCommand.Charge toCommand(MemberInfo.Detail info) {
+            return new MemberPointCommand.Charge(memberId, info.getMemberId(), amount);
         }
 
         public MemberCommand.Find toFindMemberCommand() {

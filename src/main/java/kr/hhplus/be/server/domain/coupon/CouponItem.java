@@ -46,8 +46,8 @@ public class CouponItem {
         return coupon.getDiscountAmount();
     }
 
-    public void checkOwner(Member member) {
-        if (!this.member.getId().equals(member.getId())) {
+    public void checkOwner(Long memberId) {
+        if (!this.member.getId().equals(memberId)) {
             throw new ECommerceException(CouponErrorCode.COUPON_ITEM_ACCESS_DENIED);
         }
     }

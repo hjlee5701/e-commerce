@@ -25,26 +25,27 @@ public class CouponService {
         return Optional.ofNullable(coupons)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(CouponInfo.Issued::from)
+                .map(CouponInfo.Issued::of)
                 .collect(Collectors.toList());
     }
 
     public CouponItem findByCouponItemId(CouponCommand.Find command) {
         return couponItemRepository.findById(command.getCouponItemId())
                 .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_ITEM_NOT_FOUND));
-
     }
 
-    public Coupon issuable(CouponCommand.Issuable command) {
+    public CouponInfo.Issuable issuable(CouponCommand.Issuable command) {
         Coupon coupon = couponRepository.findById(command.getCouponItemId())
                 .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_NOT_FOUND));
 
         coupon.issue(LocalDateTime.now());
-        return coupon;
+        return CouponInfo.Issuable.of(coupon);
     }
 
-    public CouponItem issue(CouponCommand.Issue command) {
-        CouponItem couponItem = CouponFactory.issueCouponItem(command.getMember(), command.getCoupon());
-        return couponItemRepository.save(couponItem);
+    public CouponInfo.Issued issue(CouponCommand.Issue command) {
+        CouponItem couponItem = CouponFactory.issueCouponItem(command.getMemberId(), command.getCouponId());
+        CouponItem issuedItem = couponItemRepository.save(couponItem);
+        return CouponInfo.Issued.of(issuedItem);
+
     }
 }
