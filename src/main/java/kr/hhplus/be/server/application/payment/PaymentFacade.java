@@ -34,7 +34,7 @@ public class PaymentFacade {
         CouponItem couponItem = null;
         if (criteria.getCouponItemId() != null) {
             couponItem = couponService.findByCouponItemId(criteria.toFindCouponItem());
-            couponItem.checkOwner(order.getMember());
+            couponItem.checkOwner(order.getMember().getId());
         }
 
         // 결제 생성

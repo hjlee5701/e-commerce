@@ -83,4 +83,11 @@ public class Order {
         }
         status = OrderStatus.PAID;
     }
+
+    public void checkOrderer(Long memberId) {
+        if (!member.getId().equals(memberId)) {
+            throw new ECommerceException(OrderErrorCode.FORBIDDEN_ORDER_ACCESS);
+
+        }
+    }
 }
