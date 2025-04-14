@@ -38,7 +38,7 @@ public class FakeStore {
         return new OrderResponse.Created(
                 1L, "COMPLETED", BigDecimal.valueOf(50000), LocalDateTime.now(),
                 List.of(
-                        new OrderResponse.ItemCreated(1L, "상의", BigDecimal.valueOf(50000), 1)
+                        new OrderResponse.ItemCreated(1L, "상의", BigDecimal.valueOf(10000), BigDecimal.valueOf(50000), 1)
                 ));
     }
 

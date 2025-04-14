@@ -1,11 +1,13 @@
 package kr.hhplus.be.server.application.payment;
 
 import kr.hhplus.be.server.domain.coupon.CouponCommand;
+import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.payment.PaymentCommand;
 import kr.hhplus.be.server.interfaces.payment.PaymentRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,6 +40,10 @@ public class PaymentCriteria {
 
         public MemberCommand.Find toFindMemberCommand() {
             return new MemberCommand.Find(memberId);
+        }
+
+        public PaymentCommand.Pay toPayCommand(Order order, CouponItem couponItem) {
+            return new PaymentCommand.Pay(order, memberId, couponItem);
         }
     }
 }

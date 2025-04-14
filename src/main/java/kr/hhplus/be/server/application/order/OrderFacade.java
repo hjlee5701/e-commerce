@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
@@ -23,13 +22,13 @@ public class OrderFacade {
     public OrderResult.Created createOrder(OrderCriteria.Create criteria) {
 
         // 회원 조회
-        Member member = memberService.findMemberById(criteria.toFindMemberCommand());
+        memberService.findMemberById(criteria.toFindMemberCommand());
 
         // 재고 감소
         List<ProductInfo.Detail> productInfos = productService.decreaseStock(criteria.toDecreaseStockCommand());
 
         // 주문 생성
-        OrderInfo.Created info = orderService.create(criteria.toCreateOrderCommand(member.getId(), productInfos));
+        OrderInfo.Created info = orderService.create(criteria.toCreateOrderCommand(productInfos));
 
         return OrderResult.Created.of(info);
     }

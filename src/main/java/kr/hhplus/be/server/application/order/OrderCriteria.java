@@ -44,7 +44,7 @@ public class OrderCriteria {
             return new ProductCommand.Decrease(productMap);
         }
 
-        public OrderCommand.Create toCreateOrderCommand(Long memberId, List<ProductInfo.Detail> productInfo) {
+        public OrderCommand.Create toCreateOrderCommand(List<ProductInfo.Detail> productInfo) {
             // 조회한 상품들의 정보
             List<OrderCommand.ItemCreate> products = productInfo.stream()
                     .map(info -> new OrderCommand.ItemCreate(
