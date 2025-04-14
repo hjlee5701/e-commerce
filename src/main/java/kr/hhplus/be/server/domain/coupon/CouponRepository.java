@@ -7,4 +7,6 @@ import java.util.Optional;
 @Repository
 public interface CouponRepository {
     Optional<Coupon> findById(Long couponId);
+
+    Coupon save(Coupon coupon);
 }

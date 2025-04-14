@@ -3,6 +3,7 @@ package kr.hhplus.be.server.domain.coupon;
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Coupon {
     @Id
     @GeneratedValue
