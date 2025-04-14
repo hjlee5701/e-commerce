@@ -43,15 +43,15 @@ public class CouponController implements CouponApi {
 
     @Override
     @GetMapping("{id}")
-    public ResponseEntity<ApiResult<List<CouponResponse.Issued>>> findHoldingCoupon(
+    public ResponseEntity<ApiResult<List<CouponResponse.ItemDetail>>> findHoldingCoupon(
             @PathVariable("id") Long memberId
     ) {
-        List<CouponInfo.Issued> responses = couponService.findHoldingCoupons(new CouponCommand.Holdings(memberId));
+        List<CouponInfo.ItemDetail> responses = couponService.findHoldingCoupons(new CouponCommand.Holdings(memberId));
 
         var data = Optional.ofNullable(responses)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(CouponResponse.Issued::from)
+                .map(CouponResponse.ItemDetail::of)
                 .collect(Collectors.toList());
 
         return ResponseEntity

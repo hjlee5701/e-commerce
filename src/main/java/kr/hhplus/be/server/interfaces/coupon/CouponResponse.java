@@ -32,19 +32,8 @@ public class CouponResponse {
         @Schema(title = "쿠폰 만료일", example = "2025-04-31T14:30:00")
         private LocalDateTime expiredAt;
 
-        @Schema(title = "쿠폰 상태", example = "ISSUED", description = "(ISSUED, USED)")
-        private String couponStatus;
-
-        public static Issued from(CouponInfo.Issued info) {
-            return new Issued(
-                    info.getCouponId(),
-                    info.getCouponItemId(),
-                    info.getTitle(),
-                    info.getIssuedAt(),
-                    info.getExpiredAt(),
-                    info.getCouponStatus()
-            );
-        }
+        @Schema(title = "쿠폰 아이템 상태", example = "ISSUED", description = "(ISSUED, USED)")
+        private String couponItemStatus;
 
         public static Issued of(CouponResult.Issued result) {
             return new Issued(
@@ -53,7 +42,37 @@ public class CouponResponse {
                     result.getTitle(),
                     result.getIssuedAt(),
                     result.getExpiredAt(),
-                    result.getCouponStatus()
+                    result.getCouponItemStatus()
+            );
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @Schema(title = "쿠폰 조회 응답")
+    public static class ItemDetail {
+        @Schema(title = "쿠폰 아이템 아이디", example = "50", description = "발급 받은 쿠폰의 아이디입니다.")
+        private Long couponItemId;
+
+        @Schema(title = "쿠폰명", example = "선착순 할인 쿠폰")
+        private String title;
+
+        @Schema(title = "발급 일자", example = "2025-04-04T14:30:00")
+        private LocalDateTime issuedAt;
+
+        @Schema(title = "쿠폰 만료일", example = "2025-04-31T14:30:00")
+        private LocalDateTime expiredAt;
+
+        @Schema(title = "쿠폰 아이템 상태", example = "ISSUED", description = "(ISSUED, USED)")
+        private String couponItemStatus;
+
+        public static ItemDetail of(CouponInfo.ItemDetail result) {
+            return new ItemDetail(
+                    result.getCouponItemId(),
+                    result.getTitle(),
+                    result.getIssuedAt(),
+                    result.getExpiredAt(),
+                    result.getCouponItemStatus()
             );
         }
     }

@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.application.coupon;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponCommand;
-import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberCommand;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,11 +22,8 @@ public class CouponCriteria {
             return new MemberCommand.Find(memberId);
         }
 
-        public CouponCommand.Issuable toIssuableCouponCommand(){
-            return new CouponCommand.Issuable(couponId);
-        }
-        public CouponCommand.Issue toIssueCouponCommand(Coupon coupon, Member member) {
-            return new CouponCommand.Issue(coupon, member);
+        public CouponCommand.Issue toIssueCouponCommand(){
+            return new CouponCommand.Issue(couponId, memberId);
         }
     }
 }
