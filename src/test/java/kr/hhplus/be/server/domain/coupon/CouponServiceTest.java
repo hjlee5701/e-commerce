@@ -5,16 +5,18 @@ import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CouponServiceTest {
@@ -41,17 +43,24 @@ public class CouponServiceTest {
 
 
     @Test
-    @DisplayName("발급 유효성 검증 중, 쿠폰이 존재하지 않으면 예외가 발생한다.")
-    void 쿠폰이_존재하지_않으면_예외_발생() {
+    @DisplayName("쿠폰 발급 요청시 발급된 쿠폰은 저장된다.")
+    void 쿠폰_발급시_쿠폰_아이템이_저장() {
         // given
-        long couponId = 2L;
-        CouponCommand.Issuable command = new CouponCommand.Issuable(couponId);
+        Coupon coupon = mock(Coupon.class);
+        CouponItem couponItem = new CouponItemFixture().create();
 
-        given(couponRepository.findById(couponId)).willReturn(Optional.empty());
+        CouponCommand.Issue command = new CouponCommand.Issue(coupon.getId(), ANY_MEMBER_ID);
 
-        // when & then
-        assertThatThrownBy(() -> couponService.issuable(command))
-                .isInstanceOf(ECommerceException.class);
+        given(couponRepository.findById(coupon.getId())).willReturn(Optional.of(coupon));
+        given(coupon.issue(any(), any())).willReturn(couponItem);
+        given(couponItemRepository.save(couponItem)).willReturn(couponItem);
+
+        // when
+        couponService.issue(command);
+
+        // then
+        ArgumentCaptor<CouponItem> captor = ArgumentCaptor.forClass(CouponItem.class);
+        verify(couponItemRepository, times(1)).save(captor.capture());
     }
 
 }

@@ -41,8 +41,10 @@ public class PaymentServiceTest {
         given(order.getMember()).willReturn(member);
         given(order.getTotalAmount()).willReturn(BigDecimal.TEN);
 
+        PaymentCommand.Pay command = new PaymentCommand.Pay(order, member.getId(), null);
+
         // when
-        Payment savedPayment = paymentService.pay(order, null, member);
+        Payment savedPayment = paymentService.pay(command);
 
         // then
         verify(paymentRepository).save(captor.capture());
@@ -64,8 +66,10 @@ public class PaymentServiceTest {
         given(order.getTotalAmount()).willReturn(BigDecimal.TEN);
         given(couponItem.apply(order.getOrderedAt())).willReturn(BigDecimal.TEN);
 
+        PaymentCommand.Pay command = new PaymentCommand.Pay(order, member.getId(), couponItem);
+
         // when
-        Payment savedPayment = paymentService.pay(order, couponItem, member);
+        Payment savedPayment = paymentService.pay(command);
 
         // then
         verify(paymentRepository).save(captor.capture());

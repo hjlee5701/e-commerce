@@ -13,11 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER;
 import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.MAX_CHARGE_AMOUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -36,7 +36,7 @@ public class MemberPointServiceTest {
     void 충전_가능_금액_초과로_예외() {
         // given
         var command = new MemberPointCommand.Charge(
-                ANY_MEMBER_ID, ANY_MEMBER, MAX_CHARGE_AMOUNT
+                ANY_MEMBER_ID, MAX_CHARGE_AMOUNT
         );
         // when, then
         assertThatThrownBy(() -> memberPointService.charge(command))
@@ -44,33 +44,16 @@ public class MemberPointServiceTest {
                 .hasMessage(MemberPointErrorCode.INVALID_AMOUNT.getMessage());
     }
 
-    @DisplayName("최초 충전 시, 초기 값인 0원에서 충전된다.")
-    @Test
-    void 최초_충전은_0원에서_충전() {
-        // given
-        var amount = BigDecimal.valueOf(100);
-        var command = new MemberPointCommand.Charge(
-                ANY_MEMBER_ID, ANY_MEMBER, amount
-        );
-        BDDMockito.given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
-                .willReturn(Optional.empty());
-
-        // when
-        var result = memberPointService.charge(command);
-
-        // then
-        assertThat(result.getBalance()).isEqualTo(BigDecimal.ZERO.add(amount));
-    }
 
     @DisplayName("충전 후, 최대 보유 금액 초과로 에러 발생한다.")
     @Test
     void 최대_보유_금액_초과로_에러() {
         // given
         var command = new MemberPointCommand.Charge(
-                ANY_MEMBER_ID, ANY_MEMBER, BigDecimal.valueOf(100)
+                ANY_MEMBER_ID, BigDecimal.valueOf(100)
         );
 
-        BDDMockito.given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
+        given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
                 .willReturn(Optional.of(new MemberPointFixture().maxBalanceMemberPoint()));
 
         // when, then
@@ -85,15 +68,15 @@ public class MemberPointServiceTest {
         // given
         var amount = BigDecimal.valueOf(100);
         var command = new MemberPointCommand.Charge(
-                ANY_MEMBER_ID, ANY_MEMBER, amount
+                ANY_MEMBER_ID, amount
         );
         var memberPoint = new MemberPointFixture().create();
         var expectBalance = memberPoint.getBalance().add(amount);
 
-        BDDMockito.given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
+        given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
                 .willReturn(Optional.of(memberPoint));
 
-        BDDMockito.given(memberPointRepository.save(memberPoint))
+        given(memberPointRepository.save(memberPoint))
                 .willReturn(memberPoint);
 
         // when

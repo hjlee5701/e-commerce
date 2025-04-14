@@ -5,6 +5,7 @@ import kr.hhplus.be.server.application.payment.PaymentFacade;
 import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.member.Member;
+import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
 import kr.hhplus.be.server.domain.order.Order;
@@ -19,8 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PaymentFacadeTest {
@@ -48,16 +48,17 @@ public class PaymentFacadeTest {
     void 서비스_호출_순서_검증() {
         // given
         Order order = mock(Order.class);
-        Member member = mock(Member.class);
         CouponItem couponItem = mock(CouponItem.class);
         Payment payment = mock(Payment.class);
+        Member member = mock(Member.class);
 
         PaymentCriteria.Pay criteria = mock(PaymentCriteria.Pay.class);
 
+        given(order.getMember()).willReturn(member);
+        given(memberService.findMemberById(any())).willReturn(mock(MemberInfo.Detail.class));
         given(orderService.findByOrderId(any())).willReturn(order);
-        given(memberService.findMemberById(any())).willReturn(member);
         given(couponService.findByCouponItemId(any())).willReturn(couponItem);
-        given(paymentService.pay(order, couponItem, member)).willReturn(payment);
+        given(paymentService.pay(any())).willReturn(payment);
         given(payment.getStatus()).willReturn(PaymentStatus.PENDING);
 
         // when
@@ -65,13 +66,13 @@ public class PaymentFacadeTest {
 
         // then
         InOrder inOrder = inOrder(
-                orderService, memberService, couponService, paymentService, memberPointService, payment
+                memberService, orderService, couponService, paymentService, memberPointService, payment
         );
 
-        inOrder.verify(orderService).findByOrderId(any());
         inOrder.verify(memberService).findMemberById(any());
+        inOrder.verify(orderService).findByOrderId(any());
         inOrder.verify(couponService).findByCouponItemId(any());
-        inOrder.verify(paymentService).pay(order, couponItem, member);
+        inOrder.verify(paymentService).pay(any());
         inOrder.verify(memberPointService).use(any());
         inOrder.verify(payment).markAsPaid();
     }

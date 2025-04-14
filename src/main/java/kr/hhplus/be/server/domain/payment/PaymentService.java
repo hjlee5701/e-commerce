@@ -1,9 +1,5 @@
 package kr.hhplus.be.server.domain.payment;
 
-import kr.hhplus.be.server.domain.coupon.CouponItem;
-import kr.hhplus.be.server.domain.member.Member;
-import kr.hhplus.be.server.domain.member.MemberInfo;
-import kr.hhplus.be.server.domain.order.OrderInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

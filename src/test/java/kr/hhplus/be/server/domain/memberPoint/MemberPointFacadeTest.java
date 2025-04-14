@@ -3,6 +3,7 @@ package kr.hhplus.be.server.domain.memberPoint;
 import kr.hhplus.be.server.application.memberPoint.MemberPointCriteria;
 import kr.hhplus.be.server.application.memberPoint.MemberPointFacade;
 import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
-import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER;
 import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,7 +44,7 @@ public class MemberPointFacadeTest {
         var amount = BigDecimal.valueOf(1000);
         var criteria = new MemberPointCriteria.Charge(ANY_MEMBER_ID, amount);
 
-        given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(ANY_MEMBER);
+        given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(mock(MemberInfo.Detail.class));
         given(memberPointService.charge(any()))
                 .willReturn(new MemberPointInfo.Balance(amount));
 
@@ -84,7 +84,7 @@ public class MemberPointFacadeTest {
         // given
         var criteria = new MemberPointCriteria.Charge(ANY_MEMBER_ID, BigDecimal.valueOf(1000));
 
-        given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(ANY_MEMBER);
+        given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(mock(MemberInfo.Detail.class));
         given(memberPointService.charge(any(MemberPointCommand.Charge.class))).willThrow(ECommerceException.class);
 
         // when
@@ -102,9 +102,9 @@ public class MemberPointFacadeTest {
         var criteria = new MemberPointCriteria.Charge(ANY_MEMBER_ID, BigDecimal.valueOf(1000));
         var info = MemberPointInfo.Balance.of(new MemberPointFixture().create());
 
-        given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(ANY_MEMBER);
-        given(memberPointService.charge(criteria.toCommand(ANY_MEMBER))).willReturn(info);
-        willDoNothing().given(memberPointHistoryService).createChargeHistory(criteria.toCommand(ANY_MEMBER));
+        given(memberService.findMemberById(criteria.toFindMemberCommand())).willReturn(mock(MemberInfo.Detail.class));
+        given(memberPointService.charge(criteria.toChargeCommand())).willReturn(info);
+        willDoNothing().given(memberPointHistoryService).createChargeHistory(criteria.toChargeCommand());
 
         // when
         facade.charge(criteria);

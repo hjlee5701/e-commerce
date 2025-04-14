@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
+import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,10 +27,9 @@ public class PaymentTest {
     @DisplayName("결제 생성시 Order 가 Null 로 NPE 발생한다.")
     void 결제_생성시_주문_널값으로_NPE_발생() {
         // given
-        Member paymentMember = new MemberFixture().create();
-
+        Long memberId = ANY_MEMBER_ID;
         // when & then
-        assertThatThrownBy(() -> Payment.create(null, paymentMember))
+        assertThatThrownBy(() -> Payment.create(null, memberId))
                 .isInstanceOf(NullPointerException.class);
     }
 
@@ -51,9 +51,9 @@ public class PaymentTest {
     void 결제_생성시_주문_결제자와_결제_요청자의_불일치() {
         // given
         Order order = new OrderFixture().withMemberId(1L);
-        Member paymentMember = new MemberFixture().withMemberId(99L);
+        Long forbiddenMemberId = 99L;
 
-        assertThatThrownBy(() -> Payment.create(order, paymentMember))
+        assertThatThrownBy(() -> Payment.create(order, forbiddenMemberId))
                 .isInstanceOf(ECommerceException.class)
                 .hasMessage(PaymentErrorCode.UNMATCHED_ORDER_MEMBER.getMessage());
     }
