@@ -28,10 +28,13 @@ public class MemberPoint {
 
     private BigDecimal balance;
 
-    public void charge(MemberPointCommand.Charge command) {
-        this.balance = this.balance.add(command.getAmount());
-        validateAmount(command.getAmount());
-        this.member = command.getMember();
+    public static MemberPoint createInitialPoint(Long memberId) {
+        return new MemberPoint(null, Member.referenceById(memberId), BigDecimal.ZERO);
+    }
+
+    public void charge(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+        validateAmount(amount);
     }
 
     private void validateAmount(BigDecimal amount) {

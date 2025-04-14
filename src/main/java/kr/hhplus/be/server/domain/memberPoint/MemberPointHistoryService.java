@@ -10,6 +10,6 @@ public class MemberPointHistoryService {
     private final MemberPointHistoryRepository memberPointHistoryRepository;
 
     public void createChargeHistory(MemberPointCommand.Charge command) {
-        memberPointHistoryRepository.save(MemberPointFactory.createChargeHistory(command));
+        memberPointHistoryRepository.save(MemberPointHistory.createChargeHistory(command.getMemberId(), command.getAmount()));
     }
 }

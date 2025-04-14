@@ -18,19 +18,15 @@ public class MemberPointService {
         if (command.getAmount().compareTo(MemberPointPolicy.MAX_CHARGE_AMOUNT) >= 0) {
             throw new ECommerceException(MemberPointErrorCode.INVALID_AMOUNT);
         }
-        // 금액 조회
-        Optional<MemberPoint> mayMemberPoint = memberPointRepository.findByMemberId(command.getMemberId());
-
-        // 금액 없을 경우, 초기화
-        MemberPoint memberPoint = mayMemberPoint.orElseGet(
-                () -> MemberPointFactory.createInitialPoint(command.getMember())
-        );
+        // 금액 조회 (금액 없을 경우, 초기화)
+        MemberPoint memberPoint = memberPointRepository.findByMemberId(command.getMemberId())
+                .orElseGet(() -> MemberPoint.createInitialPoint(command.getMemberId()));
 
         // 충전
-        memberPoint.charge(command);
-        memberPointRepository.save(memberPoint);
+        memberPoint.charge(command.getAmount());
+        MemberPoint savedMemberPoint = memberPointRepository.save(memberPoint);
 
-        return MemberPointInfo.Balance.of(memberPoint);
+        return MemberPointInfo.Balance.of(savedMemberPoint);
     }
 
     public MemberPointInfo.Balance getBalance(Long memberId) {
