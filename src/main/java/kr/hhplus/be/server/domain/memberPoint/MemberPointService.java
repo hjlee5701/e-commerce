@@ -1,11 +1,10 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
 import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,9 +28,9 @@ public class MemberPointService {
         return MemberPointInfo.Balance.of(savedMemberPoint);
     }
 
-    public MemberPointInfo.Balance getBalance(Long memberId) {
-        // 금액 조회
-        MemberPoint memberPoint = memberPointRepository.findByMemberId(memberId)
+    public MemberPointInfo.Balance getBalance(MemberCommand.Find command) {
+        // 잔액 조회
+        MemberPoint memberPoint = memberPointRepository.findByMemberId(command.getMemberId())
                 .orElseThrow(() -> new ECommerceException(MemberPointErrorCode.MEMBER_POINT_NOT_FOUND));
 
         return MemberPointInfo.Balance.of(memberPoint);
