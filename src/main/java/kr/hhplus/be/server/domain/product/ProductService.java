@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -37,6 +36,7 @@ public class ProductService {
         }
 
         List<ProductInfo.Detail> items = new ArrayList<>();
+        List<ProductStock> stocks = new ArrayList<>();
 
         for (Product product : products) {
             Integer orderQuantity = productMap.get(product.getId());
@@ -45,10 +45,10 @@ public class ProductService {
             product.decrease(orderQuantity);
             items.add(ProductInfo.Detail.of(product));
 
-            // 재고 이력 저장
-            ProductStock stock = ProductFactory.createOutBoundStock(product, orderQuantity);
-            productStockRepository.save(stock);
+            stocks.add(ProductFactory.createOutBoundStock(product, orderQuantity));
         }
+        // 재고 이력 저장
+        productStockRepository.saveAll(stocks);
 
         return items;
     }
