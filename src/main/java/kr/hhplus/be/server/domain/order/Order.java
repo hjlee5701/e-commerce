@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue
