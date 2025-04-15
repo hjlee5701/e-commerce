@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.member;
 
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,23 +26,38 @@ public class MemberServiceIntegrationTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
+    private Member member;
+    @BeforeEach
+    void setUp() {
+        member = new Member(null, "tester", LocalDateTime.now());
+        memberRepository.save(member);
+
+        entityManager.flush();
+    }
+
     @Test
     @DisplayName("통합 테스트 - 회원 조회 성공할 경우 상세 정보 반환한다.")
     void 회원ID로_회원정보_정상_조회() {
         // given
-        LocalDateTime regAt = LocalDateTime.now();
-        Member member = new Member(null, "tester", regAt);
-        memberRepository.save(member);
+        MemberCommand.Find command = new MemberCommand.Find(member.getId());
 
         // when
-        MemberCommand.Find command = new MemberCommand.Find(member.getId());
         MemberInfo.Detail info = memberService.findMemberById(command);
 
+        entityManager.flush();
+
+        Member savedMember = memberRepository.findById(member.getId())
+                .orElse(null);
+
         // then
+        assertThat(savedMember).isNotNull();
         assertAll(
-                () -> assertEquals(member.getId(), info.getMemberId()),
-                () -> assertEquals(member.getUserId(), info.getUserId()),
-                () -> assertEquals(member.getRegAt(), info.getRegAt())
+                () -> assertEquals(savedMember.getId(), info.getMemberId()),
+                () -> assertEquals(savedMember.getUserId(), info.getUserId()),
+                () -> assertEquals(savedMember.getRegAt(), info.getRegAt())
         );
     }
 
