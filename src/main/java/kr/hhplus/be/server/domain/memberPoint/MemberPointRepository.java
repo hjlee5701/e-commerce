@@ -9,7 +9,7 @@ public interface MemberPointRepository {
 
     Optional<MemberPoint> findByMemberId(Long id);
 
-    Optional<MemberPoint> findById(Long memberId);
+    Optional<MemberPoint> findById(Long id);
 
     MemberPoint save(MemberPoint memberPoint);
 }
