@@ -1,7 +1,5 @@
-package kr.hhplus.be.server.domain.payment;
+package kr.hhplus.be.server.application.payment;
 
-import kr.hhplus.be.server.application.payment.PaymentCriteria;
-import kr.hhplus.be.server.application.payment.PaymentFacade;
 import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.member.Member;
@@ -10,6 +8,9 @@ import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderService;
+import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.payment.PaymentStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 public class PaymentFacadeTest {

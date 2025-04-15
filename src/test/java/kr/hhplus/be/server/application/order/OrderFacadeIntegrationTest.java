@@ -1,10 +1,9 @@
-package kr.hhplus.be.server.domain.order;
+package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.OrderCriteria;
-import kr.hhplus.be.server.application.order.OrderFacade;
-import kr.hhplus.be.server.application.order.OrderResult;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberRepository;
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import org.junit.jupiter.api.DisplayName;

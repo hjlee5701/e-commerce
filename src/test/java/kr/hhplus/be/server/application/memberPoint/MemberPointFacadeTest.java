@@ -1,10 +1,9 @@
-package kr.hhplus.be.server.domain.memberPoint;
+package kr.hhplus.be.server.application.memberPoint;
 
-import kr.hhplus.be.server.application.memberPoint.MemberPointCriteria;
-import kr.hhplus.be.server.application.memberPoint.MemberPointFacade;
 import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
+import kr.hhplus.be.server.domain.memberPoint.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

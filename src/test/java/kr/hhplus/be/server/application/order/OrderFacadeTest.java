@@ -1,9 +1,11 @@
-package kr.hhplus.be.server.domain.order;
+package kr.hhplus.be.server.application.order;
 
 import kr.hhplus.be.server.application.order.OrderCriteria;
 import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
+import kr.hhplus.be.server.domain.order.OrderInfo;
+import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -47,7 +50,7 @@ public class OrderFacadeTest {
         // mock 결과 설정
         given(memberService.findMemberById(any())).willReturn(mock(MemberInfo.Detail.class));
         given(productService.decreaseStock(any())).willReturn(List.of(mock(ProductInfo.Detail.class)));
-        given(orderService.create(any())).willReturn(mock(OrderInfo.Created.class));
+        given(orderService.create(any())).willReturn(Mockito.mock(OrderInfo.Created.class));
 
 
         // when
