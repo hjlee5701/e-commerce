@@ -99,5 +99,28 @@ public class MemberPointServiceIntegrationTest {
         assertEquals(amount.add(chargeAmount), info.getBalance());
     }
 
+    @Test
+    @DisplayName("통합 테스트 - 회원의 잔액을 사용 성공할 경우, 잔액은 차감된다.")
+    void 잔액_차감_성공() {
+        // given
+        BigDecimal useAmount = BigDecimal.valueOf(100);
+        BigDecimal balance = BigDecimal.valueOf(300);
+
+        Member member = new Member(null, "test", LocalDateTime.now());
+        Member savedMember = memberRepository.save(member);
+
+        MemberPoint memberPoint = new MemberPoint(null, Member.referenceById(savedMember.getId()), balance);
+        memberPointRepository.save(memberPoint);
+
+        MemberPointCommand.Use command = new MemberPointCommand.Use(
+                useAmount, savedMember.getId()
+                );
+
+        // when
+        memberPointService.use(command);
+
+        // then
+        assertEquals(balance.subtract(useAmount), memberPoint.getBalance());
+    }
 
 }
