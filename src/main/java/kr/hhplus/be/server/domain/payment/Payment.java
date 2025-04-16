@@ -66,6 +66,7 @@ public class Payment {
             return;
         }
         this.discountAmount = couponItem.apply(order.getOrderedAt());
+        this.couponItem = couponItem;
     }
 
     public void calculateFinalAmount() {
