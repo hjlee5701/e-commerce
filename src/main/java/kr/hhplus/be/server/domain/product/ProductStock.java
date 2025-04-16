@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +24,15 @@ public class ProductStock {
 
     private int quantity;
 
-    @Enumerated(EnumType.STRING)
-    private StockType type;
+
+    public void decrease(Integer decreaseQuantity) {
+        if (decreaseQuantity <= 0) {
+            throw new ECommerceException(ProductErrorCode.INVALID_DECREASE_QUANTITY);
+        }
+        if (this.quantity < decreaseQuantity) {
+            throw new ECommerceException(ProductErrorCode.INSUFFICIENT_STOCK);
+        }
+        quantity -= decreaseQuantity;
+    }
 
 }

@@ -4,12 +4,14 @@ import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.product.ProductInfo;
+import kr.hhplus.be.server.domain.product.ProductStockCommand;
 import kr.hhplus.be.server.interfaces.order.OrderRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderCriteria {
@@ -34,13 +36,14 @@ public class OrderCriteria {
         }
 
 
-        public ProductCommand.Decrease toDecreaseStockCommand() {
+        public ProductStockCommand.Decrease toDecreaseStockCommand() {
             Map<Long, Integer> productMap = orderItems.stream()
                     .collect(Collectors.toMap(
                             ItemCreate::getProductId,
-                            ItemCreate::getOrderQuantity
+                            ItemCreate::getOrderQuantity,
+                            Integer::sum // 상품 ID 중복 처리: 값을 합침
                     ));
-            return new ProductCommand.Decrease(productMap);
+            return new ProductStockCommand.Decrease(productMap);
         }
 
         public OrderCommand.Create toCreateOrderCommand(List<ProductInfo.Detail> productInfo) {
@@ -60,6 +63,13 @@ public class OrderCriteria {
                     ));
 
             return new OrderCommand.Create(memberId, products, orderProductMap);
+        }
+
+        public ProductCommand.FindAll toFindProductsCommand() {
+            Set<Long> productIds = orderItems.stream()
+                    .map(ItemCreate::getProductId)
+                    .collect(Collectors.toSet());
+            return new ProductCommand.FindAll(productIds);
         }
 
     }

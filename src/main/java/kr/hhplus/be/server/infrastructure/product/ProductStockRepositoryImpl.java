@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -20,5 +21,10 @@ public class ProductStockRepositoryImpl implements ProductStockRepository {
     @Override
     public List<ProductStock> saveAll(Iterable<ProductStock> stocks) {
         return productStockJpaRepository.saveAll(stocks);
+    }
+
+    @Override
+    public Optional<ProductStock> findByProductId(Long productId) {
+        return productStockJpaRepository.findByProductId(productId);
     }
 }

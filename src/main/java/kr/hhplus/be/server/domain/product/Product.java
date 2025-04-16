@@ -36,13 +36,4 @@ public class Product {
         return new Product(productId);
     }
 
-    public void decrease(Integer decreaseQuantity) {
-        if (decreaseQuantity <= 0) {
-            throw new ECommerceException(ProductErrorCode.INVALID_DECREASE_QUANTITY);
-        }
-        if (this.quantity < decreaseQuantity) {
-            throw new ECommerceException(ProductErrorCode.INSUFFICIENT_STOCK, title);
-        }
-        quantity -= decreaseQuantity;
-    }
 }
