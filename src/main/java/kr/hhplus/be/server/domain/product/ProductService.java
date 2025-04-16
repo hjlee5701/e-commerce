@@ -19,7 +19,7 @@ public class ProductService {
         return ProductInfo.Detail.of(product);
 
     }
-    public List<ProductInfo.Detail> findProductInfoByIds(ProductCommand.FindAll command) {
+    public List<ProductInfo.Detail> findProductsByIds(ProductCommand.FindAll command) {
         return productRepository.findAllById(command.getProductIds())
                 .stream()
                 .map(ProductInfo.Detail::of)

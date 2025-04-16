@@ -27,7 +27,7 @@ public class OrderFacade {
         memberService.findMemberById(criteria.toFindMemberCommand());
 
         // 주문에 필요한 상품 조회
-        List<ProductInfo.Detail> productInfos = productService.findProductInfoByIds(criteria.toFindProductsCommand());
+        List<ProductInfo.Detail> productInfos = productService.findProductsByIds(criteria.toFindProductsCommand());
 
         // 재고 감소
         productStockService.decreaseStock(criteria.toDecreaseStockCommand());

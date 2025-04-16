@@ -11,12 +11,12 @@ public class ProductStockService {
     private final ProductStockRepository productStockRepository;
 
     public void decreaseStock(ProductStockCommand.Decrease command) {
-        command.getProductMap().forEach(this::deductStock);
+        command.getProductMap().forEach(this::decreaseStock);
     }
 
-    private void deductStock(Long productId, Integer orderQuantity) {
+    private void decreaseStock(Long productId, Integer orderQuantity) {
         ProductStock stock = productStockRepository.findByProductId(productId)
-                .orElseThrow(() -> new ECommerceException(ProductErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new ECommerceException(ProductErrorCode.PRODUCT_STOCK_NOT_FOUND));
 
         stock.decrease(orderQuantity);
     }

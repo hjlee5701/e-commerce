@@ -1,13 +1,12 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.OrderCriteria;
-import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
+import kr.hhplus.be.server.domain.product.ProductStockService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +21,7 @@ import java.util.List;
 import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
@@ -34,6 +34,8 @@ public class OrderFacadeTest {
     private OrderService orderService;
     @Mock
     private ProductService productService;
+    @Mock
+    private ProductStockService productStockService;
 
     @InjectMocks
     private OrderFacade facade;
@@ -49,7 +51,8 @@ public class OrderFacadeTest {
 
         // mock 결과 설정
         given(memberService.findMemberById(any())).willReturn(mock(MemberInfo.Detail.class));
-        given(productService.decreaseStock(any())).willReturn(List.of(mock(ProductInfo.Detail.class)));
+        given(productService.findProductsByIds(any())).willReturn(List.of(mock(ProductInfo.Detail.class)));
+        willDoNothing().given(productStockService).decreaseStock(any());
         given(orderService.create(any())).willReturn(Mockito.mock(OrderInfo.Created.class));
 
 
@@ -57,9 +60,10 @@ public class OrderFacadeTest {
         facade.createOrder(criteria);
 
         // then
-        InOrder inOrder = inOrder(memberService, productService, orderService);
+        InOrder inOrder = inOrder(memberService, productService, productStockService,orderService);
         inOrder.verify(memberService).findMemberById(any());
-        inOrder.verify(productService).decreaseStock(any());
+        inOrder.verify(productService).findProductsByIds(any());
+        inOrder.verify(productStockService).decreaseStock(any());
         inOrder.verify(orderService).create(any());
     }
 
