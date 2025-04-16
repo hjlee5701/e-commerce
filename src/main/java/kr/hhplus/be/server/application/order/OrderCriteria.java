@@ -10,7 +10,6 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderCriteria {
@@ -23,7 +22,7 @@ public class OrderCriteria {
 
         public static Create of(Long memberId, OrderRequest.Create request) {
             List<ItemCreate> itemCriteria = request.getOrderItems().stream().map(
-                    product -> new ItemCreate(product.getProductId(), product.getQuantity())
+                    product -> new ItemCreate(product.getProductId(), product.getOrderQuantity())
             ).toList();
             return new Create(
                     memberId, itemCriteria
@@ -39,7 +38,7 @@ public class OrderCriteria {
             Map<Long, Integer> productMap = orderItems.stream()
                     .collect(Collectors.toMap(
                             ItemCreate::getProductId,
-                            ItemCreate::getQuantity
+                            ItemCreate::getOrderQuantity
                     ));
             return new ProductCommand.Decrease(productMap);
         }
@@ -57,7 +56,7 @@ public class OrderCriteria {
             Map<Long, Integer> orderProductMap = orderItems.stream()// 주문 요청한 상품의 ID 및 수량
                     .collect(Collectors.toMap(
                             ItemCreate::getProductId,
-                            ItemCreate::getQuantity
+                            ItemCreate::getOrderQuantity
                     ));
 
             return new OrderCommand.Create(memberId, products, orderProductMap);
@@ -69,7 +68,7 @@ public class OrderCriteria {
     @AllArgsConstructor
     public static class ItemCreate {
         private Long productId;
-        private Integer quantity;
+        private Integer orderQuantity;
     }
 
 }
