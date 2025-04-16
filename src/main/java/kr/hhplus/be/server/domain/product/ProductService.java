@@ -22,33 +22,12 @@ public class ProductService {
         return ProductInfo.Detail.of(product);
 
     }
-
-
-    public List<ProductInfo.Detail> decreaseStock(ProductCommand.Decrease command) {
-
-        Map<Long, Integer> productMap = command.getProductMap();
-        
-        List<Product> products = productRepository.findAllById(productMap.keySet());
-
-        // 상품 ID 유효성 검사
-        if (products.size() != productMap.size()) {
-            throw new ECommerceException(ProductErrorCode.PRODUCT_NOT_FOUND);
-        }
-
-        List<ProductInfo.Detail> items = new ArrayList<>();
-
-        for (Product product : products) {
-            Integer orderQuantity = productMap.get(product.getId());
-            
-            // 수량 차감
-            product.decrease(orderQuantity);
-            items.add(ProductInfo.Detail.of(product));
-
-            // 재고 이력 저장
-            ProductStock stock = ProductFactory.createOutBoundStock(product, orderQuantity);
-            productStockRepository.save(stock);
-        }
-
-        return items;
+    public List<ProductInfo.Detail> findProductsByIds(ProductCommand.FindAll command) {
+        return productRepository.findAllById(command.getProductIds())
+                .stream()
+                .map(ProductInfo.Detail::of)
+                .toList();
     }
+
+
 }
