@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 @Entity
 public class Payment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PAYMENT_ID")
     private Long id;
 
