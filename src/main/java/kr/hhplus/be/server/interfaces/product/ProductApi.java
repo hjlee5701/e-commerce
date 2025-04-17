@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.hhplus.be.server.interfaces.common.ApiResult;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 @Tag(name = "상품 관리", description = "상품을 관리합니다.")
 public interface ProductApi {
 
@@ -24,10 +22,4 @@ public interface ProductApi {
             @Parameter(description = "상품 아이디") Long productId
     );
 
-    @Operation(summary = "인기 상품 조회", description = "상위 5개의 인기 상품을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "인기 상품 조회 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content())
-    })
-    ResponseEntity<ApiResult<List<ProductResponse.Popular>>> findPopularProducts();
 }

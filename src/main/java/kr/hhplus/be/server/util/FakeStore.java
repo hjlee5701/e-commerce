@@ -3,6 +3,7 @@ package kr.hhplus.be.server.util;
 import kr.hhplus.be.server.interfaces.coupon.CouponResponse;
 import kr.hhplus.be.server.interfaces.memberPoint.MemberPointResponse;
 import kr.hhplus.be.server.interfaces.order.OrderResponse;
+import kr.hhplus.be.server.interfaces.orderStatistics.OrderStatisticsResponse;
 import kr.hhplus.be.server.interfaces.payment.PaymentResponse;
 import kr.hhplus.be.server.interfaces.product.ProductResponse;
 import org.springframework.stereotype.Component;
@@ -42,9 +43,9 @@ public class FakeStore {
                 ));
     }
 
-    public List<ProductResponse.Popular> popularProducts() {
+    public List<OrderStatisticsResponse.Popular> popularProducts() {
         return List.of(
-                new ProductResponse.Popular(1, 1L, "상의", BigDecimal.valueOf(10000), 300, LocalDateTime.now())
+                new OrderStatisticsResponse.Popular(1, 1L, "상의", BigDecimal.valueOf(10000), 300, LocalDateTime.now())
         );
     }
 
