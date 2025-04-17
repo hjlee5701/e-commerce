@@ -44,6 +44,9 @@ public class MemberPoint {
     }
 
     public void use(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) == 0) {
+            return;
+        }
         if (balance.compareTo(amount) < 0) {
             throw new ECommerceException(MemberPointErrorCode.INSUFFICIENT_BALANCE);
         }
