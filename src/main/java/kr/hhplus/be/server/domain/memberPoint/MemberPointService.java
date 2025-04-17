@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class MemberPointService {
 
     private final MemberPointRepository memberPointRepository;
+    private final MemberPointHistoryRepository memberPointHistoryRepository;
 
     public MemberPointInfo.Balance charge(MemberPointCommand.Charge command) {
         // 충전 금액 검증
@@ -25,6 +26,7 @@ public class MemberPointService {
         memberPoint.charge(command.getAmount());
         MemberPoint savedMemberPoint = memberPointRepository.save(memberPoint);
 
+        memberPointHistoryRepository.save(MemberPointHistory.createChargeHistory(command.getMemberId(), command.getAmount()));
         return MemberPointInfo.Balance.of(savedMemberPoint);
     }
 
@@ -41,5 +43,6 @@ public class MemberPointService {
                 .orElseThrow(() -> new ECommerceException(MemberPointErrorCode.MEMBER_POINT_NOT_FOUND));
 
         memberPoint.use(command.getAmount());
+        memberPointHistoryRepository.save(MemberPointHistory.createUseHistory(command.getMemberId(), command.getAmount()));
     }
 }

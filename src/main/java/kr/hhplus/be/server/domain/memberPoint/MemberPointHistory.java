@@ -31,4 +31,8 @@ public class MemberPointHistory {
     public static MemberPointHistory createChargeHistory(Long memberId, BigDecimal amount) {
         return new MemberPointHistory(null, Member.referenceById(memberId), TransactionType.CHARGE, amount);
     }
+
+    public static MemberPointHistory createUseHistory(Long memberId, BigDecimal amount) {
+        return new MemberPointHistory(null, Member.referenceById(memberId), TransactionType.USE, amount);
+    }
 }

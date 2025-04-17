@@ -5,7 +5,6 @@ import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,12 +16,16 @@ import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.MAX_CHARGE_AMOUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberPointServiceTest {
+
+    @Mock
+    private MemberPointHistoryRepository memberPointHistoryRepository;
 
     @Mock
     private MemberPointRepository memberPointRepository;
@@ -62,7 +65,7 @@ public class MemberPointServiceTest {
                 .hasMessage(MemberPointErrorCode.INVALID_BALANCE.getMessage());
     }
 
-    @DisplayName("유효한 충전 금액, 잔액으로 금액 정보가 성공적으로 저장된다.")
+    @DisplayName("유효한 충전 금액, 잔액으로 금액 정보와 이력이 성공적으로 저장된다.")
     @Test
     void 충전정보_저장_성공() {
         // given
@@ -79,12 +82,17 @@ public class MemberPointServiceTest {
         given(memberPointRepository.save(memberPoint))
                 .willReturn(memberPoint);
 
+        MemberPointHistory history = MemberPointHistory.createUseHistory(ANY_MEMBER_ID, amount);
+        given(memberPointHistoryRepository.save(any(MemberPointHistory.class)))
+                .willReturn(history);
+
         // when
         var result = memberPointService.charge(command);
 
         // then
         assertThat(result.getBalance()).isEqualTo(expectBalance);
         verify(memberPointRepository, times(1)).save(memberPoint);
+        verify(memberPointHistoryRepository, times(1)).save(any(MemberPointHistory.class));
     }
 
 
