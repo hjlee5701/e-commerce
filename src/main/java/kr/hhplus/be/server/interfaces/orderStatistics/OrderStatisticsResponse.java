@@ -1,12 +1,12 @@
 package kr.hhplus.be.server.interfaces.orderStatistics;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.domain.statistics.OrderStatisticsInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Schema(title = "주문 통계 응답")
@@ -28,10 +28,19 @@ public class OrderStatisticsResponse {
         private BigDecimal price;
 
         @Schema(title = "총 상품 수량", example = "300")
-        private Integer totalSoldQuantity;
+        private Long totalSoldQuantity;
 
-        @Schema(title = "통계 일자", example = "2025-04-31T14:30:00")
-        private LocalDateTime statisticAt;
+
+        public static Popular of(OrderStatisticsInfo.Popular info) {
+            return new OrderStatisticsResponse.Popular(
+                    info.getRank(),
+                    info.getProductId(),
+                    info.getTitle(),
+                    info.getPrice(),
+                    info.getTotalSoldQuantity()
+            );
+        }
+
     }
 
 }
