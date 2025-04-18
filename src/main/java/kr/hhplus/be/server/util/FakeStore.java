@@ -45,7 +45,7 @@ public class FakeStore {
 
     public List<OrderStatisticsResponse.Popular> popularProducts() {
         return List.of(
-                new OrderStatisticsResponse.Popular(1, 1L, "상의", BigDecimal.valueOf(10000), 300, LocalDateTime.now())
+                new OrderStatisticsResponse.Popular(1, 1L, "상의", BigDecimal.valueOf(10000), 300L)
         );
     }
 
