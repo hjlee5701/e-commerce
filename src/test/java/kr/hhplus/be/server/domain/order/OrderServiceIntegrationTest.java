@@ -56,7 +56,12 @@ public class OrderServiceIntegrationTest {
         pants = new Product(null, "상품B", BigDecimal.valueOf(20000), 100);
         productRepository.saveAll(List.of(shirts, pants));
 
+        cleanUp();
+    }
+
+    void cleanUp() {
         entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
@@ -68,7 +73,7 @@ public class OrderServiceIntegrationTest {
 
         OrderCommand.Create command = getCommand(orderQuantityOfShirts, orderQuantityOfPants);
         OrderInfo.Created info = orderService.create(command);
-        entityManager.flush();
+        cleanUp();
 
         // then
         Order order = orderRepository.findById(info.getOrderId())

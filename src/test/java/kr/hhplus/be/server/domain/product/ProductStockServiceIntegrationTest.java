@@ -28,6 +28,7 @@ public class ProductStockServiceIntegrationTest {
 
     @Autowired
     private ProductRepository productRepository;
+
     @Autowired
     private ProductStockRepository productStockRepository;
 
@@ -39,7 +40,6 @@ public class ProductStockServiceIntegrationTest {
     private Product productB;
     private ProductStock stockB;
 
-    @BeforeEach
     void setUp() {
         int quantity = 100;
         productA = new Product(null, "상품A", BigDecimal.valueOf(10000), quantity);
@@ -49,13 +49,19 @@ public class ProductStockServiceIntegrationTest {
         stockA = new ProductStock(null, productA, quantity);
         stockB = new ProductStock(null, productB, quantity);
         productStockRepository.saveAll(List.of(stockA, stockB));
+        cleanUp();
+    }
+
+    void cleanUp() {
         entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
     @DisplayName("통합 테스트 - 상품 수량 차감에 성공한다.")
     void 상품_수량_차감_성공() {
         // given
+        setUp();
         int originalStockA = productA.getQuantity();
         int originalStockB = productB.getQuantity();
         int orderQuantityA = 1;
@@ -66,7 +72,7 @@ public class ProductStockServiceIntegrationTest {
 
         // when
         productStockService.decreaseStock(command);
-        entityManager.flush();
+        cleanUp();
 
         // then
         stockA = productStockRepository.findByProductId(productA.getId())
@@ -82,6 +88,7 @@ public class ProductStockServiceIntegrationTest {
     @DisplayName("통합 테스트 - 재고 부족으로 상품 수량 차감에 실패한다.")
     void 상품_재고_없을_때_예외처리() {
         // given
+        setUp();
         int overQuantity = productA.getQuantity() + 100;
         Map<Long, Integer> productMap = Map.of(productA.getId(), overQuantity);
 

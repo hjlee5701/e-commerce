@@ -56,7 +56,7 @@ public class OrderFacadeIntegrationTest {
     private Product pants;
     private ProductStock pantsStock;
 
-    @BeforeEach
+
     void setUp() {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
@@ -69,12 +69,18 @@ public class OrderFacadeIntegrationTest {
         pantsStock = new ProductStock(null, pants, pants.getQuantity());
         productStockRepository.saveAll(List.of(shirtsStock, pantsStock));
 
+        cleanUp();
+    }
+
+    void cleanUp() {
         entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
     @DisplayName("통합 테스트 - 정상적인 상품 요청 시 주문이 성공적으로 생성된다")
     void 상품_주문_성공() {
+        setUp();
         Member member = new Member(null, "test", LocalDateTime.now());
         Member savedMember = memberRepository.save(member);
 
@@ -92,7 +98,7 @@ public class OrderFacadeIntegrationTest {
         // when
         OrderCriteria.Create criteria = new OrderCriteria.Create(savedMember.getId(), itemCriteria);
         OrderResult.Created result = orderFacade.createOrder(criteria);
-        entityManager.flush();
+        cleanUp();
 
         // then
         Order order = orderRepository.findById(result.getOrderId()).orElse(null);

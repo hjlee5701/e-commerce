@@ -64,7 +64,7 @@ public class PaymentFacadeIntegrationTest {
     private CouponItem couponItem;
     private MemberPoint memberPoint;
 
-    @BeforeEach
+
     void setUp() {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
@@ -80,13 +80,19 @@ public class PaymentFacadeIntegrationTest {
 
         couponItem = new CouponItem(null, member, coupon, CouponItemStatus.USABLE);
         couponItemRepository.save(couponItem);
+        cleanUp();
+    }
+
+    void cleanUp() {
         entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
     @DisplayName("통합 테스트 - 결제 성공할 경우 결제 생성 및 쿠폰/결제/주문 상태가 변경된다.")
     void 결제_생성_성공() {
         // given
+        setUp();
         BigDecimal originalBalance = memberPoint.getBalance();
         BigDecimal originalTotalAmount = order.getTotalAmount();
         BigDecimal discountAmount = coupon.getDiscountAmount();
@@ -95,7 +101,7 @@ public class PaymentFacadeIntegrationTest {
 
         // when
         PaymentResult.Paid result = paymentFacade.createPayment(criteria);
-        entityManager.flush();
+        cleanUp();
 
         // then
         assertThat(result).isNotNull();
