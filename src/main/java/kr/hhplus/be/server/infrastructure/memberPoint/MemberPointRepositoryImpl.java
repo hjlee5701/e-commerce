@@ -2,24 +2,29 @@ package kr.hhplus.be.server.infrastructure.memberPoint;
 
 import kr.hhplus.be.server.domain.memberPoint.MemberPoint;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class MemberPointRepositoryImpl implements MemberPointRepository {
+
+    private final MemberPointJpaRepository memberPointJpaRepository;
+
     @Override
     public Optional<MemberPoint> findByMemberId(Long id) {
-        return Optional.empty();
+        return memberPointJpaRepository.findByMemberId(id);
     }
 
     @Override
-    public Optional<MemberPoint> findById(Long memberId) {
-        return Optional.empty();
+    public Optional<MemberPoint> findById(Long id) {
+        return memberPointJpaRepository.findById(id);
     }
 
     @Override
     public MemberPoint save(MemberPoint memberPoint) {
-        return null;
+        return memberPointJpaRepository.save(memberPoint);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public abstract class ECommerceException extends RuntimeException {
+public class ECommerceException extends RuntimeException {
 
     private final String errorCode;
     private final HttpStatus httpStatus;

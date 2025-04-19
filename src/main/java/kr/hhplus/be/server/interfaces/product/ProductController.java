@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/products")
@@ -35,15 +33,6 @@ public class ProductController implements ProductApi {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResult.of(SuccessCode.FIND_PRODUCT, data));
-    }
-
-    @Override
-    @GetMapping("/popular")
-    public ResponseEntity<ApiResult<List<ProductResponse.Popular>>> findPopularProducts() {
-        List<ProductResponse.Popular> response = fakeStore.popularProducts();
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(ApiResult.of(SuccessCode.FIND_POPULAR_PRODUCT, response));
     }
 
 }

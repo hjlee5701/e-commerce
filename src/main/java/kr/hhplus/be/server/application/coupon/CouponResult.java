@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.application.coupon;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponItem;
+import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +18,12 @@ public class CouponResult {
         private String title;
         private LocalDateTime issuedAt;
         private LocalDateTime expiredAt;
-        private String couponStatus;
+        private String couponItemStatus;
 
-        public static Issued of(Coupon coupon, CouponItem couponItem) {
+        public static Issued of(CouponInfo.Issued info) {
             return new Issued(
-                    coupon.getId(), couponItem.getId(), coupon.getTitle(),
-                    coupon.getIssuedAt(), coupon.getExpiredAt(), couponItem.getStatus().name()
+                    info.getCouponId(), info.getCouponItemId(), info.getTitle(),
+                    info.getIssuedAt(), info.getExpiredAt(), info.getCouponItemStatus()
             );
         }
     }

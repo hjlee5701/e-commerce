@@ -13,5 +13,9 @@ public class MemberCommand {
     @AllArgsConstructor
     public static class Find {
         private Long memberId;
+
+        public static Find of(Long memberId) {
+            return new Find(memberId);
+        }
     }
 }

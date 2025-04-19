@@ -9,6 +9,8 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
 
@@ -22,6 +24,7 @@ public class OrderFixture implements TestFixture<Order> {
 
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
+    private List<OrderItem> orderItems = new ArrayList<>();
     private OrderStatus status = OrderStatus.PENDING;
 
     private LocalDateTime orderedAt = FIXED_NOW;
@@ -33,9 +36,23 @@ public class OrderFixture implements TestFixture<Order> {
         return entity;
     }
 
-    public Order createWithStatus(OrderStatus orderStatus) {
+    public Order withStatus(OrderStatus orderStatus) {
         Order entity = new Order();
         this.status = orderStatus;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
+
+    public Order withMemberId(Long memberId) {
+        Order entity = new Order();
+        this.member = new Member(memberId, "tester", FIXED_NOW);
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
+
+    public Order withItems(List<OrderItem> items) {
+        Order entity = new Order();
+        this.orderItems = items;
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }

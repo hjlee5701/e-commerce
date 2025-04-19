@@ -24,27 +24,5 @@ public class ProductInfo {
         }
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class Decreased {
-        private BigDecimal totalAmount;
-        private List<ItemDecreased> items;
 
-        public static Decreased of(BigDecimal totalAmount, List<ItemDecreased> items) {
-            return new Decreased(totalAmount, items);
-        }
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public static class ItemDecreased {
-        private Product product;
-        private BigDecimal price;
-        private int orderQuantity;
-
-        public static ItemDecreased of(Product product, int orderQuantity) {
-            return new ItemDecreased(product, product.getPrice(), orderQuantity);
-
-        }
-    }
 }

@@ -1,11 +1,8 @@
 package kr.hhplus.be.server.domain.payment;
 
-import kr.hhplus.be.server.domain.coupon.CouponItem;
-import kr.hhplus.be.server.domain.order.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 
 @RequiredArgsConstructor
 @Service
@@ -13,22 +10,16 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    public Payment pay(Order order, CouponItem couponItem) {
+    public Payment pay(PaymentCommand.Pay command) {
 
-        BigDecimal originalAmount = order.getTotalAmount();
-        BigDecimal discountAmount = BigDecimal.ZERO;
-        
+        // 결제 생성
+        Payment payment = Payment.create(command.getOrder(), command.getMemberId());
+
         // 쿠폰 적용
-        if (couponItem != null) {
-            discountAmount = couponItem.apply(order.getOrderedAt());
-        }
+        payment.applyCoupon(command.getCouponItem());
 
-        // 최종 주문 결제 금액
-        BigDecimal finalAmount = originalAmount.subtract(discountAmount).max(BigDecimal.ZERO);
-
-        Payment payment = new Payment(
-                null, order, originalAmount, discountAmount, finalAmount, PaymentStatus.PENDING
-        );
+        // 최종 결제 금액 계산
+        payment.calculateFinalAmount();
 
         return paymentRepository.save(payment);
     }

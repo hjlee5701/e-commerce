@@ -1,16 +1,16 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
-import kr.hhplus.be.server.domain.memberPoint.exception.InsufficientBalanceException;
-import kr.hhplus.be.server.domain.memberPoint.exception.InvalidBalanceException;
+import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.*;
+import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.MAX_CHARGE_AMOUNT;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,21 +28,27 @@ public class MemberPoint {
 
     private BigDecimal balance;
 
-    public void charge(MemberPointCommand.Charge command) {
-        this.balance = this.balance.add(command.getAmount());
-        validateAmount(command.getAmount());
-        this.member = command.getMember();
+    public static MemberPoint createInitialPoint(Long memberId) {
+        return new MemberPoint(null, Member.referenceById(memberId), BigDecimal.ZERO);
+    }
+
+    public void charge(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+        validateAmount(amount);
     }
 
     private void validateAmount(BigDecimal amount) {
         if (amount.add(balance).compareTo(MAX_CHARGE_AMOUNT) > 0) {
-            throw new InvalidBalanceException();
+            throw new ECommerceException(MemberPointErrorCode.INVALID_BALANCE);
         }
     }
 
     public void use(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) == 0) {
+            return;
+        }
         if (balance.compareTo(amount) < 0) {
-            throw new InsufficientBalanceException();
+            throw new ECommerceException(MemberPointErrorCode.INSUFFICIENT_BALANCE);
         }
         balance = balance.subtract(amount);
     }

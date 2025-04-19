@@ -28,7 +28,7 @@ public class OrderRequest {
         private Long productId;
 
         @Schema(title = "주문 수량", example = "1")
-        private Integer quantity;
+        private Integer orderQuantity;
 
     }
 }

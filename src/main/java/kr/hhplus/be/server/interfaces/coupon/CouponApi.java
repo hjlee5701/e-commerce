@@ -34,7 +34,7 @@ public interface CouponApi {
             @ApiResponse(responseCode = "404", description = "존재 하지 않는 사용자", content = @Content()),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content())
     })
-    ResponseEntity<ApiResult<List<CouponResponse.Issued>>> findHoldingCoupon(
+    ResponseEntity<ApiResult<List<CouponResponse.ItemDetail>>> findHoldingCoupon(
             @Parameter(description = "사용자 아이디") Long memberId
     );
 }

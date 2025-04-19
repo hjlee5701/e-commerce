@@ -17,10 +17,9 @@ public class CouponInfo {
         private String title;
         private LocalDateTime issuedAt;
         private LocalDateTime expiredAt;
-        private String couponStatus;
+        private String couponItemStatus;
 
-        public static CouponInfo.Issued from(CouponItem couponItem) {
-            Coupon coupon = couponItem.getCoupon();
+        public static CouponInfo.Issued of(Coupon coupon, CouponItem couponItem) {
             return new CouponInfo.Issued(
                     coupon.getId(),
                     couponItem.getId(),
@@ -30,6 +29,25 @@ public class CouponInfo {
                     couponItem.getStatus().name()
             );
 
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class ItemDetail {
+        private Long couponItemId;
+        private String title;
+        private LocalDateTime issuedAt;
+        private LocalDateTime expiredAt;
+        private String couponItemStatus;
+        public static ItemDetail of(CouponItem item) {
+            return new ItemDetail(
+                    item.getId(),
+                    item.getCoupon().getTitle(),
+                    item.getCoupon().getIssuedAt(),
+                    item.getCoupon().getExpiredAt(),
+                    item.getStatus().name()
+            );
         }
     }
 }

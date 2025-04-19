@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberFixture;
 import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
@@ -11,8 +12,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER;
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
+import static kr.hhplus.be.server.interfaces.code.CouponErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -25,12 +26,12 @@ public class CouponItemTest {
     @DisplayName("Coupon 의 날짜 정책 검증에 실패하면 예외가 발생한다.")
     void 쿠폰_정책이_유효하지_않으면_예외() {
         Coupon coupon = mock(Coupon.class);
-        doThrow(new CouponExpiredException(FIXED_NOW)).when(coupon).validateTime(FIXED_NOW);
+        doThrow(new ECommerceException(COUPON_EXPIRED, FIXED_NOW)).when(coupon).validateTime(FIXED_NOW);
 
         CouponItem item = new CouponItemFixture().createUsable(coupon);
 
         assertThatThrownBy(() -> item.apply(FIXED_NOW))
-                .isInstanceOf(CouponExpiredException.class);
+                .isInstanceOf(ECommerceException.class);
     }
 
 
@@ -63,7 +64,7 @@ public class CouponItemTest {
 
         // when & then
         assertThatThrownBy(() -> couponItem.apply(FIXED_NOW))
-                .isInstanceOf(UnUsableCouponItemException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessageContaining(CouponErrorCode.UNUSABLE_COUPON_ITEM.getMessage());
     }
 
@@ -76,8 +77,8 @@ public class CouponItemTest {
         CouponItem couponItem = new CouponItemFixture().createWithOwner(memberA);
 
         // when & then
-        assertThatThrownBy(() -> couponItem.checkOwner(memberB))
-                .isInstanceOf(CouponItemAccessDeniedException.class)
+        assertThatThrownBy(() -> couponItem.checkOwner(memberB.getId()))
+                .isInstanceOf(ECommerceException.class)
                 .hasMessageContaining(CouponErrorCode.COUPON_ITEM_ACCESS_DENIED.getMessage());
     }
 

@@ -36,7 +36,7 @@ public class OrderResponse {
         public static Created of(OrderResult.Created result) {
             List<ItemCreated> orderItems = result.getOrderItems().stream()
                     .map(item -> new ItemCreated(
-                            item.getProductId(), item.getTitle(), item.getPrice(), item.getQuantity()
+                            item.getOrderItemId(), item.getTitle(), item.getUnitPrice(),item.getTotalPrice(), item.getQuantity()
                     ))
                     .toList();
             return new Created(result.getOrderId(), result.getOrderStatus(), result.getTotalAmount(), result.getOrderedAt(), orderItems);
@@ -53,10 +53,13 @@ public class OrderResponse {
         @Schema(title = "상품명", example = "상의")
         private String title;
 
-        @Schema(title = "상품 가격", example = "10000")
-        private BigDecimal price;
+        @Schema(title = "상품 단일가", example = "10000")
+        private BigDecimal unitPrice;
 
-        @Schema(title = "주문 수량", example = "1")
+        @Schema(title = "상품 주문 가격", example = "20000", description = "상품 단일가 * 주문 수량")
+        private BigDecimal totalPrice;
+
+        @Schema(title = "주문 수량", example = "2")
         private Integer quantity;
 
     }

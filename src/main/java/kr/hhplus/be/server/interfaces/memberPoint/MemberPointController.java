@@ -2,6 +2,7 @@ package kr.hhplus.be.server.interfaces.memberPoint;
 
 import kr.hhplus.be.server.application.memberPoint.MemberPointFacade;
 import kr.hhplus.be.server.application.memberPoint.MemberPointResult;
+import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointInfo;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
 import kr.hhplus.be.server.interfaces.common.ApiResult;
@@ -39,7 +40,7 @@ public class MemberPointController implements MemberPointApi {
     public ResponseEntity<ApiResult<MemberPointResponse.Balance>> checkBalance(
             @PathVariable("id") Long memberId
     ) {
-        MemberPointInfo.Balance result = service.getBalance(memberId);
+        MemberPointInfo.Balance result = service.getBalance(MemberCommand.Find.of(memberId));
         var data = MemberPointResponse.Balance.of(result);
         return ResponseEntity
                 .status(HttpStatus.OK)

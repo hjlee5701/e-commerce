@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.member;
 
-import kr.hhplus.be.server.domain.member.exception.MemberNotFoundException;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,7 +31,7 @@ public class MemberServiceTest {
 
         // when & then
         assertThatThrownBy(() -> memberService.findMemberById(command))
-                .isInstanceOf(MemberNotFoundException.class)
+                .isInstanceOf(ECommerceException.class)
                 .hasMessage(MEMBER_NOT_FOUND.getMessage());
     }
 

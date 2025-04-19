@@ -1,16 +1,17 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.product.ProductInfo;
+import kr.hhplus.be.server.domain.product.ProductStockCommand;
 import kr.hhplus.be.server.interfaces.order.OrderRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderCriteria {
@@ -23,7 +24,7 @@ public class OrderCriteria {
 
         public static Create of(Long memberId, OrderRequest.Create request) {
             List<ItemCreate> itemCriteria = request.getOrderItems().stream().map(
-                    product -> new ItemCreate(product.getProductId(), product.getQuantity())
+                    product -> new ItemCreate(product.getProductId(), product.getOrderQuantity())
             ).toList();
             return new Create(
                     memberId, itemCriteria
@@ -35,24 +36,40 @@ public class OrderCriteria {
         }
 
 
-        public ProductCommand.Decrease toDecreaseStockCommand() {
+        public ProductStockCommand.Decrease toDecreaseStockCommand() {
             Map<Long, Integer> productMap = orderItems.stream()
                     .collect(Collectors.toMap(
                             ItemCreate::getProductId,
-                            ItemCreate::getQuantity
+                            ItemCreate::getOrderQuantity,
+                            Integer::sum // 상품 ID 중복 처리: 값을 합침
                     ));
-            return new ProductCommand.Decrease(productMap);
+            return new ProductStockCommand.Decrease(productMap);
         }
 
-        public OrderCommand.Create toCreateOrderCommand(Member member, ProductInfo.Decreased productInfo) {
-            List<OrderCommand.ItemCreate> itemCommands = productInfo.getItems().stream()
+        public OrderCommand.Create toCreateOrderCommand(List<ProductInfo.Detail> productInfo) {
+            // 조회한 상품들의 정보
+            List<OrderCommand.ItemCreate> products = productInfo.stream()
                     .map(info -> new OrderCommand.ItemCreate(
-                            info.getProduct(),
+                            info.getProductId(),
+                            info.getTitle(),
                             info.getPrice(),
-                            info.getOrderQuantity()))
+                            info.getQuantity()))
                     .toList();
 
-            return new OrderCommand.Create(member, itemCommands, productInfo.getTotalAmount());
+            Map<Long, Integer> orderProductMap = orderItems.stream()// 주문 요청한 상품의 ID 및 수량
+                    .collect(Collectors.toMap(
+                            ItemCreate::getProductId,
+                            ItemCreate::getOrderQuantity
+                    ));
+
+            return new OrderCommand.Create(memberId, products, orderProductMap);
+        }
+
+        public ProductCommand.FindAll toFindProductsCommand() {
+            Set<Long> productIds = orderItems.stream()
+                    .map(ItemCreate::getProductId)
+                    .collect(Collectors.toSet());
+            return new ProductCommand.FindAll(productIds);
         }
 
     }
@@ -61,7 +78,7 @@ public class OrderCriteria {
     @AllArgsConstructor
     public static class ItemCreate {
         private Long productId;
-        private Integer quantity;
+        private Integer orderQuantity;
     }
 
 }

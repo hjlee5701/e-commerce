@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@Repository
 public interface MemberPointHistoryRepository {
     MemberPointHistory save(MemberPointHistory history);
+
+    Optional<MemberPointHistory> findByMemberId(Long memberId);
 }

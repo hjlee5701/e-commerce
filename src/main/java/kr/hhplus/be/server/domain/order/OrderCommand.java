@@ -1,13 +1,12 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.member.Member;
-import kr.hhplus.be.server.domain.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @NoArgsConstructor
 public class OrderCommand {
@@ -15,17 +14,18 @@ public class OrderCommand {
     @Getter
     @AllArgsConstructor
     public static class Create {
-        private Member member;
-        private List<ItemCreate> orderItems;
-        private BigDecimal totalAmount;
+        private Long memberId;
+        private List<ItemCreate> products; // 조회한 상품 정보
+        Map<Long, Integer> orderProductMap;// 주문 요청한 상품의 ID 와 수량
     }
 
     @Getter
     @AllArgsConstructor
     public static class ItemCreate {
-        private Product product;
+        private Long productId;
+        private String title;
         private BigDecimal price;
-        private int quantity;
+        private Integer quantity;
     }
 
     @Getter

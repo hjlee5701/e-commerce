@@ -3,6 +3,7 @@ package kr.hhplus.be.server.util;
 import kr.hhplus.be.server.interfaces.coupon.CouponResponse;
 import kr.hhplus.be.server.interfaces.memberPoint.MemberPointResponse;
 import kr.hhplus.be.server.interfaces.order.OrderResponse;
+import kr.hhplus.be.server.interfaces.orderStatistics.OrderStatisticsResponse;
 import kr.hhplus.be.server.interfaces.payment.PaymentResponse;
 import kr.hhplus.be.server.interfaces.product.ProductResponse;
 import org.springframework.stereotype.Component;
@@ -38,13 +39,13 @@ public class FakeStore {
         return new OrderResponse.Created(
                 1L, "COMPLETED", BigDecimal.valueOf(50000), LocalDateTime.now(),
                 List.of(
-                        new OrderResponse.ItemCreated(1L, "상의", BigDecimal.valueOf(50000), 1)
+                        new OrderResponse.ItemCreated(1L, "상의", BigDecimal.valueOf(10000), BigDecimal.valueOf(50000), 1)
                 ));
     }
 
-    public List<ProductResponse.Popular> popularProducts() {
+    public List<OrderStatisticsResponse.Popular> popularProducts() {
         return List.of(
-                new ProductResponse.Popular(1, 1L, "상의", BigDecimal.valueOf(10000), 300, LocalDateTime.now())
+                new OrderStatisticsResponse.Popular(1, 1L, "상의", BigDecimal.valueOf(10000), 300L)
         );
     }
 

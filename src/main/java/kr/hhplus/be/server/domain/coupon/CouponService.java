@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,33 +18,32 @@ public class CouponService {
     private final CouponItemRepository couponItemRepository;
     private final CouponRepository couponRepository;
 
-    public List<CouponInfo.Issued> findHoldingCoupons(CouponCommand.Holdings command) {
+    public List<CouponInfo.ItemDetail> findHoldingCoupons(CouponCommand.Holdings command) {
 
         List<CouponItem> coupons = couponItemRepository.findAllByMemberId(command.getMemberId()); // fetch join
 
         return Optional.ofNullable(coupons)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(CouponInfo.Issued::from)
+                .map(CouponInfo.ItemDetail::of)
                 .collect(Collectors.toList());
     }
 
     public CouponItem findByCouponItemId(CouponCommand.Find command) {
         return couponItemRepository.findById(command.getCouponItemId())
-                .orElseThrow(CouponItemNotFoundException::new);
-
+                .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_ITEM_NOT_FOUND));
     }
 
-    public Coupon issuable(CouponCommand.Issuable command) {
-        Coupon coupon = couponRepository.findById(command.getCouponItemId())
-                .orElseThrow(CouponNotFoundException::new);
+    public CouponInfo.Issued issue(CouponCommand.Issue command) {
+        Coupon coupon = couponRepository.findById(command.getCouponId())
+                .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_NOT_FOUND));
 
-        coupon.issue(LocalDateTime.now());
-        return coupon;
-    }
+        // 쿠폰 발급
+        CouponItem couponItem = coupon.issue(LocalDateTime.now(), command.getMemberId());
 
-    public CouponItem issue(CouponCommand.Issue command) {
-        CouponItem couponItem = CouponFactory.issueCouponItem(command.getMember(), command.getCoupon());
-        return couponItemRepository.save(couponItem);
+        // 발급 쿠폰 저장
+        CouponItem savedCouponItem = couponItemRepository.save(couponItem);
+
+        return CouponInfo.Issued.of(coupon, savedCouponItem);
     }
 }

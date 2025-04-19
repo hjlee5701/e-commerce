@@ -22,9 +22,10 @@ public class OrderResult {
         public static Created of(OrderInfo.Created info) {
             List<ItemCreated> items = info.getItems().stream()
                     .map(item -> new ItemCreated(
-                            item.getProductId(),
+                            item.getOrderItemId(),
                             item.getTitle(),
-                            item.getPrice(),
+                            item.getUnitPrice(),
+                            item.getTotalPrice(),
                             item.getQuantity()
             )).toList();
             return new Created(
@@ -40,9 +41,10 @@ public class OrderResult {
     @Getter
     @AllArgsConstructor
     public static class ItemCreated {
-        private Long productId;
+        private Long orderItemId;
         private String title;
-        private BigDecimal price;
+        private BigDecimal unitPrice;
+        private BigDecimal totalPrice;
         private Integer quantity;
     }
 }

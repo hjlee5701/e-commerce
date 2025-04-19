@@ -32,14 +32,14 @@ public class CouponFixture implements TestFixture<Coupon> {
         return entity;
     }
 
-    public Coupon createWithStatus(CouponStatus couponStatus) {
+    public Coupon withStatus(CouponStatus couponStatus) {
         Coupon entity = new Coupon();
         this.status = couponStatus;
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }
 
-    public Coupon createWithExpired() {
+    public Coupon withExpired() {
         Coupon entity = new Coupon();
         this.status = CouponStatus.EXPIRED;
         this.issuedAt = FIXED_NOW.minusDays(10);
@@ -48,7 +48,7 @@ public class CouponFixture implements TestFixture<Coupon> {
         return entity;
     }
 
-    public Coupon createWithExpiredAt(CouponStatus couponStatus) {
+    public Coupon withExpiredAt(CouponStatus couponStatus) {
         Coupon entity = new Coupon();
         this.status = couponStatus;
         this.issuedAt = FIXED_NOW.minusDays(10);
@@ -57,7 +57,7 @@ public class CouponFixture implements TestFixture<Coupon> {
         return entity;
     }
 
-    public Coupon createWithInActive() {
+    public Coupon withInActive() {
         Coupon entity = new Coupon();
         this.status = CouponStatus.INACTIVE;
         this.issuedAt = FIXED_NOW.plusDays(5);
@@ -66,9 +66,19 @@ public class CouponFixture implements TestFixture<Coupon> {
         return entity;
     }
 
-    public Coupon createWithNoRemaining() {
+    public Coupon withNoRemaining() {
         Coupon entity = new Coupon();
         this.remainingQuantity = 0;
+        FixtureReflectionUtils.reflect(entity, this);
+        return entity;
+    }
+
+    public Coupon withIssuable() {
+        Coupon entity = new Coupon();
+        this.remainingQuantity = 100;
+        this.issuedAt = LocalDateTime.now().minusDays(100);
+        this.expiredAt = LocalDateTime.now().plusDays(100);
+        this.status = CouponStatus.ACTIVE;
         FixtureReflectionUtils.reflect(entity, this);
         return entity;
     }

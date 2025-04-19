@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
+import java.util.Set;
 
 @NoArgsConstructor
 public class ProductCommand {
@@ -17,7 +18,7 @@ public class ProductCommand {
 
     @Getter
     @AllArgsConstructor
-    public static class Decrease {
-        private Map<Long, Integer> productMap;
+    public static class FindAll {
+        private Set<Long> productIds;
     }
 }

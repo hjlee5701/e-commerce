@@ -1,18 +1,19 @@
 package kr.hhplus.be.server.domain.product;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PRODUCT_ID")
     private Long id;
 
@@ -22,13 +23,12 @@ public class Product {
 
     private int quantity;
 
-    public void decrease(Integer decreaseQuantity) {
-        if (decreaseQuantity <= 0) {
-            throw new InvalidDecreaseQuantityException();
-        }
-        if (this.quantity < decreaseQuantity) {
-            throw new InsufficientStockException(title);
-        }
-        quantity -= decreaseQuantity;
+    private Product(Long productId) {
+        this.id = productId;
     }
+
+    public static Product referenceById(Long productId) {
+        return new Product(productId);
+    }
+
 }
