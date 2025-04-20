@@ -29,6 +29,7 @@ public class BatchDataInserter {
                     transaction = statelessSession.beginTransaction();
                 }
             }
+            transaction.commit();
         } catch (Exception e) {
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
