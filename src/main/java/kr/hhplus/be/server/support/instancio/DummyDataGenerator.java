@@ -27,8 +27,7 @@ public class DummyDataGenerator {
 
     // 10일 간의 랜덤 날짜 생성
     private LocalDateTime generateRandomDate() {
-        int daysAgo = random.nextInt(10);
-        return LocalDateTime.now().minusDays(daysAgo);
+        return LocalDateTime.now().minusDays(randomNumber(1, 200));
     }
     private LocalDateTime generateBeforeDate(int minusDays) {
         int daysAgo = random.nextInt(minusDays);
@@ -55,23 +54,21 @@ public class DummyDataGenerator {
         List<OrderStatistics> orderStatisticsList = new ArrayList<>();
 
         for (Long productId : productsIds) {
-            for (int i = 0; i < count; i++) {
-                LocalDateTime randomDate = generateRandomDate();
+            LocalDateTime randomDate = generateRandomDate();
 
-                // 날짜만 비교하기 위해 randomDate의 시간 부분을 제외한 날짜만 사용
-                String combinationKey = randomDate.toLocalDate().toString() + "_" + productId;
+            // 날짜만 비교하기 위해 randomDate의 시간 부분을 제외한 날짜만 사용
+            String combinationKey = randomDate.toLocalDate().toString() + "_" + productId;
 
-                // 같은 날짜, 동일한 productId의 조합이 없다면 생성
-                if (!usedCombinations.contains(combinationKey)) {
-                    OrderStatistics orderStatistics = Instancio.of(OrderStatistics.class)
-                            .set(Select.field("totalSoldQuantity"), randomNumber(1, 100))
-                            .set(Select.field("product"), Product.referenceById(productId))
-                            .set(Select.field("statisticsAt"), randomDate)
-                            .create();
+            // 같은 날짜, 동일한 productId의 조합이 없다면 생성
+            if (!usedCombinations.contains(combinationKey)) {
+                OrderStatistics orderStatistics = Instancio.of(OrderStatistics.class)
+                        .set(Select.field("totalSoldQuantity"), randomNumber(1, 100))
+                        .set(Select.field("product"), Product.referenceById(productId))
+                        .set(Select.field("statisticsAt"), randomDate)
+                        .create();
 
-                    orderStatisticsList.add(orderStatistics);
-                    usedCombinations.add(combinationKey);
-                }
+                orderStatisticsList.add(orderStatistics);
+                usedCombinations.add(combinationKey);
             }
         }
         return orderStatisticsList;
