@@ -71,13 +71,13 @@ public class TestDataFactory {
     }
 
 
-    public Order createOrderPaidThreeDaysAgo(Member member, LocalDateTime now, List<Product> products) {
+    public Order createToDayPaidOrder(Member member, LocalDateTime now, List<Product> products) {
         Order order = Instancio.of(Order.class)
                 .ignore(field(Order::getId))
                 .set(field("member"), member)
                 .set(field("totalAmount"), BigDecimal.valueOf(randomNumber(10000, 500000)))
                 .set(field("status"), OrderStatus.PAID)
-                .set(field("orderedAt"), now.minusDays(3))
+                .set(field("orderedAt"), now)
                 .set(field("orderItems"), new ArrayList<>()) // 초기화만
                 .create();
 
@@ -93,7 +93,7 @@ public class TestDataFactory {
     }
 
 
-    public Order createPaidOrder(Member member, LocalDateTime now, Product product, int minusDays) {
+    public Order createPaidOrderByDays(Member member, LocalDateTime now, Product product, int minusDays) {
         Order order = Instancio.of(Order.class)
                 .ignore(field(Order::getId))
                 .set(field("member"), member)

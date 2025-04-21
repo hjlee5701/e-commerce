@@ -36,11 +36,13 @@ public class OrderStatisticsService {
 
 
     public void aggregate(OrderStatisticsCommand.Aggregate command) {
-        LocalDateTime statisticsAt = command.getStatisticsAt();
+
         Map<Long, Integer> soldProduct = command.toSoldProductMap();
+        LocalDateTime startDate = command.getStatisticsAt().toLocalDate().atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
 
         List<OrderStatistics> orderStatistics =
-                orderStatisticsRepository.getByProductIdsAndDate(statisticsAt, soldProduct.keySet());
+                orderStatisticsRepository.getByProductIdsAndDate(startDate, endDate, soldProduct.keySet());
 
         Map<Long, OrderStatistics> statisticsMap = orderStatistics.stream()
                 .collect(Collectors.toMap(
@@ -57,7 +59,7 @@ public class OrderStatisticsService {
             if (statistics != null) {
                 statistics.aggregateQuantity(quantity);
             } else {
-                OrderStatistics newStat = OrderStatistics.create(productId, quantity, statisticsAt);
+                OrderStatistics newStat = OrderStatistics.create(productId, quantity, command.getStatisticsAt());
                 orderStatisticsRepository.save(newStat);
             }
         }

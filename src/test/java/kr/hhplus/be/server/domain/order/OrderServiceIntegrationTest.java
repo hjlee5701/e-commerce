@@ -110,10 +110,10 @@ public class OrderServiceIntegrationTest {
         testDataManager.flushAndClear();
 
         // 주문1: 포함되어야 함 (1일 전)
-        Order validOrder = factory.createPaidOrder(member, FIXED_NOW, productA, 1);
+        Order validOrder = factory.createPaidOrderByDays(member, FIXED_NOW, productA, 0);
 
         // 주문2: 제외되어야 함 (5일 전)
-        Order order = factory.createPaidOrder(member, FIXED_NOW, productB, 5);
+        Order order = factory.createPaidOrderByDays(member, FIXED_NOW, productB, 5);
         testDataManager.persist(List.of(validOrder, order));
         testDataManager.persist(validOrder.getOrderItems());
         testDataManager.persist(order.getOrderItems());

@@ -30,7 +30,7 @@ public class OrderStatisticsRepositoryImpl implements OrderStatisticsRepository 
     }
 
     @Override
-    public List<OrderStatistics> getByProductIdsAndDate(LocalDateTime statisticsAt, Set<Long> productIds) {
-        return orderStatisticsJpaRepository.findProductIdsAndDate(statisticsAt, productIds);
+    public List<OrderStatistics> getByProductIdsAndDate(LocalDateTime startDate, LocalDateTime endDate, Set<Long> productIds) {
+        return orderStatisticsJpaRepository.findProductIdsAndDate(startDate, endDate, productIds);
     }
 }

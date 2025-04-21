@@ -35,8 +35,8 @@ public interface OrderStatisticsJpaRepository extends JpaRepository<OrderStatist
     @Query("""
         select os
         from OrderStatistics os
-        where os.statisticsAt = :statisticsAt
+        where os.statisticsAt >= :startDate and os.statisticsAt < :endDate
           and os.product.id in :productIds
     """)
-    List<OrderStatistics> findProductIdsAndDate(LocalDateTime statisticsAt, Set<Long> productIds);
+    List<OrderStatistics> findProductIdsAndDate(LocalDateTime startDate, LocalDateTime endDate, Set<Long> productIds);
 }

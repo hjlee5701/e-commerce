@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
@@ -66,7 +67,7 @@ public class OrderStatisticsServiceIntegrationTest {
 
         // 통계에 들어갈 6개 판매 완료 주문을 생성
         for (int i = 0; i < 6; i++) {
-            Order order = factory.createOrderPaidThreeDaysAgo(member, FIXED_NOW, products);
+            Order order = factory.createToDayPaidOrder(member, FIXED_NOW, products);
             testDataManager.persist(order);
             testDataManager.persist(order.getOrderItems());
         }
@@ -79,7 +80,10 @@ public class OrderStatisticsServiceIntegrationTest {
         Pageable pageable = PageRequest.of(0, 5);
 
         // then
-        List<Order> orders = orderRepository.getPaidOrderByDate(FIXED_NOW.minusDays(3), FIXED_NOW, OrderStatus.PAID);
+        LocalDateTime startDate = FIXED_NOW.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+
+        List<Order> orders = orderRepository.getPaidOrderByDate(startDate, endDate, OrderStatus.PAID);
         assertThat(orders.size()).isEqualTo(6);
         
         Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(FIXED_NOW.minusDays(3), FIXED_NOW, pageable);

@@ -107,7 +107,10 @@ public class OrderStatisticsServiceTest {
         OrderStatisticsCommand.Aggregate command
                 = new OrderStatisticsCommand.Aggregate(FIXED_NOW, itemsCommand);
 
-        given(orderStatisticsRepository.getByProductIdsAndDate(command.getStatisticsAt(), command.toSoldProductMap().keySet()))
+        LocalDateTime startDate = command.getStatisticsAt().toLocalDate().atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+
+        given(orderStatisticsRepository.getByProductIdsAndDate(startDate, endDate, command.toSoldProductMap().keySet()))
                 .willReturn(List.of());
 
         // when
@@ -132,7 +135,10 @@ public class OrderStatisticsServiceTest {
         OrderStatistics stat1 = spy(OrderStatistics.create(1L, 100, now));
         OrderStatistics stat2 = spy(OrderStatistics.create(2L, 200, now));
 
-        given(orderStatisticsRepository.getByProductIdsAndDate(now, command.toSoldProductMap().keySet()))
+        LocalDateTime startDate = command.getStatisticsAt().toLocalDate().atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+
+        given(orderStatisticsRepository.getByProductIdsAndDate(startDate, endDate, command.toSoldProductMap().keySet()))
                 .willReturn(List.of(stat1, stat2));
 
         // when

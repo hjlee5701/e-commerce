@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -60,7 +61,7 @@ public class OrderStatisticsFacadeIntegrationTest {
         // 동일 상품 2개 주문
         int aggregateQuantity = 0;
         for (int i = 0; i < 2; i++) {
-            Order order = factory.createOrderPaidThreeDaysAgo(member, FIXED_NOW, List.of(product));
+            Order order = factory.createToDayPaidOrder(member, FIXED_NOW, List.of(product));
             aggregateQuantity += order.getOrderItems().get(0).getQuantity();
             testDataManager.persist(order);
             testDataManager.persist(order.getOrderItems());
@@ -72,7 +73,12 @@ public class OrderStatisticsFacadeIntegrationTest {
         testDataManager.flushAndClear();
 
         // then
-        List<OrderStatistics> stats = orderStatisticsRepository.getByProductIdsAndDate(FIXED_NOW, Set.of(product.getId()));
+        LocalDateTime startDate = FIXED_NOW.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+
+        List<OrderStatistics> stats = orderStatisticsRepository.getByProductIdsAndDate(
+                startDate, endDate, Set.of(product.getId())
+        );
         assertThat(stats).hasSize(1);
         assertThat(stats.get(0).getTotalSoldQuantity()).isEqualTo(aggregateQuantity);
     }
@@ -84,15 +90,19 @@ public class OrderStatisticsFacadeIntegrationTest {
         // given
         setUp();
         // 주문 생성
-        Order order = factory.createOrderPaidThreeDaysAgo(member, FIXED_NOW, List.of(product));
+        Order order = factory.createToDayPaidOrder(member, FIXED_NOW, List.of(product));
         testDataManager.persist(order);
         testDataManager.persist(order.getOrderItems());
         testDataManager.flushAndClear();
 
         int quantity = order.getOrderItems().get(0).getQuantity();
 
+        LocalDateTime startDate = FIXED_NOW.toLocalDate().atStartOfDay();
+        LocalDateTime endDate = startDate.plusDays(1);
+
         List<OrderStatistics> before = orderStatisticsRepository.getByProductIdsAndDate(
-                FIXED_NOW,
+                startDate,
+                endDate,
                 Set.of(product.getId())
         );
         assertThat(before).isEmpty();
@@ -103,7 +113,8 @@ public class OrderStatisticsFacadeIntegrationTest {
 
         // then
         List<OrderStatistics> stats = orderStatisticsRepository.getByProductIdsAndDate(
-                FIXED_NOW,
+                startDate,
+                endDate,
                 Set.of(product.getId())
         );
 

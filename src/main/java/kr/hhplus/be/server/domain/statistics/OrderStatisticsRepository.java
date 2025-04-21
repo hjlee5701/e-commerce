@@ -13,5 +13,5 @@ public interface OrderStatisticsRepository {
 
     Page<PopularProductsProjection> findPopularProductsForDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
-    List<OrderStatistics> getByProductIdsAndDate(LocalDateTime statisticsAt, Set<Long> longs);
+    List<OrderStatistics> getByProductIdsAndDate(LocalDateTime startDate, LocalDateTime endDate, Set<Long> longs);
 }
