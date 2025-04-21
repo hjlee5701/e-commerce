@@ -35,7 +35,7 @@ public class CouponService {
     }
 
     public CouponInfo.Issued issue(CouponCommand.Issue command) {
-        Coupon coupon = couponRepository.findById(command.getCouponId())
+        Coupon coupon = couponRepository.findByIdForUpdate(command.getCouponId())
                 .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_NOT_FOUND));
 
         // 쿠폰 발급

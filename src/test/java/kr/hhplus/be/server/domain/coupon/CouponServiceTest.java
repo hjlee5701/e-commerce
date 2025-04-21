@@ -51,7 +51,7 @@ public class CouponServiceTest {
 
         CouponCommand.Issue command = new CouponCommand.Issue(coupon.getId(), ANY_MEMBER_ID);
 
-        given(couponRepository.findById(coupon.getId())).willReturn(Optional.of(coupon));
+        given(couponRepository.findByIdForUpdate(coupon.getId())).willReturn(Optional.of(coupon));
         given(coupon.issue(any(), any())).willReturn(couponItem);
         given(couponItemRepository.save(couponItem)).willReturn(couponItem);
 
