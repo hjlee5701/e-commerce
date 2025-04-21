@@ -23,9 +23,7 @@ public class OrderStatisticsRepositoryImpl implements OrderStatisticsRepository 
     }
 
     @Override
-    public Page<PopularProductsProjection> findPopularProductsForDateRange(int days, Pageable pageable) {
-        LocalDateTime startDate = LocalDateTime.now();
-        LocalDateTime endDate = startDate.minusDays(days);
+    public Page<PopularProductsProjection> findPopularProductsForDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
         return orderStatisticsJpaRepository.findPopularProductsForDateRange(startDate, endDate, pageable);
     }
 }

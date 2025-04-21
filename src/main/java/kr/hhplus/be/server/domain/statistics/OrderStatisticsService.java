@@ -6,7 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
@@ -19,14 +23,44 @@ public class OrderStatisticsService {
 
 
     public List<OrderStatisticsInfo.Popular> popular() {
-        Pageable pageable = PageRequest.of(0, POPULAR_PERIOD);
+        Pageable pageable = PageRequest.of(0, TOP_RANK);
+        LocalDateTime now = LocalDateTime.now();
 
-        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(TOP_RANK, pageable);
+        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now, now.minusDays(POPULAR_PERIOD), pageable);
 
         List<PopularProductsProjection> populars = popularPage.getContent();
         return IntStream.range(0, populars.size())
                 .mapToObj(i -> OrderStatisticsInfo.Popular.of(i + 1, populars.get(i)))
                 .toList();
+    }
+
+
+    public void aggregate(OrderStatisticsCommand.Aggregate command) {
+        LocalDateTime statisticsAt = command.getStatisticsAt();
+        Map<Long, Integer> soldProduct = command.toSoldProductMap();
+
+        List<OrderStatistics> orderStatistics =
+                orderStatisticsRepository.getByProductIdsAndDate(statisticsAt, soldProduct.keySet());
+
+        Map<Long, OrderStatistics> statisticsMap = orderStatistics.stream()
+                .collect(Collectors.toMap(
+                        stat -> stat.getProduct().getId(),
+                        Function.identity()
+                ));
+
+        for (Map.Entry<Long, Integer> entry : soldProduct.entrySet()) {
+            Long productId = entry.getKey();
+            Integer quantity = entry.getValue();
+
+            OrderStatistics statistics = statisticsMap.get(productId);
+
+            if (statistics != null) {
+                statistics.aggregateQuantity(quantity);
+            } else {
+                OrderStatistics newStat = OrderStatistics.create(productId, quantity, statisticsAt);
+                orderStatisticsRepository.save(newStat);
+            }
+        }
     }
 
 }
