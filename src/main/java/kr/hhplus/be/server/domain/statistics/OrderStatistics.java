@@ -1,12 +1,12 @@
 package kr.hhplus.be.server.domain.statistics;
 
 import jakarta.persistence.*;
+import kr.hhplus.be.server.domain.common.ECommerceException;
 import kr.hhplus.be.server.domain.product.Product;
+import kr.hhplus.be.server.interfaces.code.OrderStatisticsError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Getter
-@EntityListeners(AuditingEntityListener.class)
 public class OrderStatistics {
 
     @Id
@@ -28,11 +27,16 @@ public class OrderStatistics {
 
     private int totalSoldQuantity;
 
-    @CreatedDate
     private LocalDateTime statisticsAt;
 
+    public void aggregateQuantity(Integer soldQuantity) {
+        if (soldQuantity == null || soldQuantity <= 0) {
+            throw new ECommerceException(OrderStatisticsError.INVALID_SOLD_QUANTITY);
+        }
+        this.totalSoldQuantity += soldQuantity;
+    }
 
-    public OrderStatistics create(Long productId, int soldQuantity) {
-        return new OrderStatistics(null, Product.referenceById(productId), soldQuantity, null);
+    public static OrderStatistics create(Long productId, int soldQuantity, LocalDateTime now) {
+        return new OrderStatistics(null, Product.referenceById(productId), soldQuantity, now);
     }
 }
