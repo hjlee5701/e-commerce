@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.support;
 
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponStatus;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderCommand;
@@ -113,5 +115,19 @@ public class TestDataFactory {
         order.addItems(itemCommand, orderProductMap);
         return order;
 
+    }
+
+
+    public Coupon createCoupon(int remainingQuantity, LocalDateTime now) {
+        return Instancio.of(Coupon.class)
+                .ignore(field(Coupon::getId))
+                .set(field("title"), "선착순 쿠폰")
+                .set(field("initialQuantity"), remainingQuantity)
+                .set(field("remainingQuantity"), remainingQuantity)
+                .set(field("discountAmount"), BigDecimal.TEN)
+                .set(field("status"), CouponStatus.ACTIVE)
+                .set(field("issuedAt"), now.minusDays(10))
+                .set(field("expiredAt"), now.plusDays(10))
+                .create();
     }
 }
