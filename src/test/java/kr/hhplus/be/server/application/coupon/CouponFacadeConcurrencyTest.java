@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.infrastructure.coupon.CouponItemJpaRepository;
 import kr.hhplus.be.server.support.TestDataFactory;
 import kr.hhplus.be.server.support.TestDataManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,11 @@ public class CouponFacadeConcurrencyTest {
         coupon = testFactory.createCoupon(remainingQuantity, LocalDateTime.now());
 
         testDataManager.persist(List.of(memberA, memberB, coupon));
+    }
+
+    @AfterEach
+    void cleanupAll() {
+        testDataManager.cleanupAll();
     }
 
 
