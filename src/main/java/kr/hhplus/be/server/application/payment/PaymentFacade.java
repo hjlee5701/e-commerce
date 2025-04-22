@@ -10,8 +10,10 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.product.ProductStockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +24,9 @@ public class PaymentFacade {
     private final CouponService couponService;
     private final PaymentService paymentService;
     private final MemberPointService memberPointService;
+    private final ProductStockService productStockService;
 
+    @Transactional
     public PaymentResult.Paid createPayment(PaymentCriteria.Pay criteria) {
         // 결제 요청자 조회
         MemberInfo.Detail memberInfo = memberService.findMemberById(criteria.toFindMemberCommand());
@@ -39,6 +43,9 @@ public class PaymentFacade {
 
         // 결제 생성
         Payment payment = paymentService.pay(criteria.toPayCommand(order, couponItem));
+
+        // 재고 감소
+        productStockService.decreaseStock(criteria.toDecreaseStockCommand(order.getOrderItems()));
 
         // 금액 차감
         MemberPointCommand.Use command = criteria.toUseMemberPointCommand(payment, order);

@@ -9,9 +9,6 @@ import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.OrderStatus;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
-import kr.hhplus.be.server.domain.product.ProductStock;
-import kr.hhplus.be.server.domain.product.ProductStockRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +36,6 @@ public class OrderFacadeIntegrationTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private ProductStockRepository productStockRepository;
-
-    @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
@@ -52,9 +46,7 @@ public class OrderFacadeIntegrationTest {
 
     private Member member;
     private Product shirts;
-    private ProductStock shirtsStock;
     private Product pants;
-    private ProductStock pantsStock;
 
 
     void setUp() {
@@ -64,10 +56,6 @@ public class OrderFacadeIntegrationTest {
         shirts = new Product(null, "상품A", BigDecimal.valueOf(10000), 100);
         pants = new Product(null, "상품B", BigDecimal.valueOf(20000), 100);
         productRepository.saveAll(List.of(shirts, pants));
-
-        shirtsStock = new ProductStock(null, shirts, shirts.getQuantity());
-        pantsStock = new ProductStock(null, pants, pants.getQuantity());
-        productStockRepository.saveAll(List.of(shirtsStock, pantsStock));
 
         cleanUp();
     }
@@ -84,9 +72,6 @@ public class OrderFacadeIntegrationTest {
         Member member = new Member(null, "test", LocalDateTime.now());
         Member savedMember = memberRepository.save(member);
 
-        int shirtsOriginalQuantity = shirtsStock.getQuantity();
-        int pantsOriginalQuantity = pantsStock.getQuantity();
-
         int orderQuantityOfShirts = 1;
         int orderQuantityOfPants = 2;
 
@@ -102,8 +87,6 @@ public class OrderFacadeIntegrationTest {
 
         // then
         Order order = orderRepository.findById(result.getOrderId()).orElse(null);
-        shirtsStock = productStockRepository.findByProductId(shirts.getId()).orElse(null);
-        pantsStock = productStockRepository.findByProductId(pants.getId()).orElse(null);
 
         assertThat(result).isNotNull();
         assertThat(order).isNotNull();
@@ -111,10 +94,7 @@ public class OrderFacadeIntegrationTest {
         assertAll("주문 검증",
                 () -> assertThat(result.getOrderId()).isNotNull(),
                 () -> assertThat(order.getId()).isEqualTo(result.getOrderId()),
-                () -> assertEquals(OrderStatus.PENDING, order.getStatus()),
-
-                () -> assertEquals(shirtsOriginalQuantity-orderQuantityOfShirts, shirtsStock.getQuantity()),
-                () -> assertEquals(pantsOriginalQuantity-orderQuantityOfPants, pantsStock.getQuantity())
+                () -> assertEquals(OrderStatus.PENDING, order.getStatus())
         );
 
         assertThat(order.getOrderItems()).isNotEmpty();
