@@ -2,8 +2,8 @@ package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.EntityManager;
 import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.infrastructure.product.ProductStockJpaRepository;
 import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class ProductStockServiceIntegrationTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private ProductStockRepository productStockRepository;
+    private ProductStockJpaRepository productStockRepository;
 
     @Autowired
     private EntityManager entityManager;
@@ -75,9 +75,9 @@ public class ProductStockServiceIntegrationTest {
         cleanUp();
 
         // then
-        stockA = productStockRepository.findByProductId(productA.getId())
+        stockA = productStockRepository.findByProductIdForUpdate(productA.getId())
                 .orElseThrow(() -> new ECommerceException(ProductErrorCode.PRODUCT_STOCK_NOT_FOUND));
-        stockB = productStockRepository.findByProductId(productB.getId())
+        stockB = productStockRepository.findByProductIdForUpdate(productB.getId())
                 .orElseThrow(() -> new ECommerceException(ProductErrorCode.PRODUCT_STOCK_NOT_FOUND));
 
         assertEquals(originalStockA-orderQuantityA, stockA.getQuantity());
