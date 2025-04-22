@@ -1,5 +1,9 @@
 package kr.hhplus.be.server.application.payment;
 
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponItem;
+import kr.hhplus.be.server.domain.coupon.CouponItemRepository;
+import kr.hhplus.be.server.domain.coupon.CouponItemStatus;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.memberPoint.MemberPoint;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy;
@@ -25,6 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,6 +39,9 @@ public class PaymentFacadeConcurrencyTest {
 
     @Autowired
     private ProductStockJpaRepository productStockRepository;
+
+    @Autowired
+    private CouponItemRepository couponItemRepository;
 
     @Autowired
     private PaymentFacade paymentFacade;
@@ -121,5 +129,52 @@ public class PaymentFacadeConcurrencyTest {
         assertEquals(0, remainStock.getQuantity());
         assertEquals(2, failedMemberIds.get());
 
+    }
+
+
+    @Test
+    @DisplayName("동시에 하나의 쿠폰을 동일한 결제에 적용하기 위해 3번 시도할 경우, 1번만 성공한다.")
+    void 쿠폰_사용_동시성_테스트() {
+        int remainingStock = 1;
+        int orderQuantity = 1;
+        int requestCount = 1;
+        setUp(requestCount, remainingStock, orderQuantity);
+
+        Member member = members.get(0);
+        Order order = orders.get(0);
+
+        Coupon coupon = factory.createCoupon(10, now);
+        CouponItem couponItem = factory.createCouponItem(coupon, members.get(0));
+
+        testDataManager.persist(List.of(coupon, couponItem));
+        testDataManager.flushAndClear();
+
+        int threadCount = 3;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch countDownLatch = new CountDownLatch(0);
+        AtomicInteger failedCount = new AtomicInteger();
+        AtomicInteger successCount = new AtomicInteger();
+
+        // when
+        List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
+                .mapToObj(i -> CompletableFuture.runAsync(() -> {
+                    try {
+                        countDownLatch.await();
+                        PaymentCriteria.Pay criteria = new PaymentCriteria.Pay(order.getId(), couponItem.getId(), member.getId());
+                        paymentFacade.createPayment(criteria);
+
+                    } catch (Exception e) {
+                        failedCount.getAndIncrement();
+                    }}, executorService))
+                .toList();
+
+        countDownLatch.countDown();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // then
+        CouponItem usedCoupon = couponItemRepository.findById(couponItem.getId()).orElse(null);
+
+        assertEquals(2, failedCount.get());
+        assertEquals(CouponItemStatus.USED, usedCoupon.getStatus());
     }
 }
