@@ -30,7 +30,7 @@ public class CouponService {
     }
 
     public CouponItem findByCouponItemId(CouponCommand.Find command) {
-        return couponItemRepository.findById(command.getCouponItemId())
+        return couponItemRepository.findByIdForUpdate(command.getCouponItemId())
                 .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_ITEM_NOT_FOUND));
     }
 

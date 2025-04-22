@@ -8,5 +8,7 @@ public interface CouponItemRepository {
 
     Optional<CouponItem> findById(Long id);
 
+    Optional<CouponItem> findByIdForUpdate(Long id);
+
     CouponItem save(CouponItem couponItem);
 }

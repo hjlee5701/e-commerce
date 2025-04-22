@@ -25,6 +25,11 @@ public class CouponItemRepositoryImpl implements CouponItemRepository {
     }
 
     @Override
+    public Optional<CouponItem> findByIdForUpdate(Long id) {
+        return couponItemJpaRepository.findByIdForUpdate(id);
+    }
+
+    @Override
     public CouponItem save(CouponItem couponItem) {
         return couponItemJpaRepository.save(couponItem);
     }
