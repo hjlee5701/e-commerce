@@ -16,13 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,16 +47,18 @@ public class CouponFacadeConcurrencyTest {
 
     private Coupon coupon;
 
-    private List<Member> members;
+    private final List<Member> members = new ArrayList<>();
 
 
-    void setUp(int remainingQuantity) {
-        Member memberA = testFactory.createMember();
-        Member memberB = testFactory.createMember();
-        members = List.of(memberA, memberB);
+    void setUp(int requestCount, int remainingQuantity) {
+
+        for (int i = 0; i < requestCount; i++) {
+            members.add(testFactory.createMember());
+        }
         coupon = testFactory.createCoupon(remainingQuantity, LocalDateTime.now());
 
-        testDataManager.persist(List.of(memberA, memberB, coupon));
+        testDataManager.persist(members);
+        testDataManager.persist(coupon);
     }
 
     @AfterEach
@@ -64,42 +68,51 @@ public class CouponFacadeConcurrencyTest {
 
 
     @Test
-    @DisplayName("동시에 2명의 사용자가 1개 남은 선착순 쿠폰을 발급하기 위해 시도한다.")
+    @DisplayName("동시에 3명의 사용자가 2개 남은 선착순 쿠폰을 발급하기 위해 시도한다.")
     void 동시에_선착순_쿠폰_발급() {
         // given
-        int remainingQuantity = 1;
+        int remainingQuantity = 2;
+        int requestCount = 3;
 
-        setUp(remainingQuantity);
+        setUp(requestCount, remainingQuantity);
         testDataManager.flushAndClear();
 
         // when
-        int threadCount = 2;
+        int threadCount = 3; // 실행할 스레드 수
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch startLatch = new CountDownLatch(1);
         AtomicInteger failedUserIds = new AtomicInteger();
 
-        List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
-                .mapToObj(i -> CompletableFuture.runAsync(() -> {
-                    try {
-                        startLatch.await();
-                        Member member = members.get(i);
-                        CouponCriteria.Issue criteria = CouponCriteria.Issue.of(coupon.getId(), member.getId());
-                        facade.issue(criteria);
-                    } catch (Exception e) {
-                        failedUserIds.getAndIncrement();
-                    }
-                }, executor))
-                .toList();
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        for (Member member : members) {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                try {
+                    startLatch.await();
+                    CouponCriteria.Issue criteria = CouponCriteria.Issue.of(coupon.getId(), member.getId());
+                    facade.issue(criteria);
+                } catch (Exception e) {
+                    failedUserIds.getAndIncrement();
+                }
+            }, executor);
+
+            futures.add(future);
+        }
 
         startLatch.countDown();
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         // then
         List<CouponItem> issued = couponItemRepository.findAll();
-        assertThat(issued).hasSize(1);
+        assertThat(issued).hasSize(2);
 
-        Long issuedMemberId = issued.get(0).getMember().getId();
-        assertThat(members).extracting(Member::getId).contains(issuedMemberId);
+        Set<Long> issuedMemberIds = issued.stream()
+                .map(couponItem -> couponItem.getMember().getId())
+                .collect(Collectors.toSet());
+
+        assertThat(issuedMemberIds).isSubsetOf(
+                members.stream().map(Member::getId).collect(Collectors.toSet())
+        );
 
         assertThat(failedUserIds.get()).isEqualTo(1);
     }
