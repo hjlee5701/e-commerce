@@ -46,7 +46,7 @@ public class MemberPointFacadeIntegrationTest {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
 
-        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), BigDecimal.TEN);
+        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), BigDecimal.TEN, null);
         memberPointRepository.save(memberPoint);
 
         cleanUp();

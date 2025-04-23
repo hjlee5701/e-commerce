@@ -28,8 +28,11 @@ public class MemberPoint {
 
     private BigDecimal balance;
 
+    @Version
+    private Long version;
+
     public static MemberPoint createInitialPoint(Long memberId) {
-        return new MemberPoint(null, Member.referenceById(memberId), BigDecimal.ZERO);
+        return new MemberPoint(null, Member.referenceById(memberId), BigDecimal.ZERO, null);
     }
 
     public void charge(BigDecimal amount) {

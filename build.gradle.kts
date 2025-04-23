@@ -56,6 +56,9 @@ dependencies {
 
 	// instancio
 	implementation("org.instancio:instancio-core:5.4.0")
+	// retryable
+	implementation("org.springframework.retry:spring-retry")
+
 }
 
 tasks.withType<Test> {
