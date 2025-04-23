@@ -175,10 +175,13 @@ public class TestDataFactory {
 
 
     public Order createPendingOrderByQuantity(Member member, List<Product> products, int quantity, LocalDateTime orderedAt) {
+
+        var totalAmount = products.stream().map(Product::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+
         Order order = Instancio.of(Order.class)
                 .ignore(field(Order::getId))
                 .set(field("member"), member)
-                .set(field("totalAmount"), BigDecimal.valueOf(randomNumber(10000, 500000)))
+                .set(field("totalAmount"), totalAmount)
                 .set(field("status"), OrderStatus.PENDING)
                 .set(field("orderedAt"), orderedAt)
                 .set(field("orderItems"), null) // 나중에 수동 세팅

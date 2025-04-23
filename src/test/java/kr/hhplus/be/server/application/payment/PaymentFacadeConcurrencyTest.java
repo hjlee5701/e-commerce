@@ -7,6 +7,7 @@ import kr.hhplus.be.server.domain.coupon.CouponItemStatus;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.memberPoint.MemberPoint;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy;
+import kr.hhplus.be.server.domain.memberPoint.MemberPointRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductStock;
@@ -44,6 +45,9 @@ public class PaymentFacadeConcurrencyTest {
     private CouponItemRepository couponItemRepository;
 
     @Autowired
+    private MemberPointRepository memberPointRepository;
+
+    @Autowired
     private PaymentFacade paymentFacade;
 
     @Autowired
@@ -52,8 +56,8 @@ public class PaymentFacadeConcurrencyTest {
     @Autowired
     private TestDataManager testDataManager;
 
-    private List<Member> members;
-    private List<Order> orders;
+    private List<Member> members = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
     private Product product;
 
@@ -63,9 +67,6 @@ public class PaymentFacadeConcurrencyTest {
 
 
     void setUp(int memberCount, int remainingStock, int orderQuantity) {
-        members = new ArrayList<>();
-        orders = new ArrayList<>();
-
         product = factory.createProductByPrice(BigDecimal.valueOf(100));
         productStock = factory.createProductStock(product, remainingStock);
 
@@ -89,6 +90,8 @@ public class PaymentFacadeConcurrencyTest {
     @AfterEach
     void cleanupAll() {
         testDataManager.cleanupAll();
+        members = new ArrayList<>();
+        orders = new ArrayList<>();
     }
 
 
@@ -176,5 +179,58 @@ public class PaymentFacadeConcurrencyTest {
 
         assertEquals(2, failedCount.get());
         assertEquals(CouponItemStatus.USED, usedCoupon.getStatus());
+    }
+
+    @Test
+    @DisplayName("동시에 한 회원의 포인트를 서로 다른 결제에 적용하기 위해 3번 시도할 경우, 잔액부족으로 1번만 성공한다.")
+    void 금액_결제_동시성_테스트() {
+
+        int remainingStock = 100;
+        int orderQuantity = 1;
+        BigDecimal balance = BigDecimal.TEN;
+        int threadCount = 3;
+
+        product = factory.createProductByPrice(balance);
+        productStock = factory.createProductStock(product, remainingStock);
+        testDataManager.persist(List.of(product, productStock));
+
+        now = LocalDateTime.now();
+        Member member = factory.createMember();
+        MemberPoint memberPoint = factory.createMemberPointByBalance(member, balance);
+        testDataManager.persist(List.of(member, memberPoint));
+
+        for (int i = 0; i < threadCount; i++) {
+            Order order = factory.createPendingOrderByQuantity(member, List.of(product), orderQuantity, now);
+            System.out.println(order.getTotalAmount());
+            testDataManager.persist(order);
+            testDataManager.persist(order.getOrderItems());
+            orders.add(order);
+        }
+        testDataManager.flushAndClear();
+
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch countDownLatch = new CountDownLatch(0);
+        AtomicInteger failedCount = new AtomicInteger();
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        // when
+        for (Order order : orders) {
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                try {
+                    countDownLatch.await();
+                    PaymentCriteria.Pay criteria = new PaymentCriteria.Pay(order.getId(), null, member.getId());
+                    paymentFacade.createPayment(criteria);
+                } catch (Exception e) {
+                    failedCount.getAndIncrement();
+                }}, executor);
+            futures.add(future);
+        }
+        countDownLatch.countDown();
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // then
+        MemberPoint decreasedPoint = memberPointRepository.findByMemberId(member.getId()).orElse(null);
+        assertEquals(2, failedCount.get());
+        assertEquals(0, BigDecimal.ZERO.compareTo(decreasedPoint.getBalance()));
     }
 }
