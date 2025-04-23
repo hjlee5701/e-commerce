@@ -39,7 +39,7 @@ public class MemberPointService {
     }
 
     public void use(MemberPointCommand.Use command) {
-        MemberPoint memberPoint = memberPointRepository.findByMemberId(command.getMemberId())
+        MemberPoint memberPoint = memberPointRepository.findByMemberIdForUpdate(command.getMemberId())
                 .orElseThrow(() -> new ECommerceException(MemberPointErrorCode.MEMBER_POINT_NOT_FOUND));
 
         memberPoint.use(command.getAmount());
