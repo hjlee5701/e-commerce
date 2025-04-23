@@ -32,7 +32,7 @@ public class Payment {
     @JoinColumn(name = "COUPON_ITEM_ID", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private CouponItem couponItem;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
