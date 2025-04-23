@@ -23,7 +23,7 @@ public class MemberPointHistory {
     @Column(name = "MEMBER_POINT_HISTORY_ID")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
