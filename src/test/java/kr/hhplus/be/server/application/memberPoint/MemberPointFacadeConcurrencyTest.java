@@ -57,7 +57,7 @@ public class MemberPointFacadeConcurrencyTest {
 
     @Test
     @DisplayName("동시에 한 회원의 포인트 충전을 위해 20번을 시도할 경우, 재시도로 일부만 성공한다.")
-    void 충전_동시성_문제() {
+    void 충전_동시성_문제() throws InterruptedException {
         // given
         BigDecimal balance = BigDecimal.ZERO;
         setUp(balance);
@@ -65,8 +65,9 @@ public class MemberPointFacadeConcurrencyTest {
 
         int threadCount = 20;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        AtomicInteger failedMemberIds = new AtomicInteger();
+        CountDownLatch readyLatch = new CountDownLatch(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        AtomicInteger failedCount = new AtomicInteger();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         // when
@@ -74,21 +75,23 @@ public class MemberPointFacadeConcurrencyTest {
             BigDecimal amount = BigDecimal.TEN;
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
-                    countDownLatch.await();
+                    readyLatch.countDown();     // 준비 완료
+                    startLatch.await();         // 시작 신호 기다림
                     var criteria = new MemberPointCriteria.Charge(member.getId(), amount);
                     memberPointFacade.charge(criteria);
                 } catch (Exception e) {
-                    failedMemberIds.getAndIncrement();
+                    failedCount.getAndIncrement();
                 }}, executor);
             futures.add(future);
         }
-        countDownLatch.countDown();
+        readyLatch.await();
+        startLatch.countDown();
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         // then
         MemberPoint chargedPoint = memberPointRepository.findByMemberId(member.getId()).orElse(null);
 
-        int successCount = threadCount-failedMemberIds.get();
+        int successCount = threadCount-failedCount.get();
         BigDecimal chargedBalance = chargedPoint.getBalance();
         assertEquals(0, chargedBalance.compareTo(BigDecimal.TEN.multiply(BigDecimal.valueOf(successCount))));
     }

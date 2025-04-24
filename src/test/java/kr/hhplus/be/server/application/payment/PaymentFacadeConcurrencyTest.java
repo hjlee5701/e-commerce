@@ -97,7 +97,7 @@ public class PaymentFacadeConcurrencyTest {
 
     @DisplayName("동시에 3명의 사용자가 재고가 1개인 상품을 구매하기 위해 시도할 경우, 1명만 구매에 성공한다.")
     @Test
-    void 재고_차감_동시성_문제() {
+    void 재고_차감_동시성_문제() throws InterruptedException {
         // given
         int remainingStock = 1;
         int orderQuantity = 1;
@@ -108,7 +108,8 @@ public class PaymentFacadeConcurrencyTest {
 
         int threadCount = 3;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch countDownLatch = new CountDownLatch(1);
+        CountDownLatch readyLatch = new CountDownLatch(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
         AtomicInteger failedMemberIds = new AtomicInteger();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
@@ -116,7 +117,8 @@ public class PaymentFacadeConcurrencyTest {
             int idx = i;
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                     try {
-                        countDownLatch.await();
+                        readyLatch.countDown();
+                        startLatch.await();
                         PaymentCriteria.Pay criteria = new PaymentCriteria.Pay(orders.get(idx).getId(), null, members.get(idx).getId());
                         paymentFacade.createPayment(criteria);
                     } catch (Exception e) {
@@ -124,7 +126,8 @@ public class PaymentFacadeConcurrencyTest {
                     }}, executor);
             futures.add(future);
         }
-        countDownLatch.countDown();
+        readyLatch.await();
+        startLatch.countDown();
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         // when
@@ -137,7 +140,7 @@ public class PaymentFacadeConcurrencyTest {
 
     @Test
     @DisplayName("동시에 하나의 쿠폰을 동일한 결제에 적용하기 위해 3번 시도할 경우, 1번만 성공한다.")
-    void 쿠폰_사용_동시성_테스트() {
+    void 쿠폰_사용_동시성_테스트() throws InterruptedException {
         int remainingStock = 1;
         int orderQuantity = 1;
         int requestCount = 1;
@@ -154,7 +157,8 @@ public class PaymentFacadeConcurrencyTest {
 
         int threadCount = 3;
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch countDownLatch = new CountDownLatch(0);
+        CountDownLatch readyLatch = new CountDownLatch(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
         AtomicInteger failedCount = new AtomicInteger();
         AtomicInteger successCount = new AtomicInteger();
 
@@ -162,7 +166,8 @@ public class PaymentFacadeConcurrencyTest {
         List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
                 .mapToObj(i -> CompletableFuture.runAsync(() -> {
                     try {
-                        countDownLatch.await();
+                        readyLatch.countDown();
+                        startLatch.await();
                         PaymentCriteria.Pay criteria = new PaymentCriteria.Pay(order.getId(), couponItem.getId(), member.getId());
                         paymentFacade.createPayment(criteria);
 
@@ -171,7 +176,8 @@ public class PaymentFacadeConcurrencyTest {
                     }}, executorService))
                 .toList();
 
-        countDownLatch.countDown();
+        readyLatch.await();
+        startLatch.countDown();
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         // then
@@ -182,8 +188,8 @@ public class PaymentFacadeConcurrencyTest {
     }
 
     @Test
-    @DisplayName("동시에 한 회원의 포인트를 서로 다른 결제에 적용하기 위해 3번 시도할 경우, 잔액부족으로 1번만 성공한다.")
-    void 금액_결제_동시성_테스트() {
+    @DisplayName("동시에 한 회원의 포인트를 서로 다른 결제에 적용하기 위해 3번 시도할 경우, 1번만 성공한다.")
+    void 금액_결제_동시성_테스트() throws InterruptedException {
 
         int remainingStock = 100;
         int orderQuantity = 1;
@@ -209,7 +215,8 @@ public class PaymentFacadeConcurrencyTest {
         testDataManager.flushAndClear();
 
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch countDownLatch = new CountDownLatch(0);
+        CountDownLatch readyLatch = new CountDownLatch(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
         AtomicInteger failedCount = new AtomicInteger();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
@@ -217,7 +224,10 @@ public class PaymentFacadeConcurrencyTest {
         for (Order order : orders) {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
-                    countDownLatch.await();
+                    readyLatch.countDown();     // 준비 완료
+                    startLatch.await();         // 시작 신호 기다림
+
+                    // 결제 로직 실행
                     PaymentCriteria.Pay criteria = new PaymentCriteria.Pay(order.getId(), null, member.getId());
                     paymentFacade.createPayment(criteria);
                 } catch (Exception e) {
@@ -225,7 +235,13 @@ public class PaymentFacadeConcurrencyTest {
                 }}, executor);
             futures.add(future);
         }
-        countDownLatch.countDown();
+
+        // 모든 스레드가 준비될 때까지 대기
+        readyLatch.await();
+        // 동시에 시작
+        startLatch.countDown();
+
+        // 모든 작업 완료될 때까지 대기
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         // then
