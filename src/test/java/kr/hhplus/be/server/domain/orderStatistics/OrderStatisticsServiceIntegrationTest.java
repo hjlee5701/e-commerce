@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.orderStatistics;
 
+import kr.hhplus.be.server.application.orderStatistics.OrderStatisticsCriteria;
 import kr.hhplus.be.server.application.orderStatistics.OrderStatisticsFacade;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.order.Order;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -72,21 +74,21 @@ public class OrderStatisticsServiceIntegrationTest {
             testDataManager.persist(order.getOrderItems());
         }
         testDataManager.flushAndClear();
+        LocalDateTime startDate = FIXED_NOW;
+        LocalDateTime endDate = startDate.plusDays(1);
 
         // when
-        facade.aggregateOrderStatistics(FIXED_NOW);
+        facade.aggregateOrderStatistics(OrderStatisticsCriteria.Aggregate.of(endDate.toLocalDate()));
         testDataManager.flushAndClear();
 
         Pageable pageable = PageRequest.of(0, 5);
 
         // then
-        LocalDateTime startDate = FIXED_NOW.toLocalDate().atStartOfDay();
-        LocalDateTime endDate = startDate.plusDays(1);
 
         List<Order> orders = orderRepository.getPaidOrderByDate(startDate, endDate, OrderStatus.PAID);
         assertThat(orders.size()).isEqualTo(6);
         
-        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(FIXED_NOW.minusDays(3), FIXED_NOW, pageable);
+        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(startDate.toLocalDate(), startDate.toLocalDate().plusDays(3), pageable);
         List<PopularProductsProjection> populars = popularPage.getContent();
 
         assertThat(populars.size()).isEqualTo(5);

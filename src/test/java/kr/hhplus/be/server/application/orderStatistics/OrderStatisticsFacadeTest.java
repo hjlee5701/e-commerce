@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.orderStatistics;
 
+import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.order.OrderInfo;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.statistics.OrderStatisticsCommand;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,20 +39,21 @@ public class OrderStatisticsFacadeTest {
     @DisplayName("orderService → orderStatisticsService 순서로 호출되는지 검증")
     void 순서대로_호출되는지_검증() {
         // given
-        LocalDateTime now = FIXED_NOW;
+        LocalDateTime startDate = FIXED_NOW;
+        LocalDateTime endDate = startDate.plusDays(1);
 
         List<OrderInfo.Paid> orders = List.of(
                 new OrderInfo.Paid(1L, 10), new OrderInfo.Paid(2L, 20)
         );
 
-        given(orderService.getPaidOrderByDate(now)).willReturn(orders);
+        given(orderService.getPaidOrderByDate(any(OrderCommand.PaidStatistics.class))).willReturn(orders);
 
         // when
-        orderStatisticsFacade.aggregateOrderStatistics(now);
+        orderStatisticsFacade.aggregateOrderStatistics(OrderStatisticsCriteria.Aggregate.of(endDate.toLocalDate()));
 
         // then
         InOrder inOrder = inOrder(orderService, orderStatisticsService);
-        inOrder.verify(orderService).getPaidOrderByDate(any(LocalDateTime.class));
+        inOrder.verify(orderService).getPaidOrderByDate(any(OrderCommand.PaidStatistics.class));
         inOrder.verify(orderStatisticsService).aggregate(any(OrderStatisticsCommand.Aggregate.class));
     }
 }

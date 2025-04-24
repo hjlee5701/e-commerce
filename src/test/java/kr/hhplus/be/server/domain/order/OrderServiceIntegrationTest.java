@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -119,8 +121,11 @@ public class OrderServiceIntegrationTest {
         testDataManager.persist(order.getOrderItems());
 
         testDataManager.flushAndClear();
+
         // when
-        List<OrderInfo.Paid> result = orderService.getPaidOrderByDate(FIXED_NOW);
+        LocalDateTime startDate = FIXED_NOW;
+        LocalDateTime endDate = startDate.plusDays(1);
+        List<OrderInfo.Paid> result = orderService.getPaidOrderByDate(new OrderCommand.PaidStatistics(startDate, endDate));
 
         // then
         assertThat(result).hasSize(1);

@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class OrderStatisticsService {
 
     public List<OrderStatisticsInfo.Popular> popular() {
         Pageable pageable = PageRequest.of(0, TOP_RANK);
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDateTime.now().toLocalDate().plusDays(1);
 
         Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now, now.minusDays(POPULAR_PERIOD), pageable);
 
@@ -38,8 +39,8 @@ public class OrderStatisticsService {
     public void aggregate(OrderStatisticsCommand.Aggregate command) {
 
         Map<Long, Integer> soldProduct = command.toSoldProductMap();
-        LocalDateTime startDate = command.getStatisticsAt().toLocalDate().atStartOfDay();
-        LocalDateTime endDate = startDate.plusDays(1);
+        LocalDate startDate = command.getStartDate();
+        LocalDate endDate = command.getEndDate();
 
         List<OrderStatistics> orderStatistics =
                 orderStatisticsRepository.getByProductIdsAndDate(startDate, endDate, soldProduct.keySet());
@@ -59,7 +60,7 @@ public class OrderStatisticsService {
             if (statistics != null) {
                 statistics.aggregateQuantity(quantity);
             } else {
-                OrderStatistics newStat = OrderStatistics.create(productId, quantity, command.getStatisticsAt());
+                OrderStatistics newStat = OrderStatistics.create(productId, quantity, command.getEndDate());
                 orderStatisticsRepository.save(newStat);
             }
         }

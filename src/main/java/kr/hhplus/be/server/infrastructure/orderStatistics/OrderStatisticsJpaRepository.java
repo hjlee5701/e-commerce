@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -24,19 +25,19 @@ public interface OrderStatisticsJpaRepository extends JpaRepository<OrderStatist
             sum(os.totalSoldQuantity)
         )
         from OrderStatistics os
-        where os.statisticsAt between :startDate and :endDate
+        where os.statisticsDate between :startDate and :endDate
         group by os.product.id
         order by sum(os.totalSoldQuantity) desc
     """)
-    Page<PopularProductsProjection> findPopularProductsForDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
+    Page<PopularProductsProjection> findPopularProductsForDateRange(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate, Pageable pageable);
 
 
 
     @Query("""
         select os
         from OrderStatistics os
-        where os.statisticsAt >= :startDate and os.statisticsAt < :endDate
+        where os.statisticsDate >= :startDate and os.statisticsDate <= :endDate
           and os.product.id in :productIds
     """)
-    List<OrderStatistics> findProductIdsAndDate(LocalDateTime startDate, LocalDateTime endDate, Set<Long> productIds);
+    List<OrderStatistics> findProductIdsAndDate(LocalDate startDate, LocalDate endDate, Set<Long> productIds);
 }

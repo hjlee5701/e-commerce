@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class OrderStatisticsServiceTest {
 
         Page<PopularProductsProjection> projectionPage = new PageImpl<>(projections);
 
-        given(orderStatisticsRepository.findPopularProductsForDateRange(any(LocalDateTime.class), any(LocalDateTime.class), any(Pageable.class)))
+        given(orderStatisticsRepository.findPopularProductsForDateRange(any(LocalDate.class), any(LocalDate.class), any(Pageable.class)))
                 .willReturn(projectionPage);
 
         // when
@@ -59,7 +60,7 @@ public class OrderStatisticsServiceTest {
         assertThat(result.get(2).getRank()).isEqualTo(3);
 
         verify(orderStatisticsRepository, times(1))
-                .findPopularProductsForDateRange(any(LocalDateTime.class), any(LocalDateTime.class), any(Pageable.class));
+                .findPopularProductsForDateRange(any(LocalDate.class), any(LocalDate.class), any(Pageable.class));
     }
 
     @Test
@@ -77,14 +78,14 @@ public class OrderStatisticsServiceTest {
 
         Page<PopularProductsProjection> page = new PageImpl<>(projections);
 
-        given(orderStatisticsRepository.findPopularProductsForDateRange(any(LocalDateTime.class), any(LocalDateTime.class), any(Pageable.class)))
+        given(orderStatisticsRepository.findPopularProductsForDateRange(any(LocalDate.class), any(LocalDate.class), any(Pageable.class)))
                 .willReturn(page);
 
         // when
         List<OrderStatisticsInfo.Popular> result = orderStatisticsService.popular();
 
         // then
-        verify(orderStatisticsRepository).findPopularProductsForDateRange(any(LocalDateTime.class), any(LocalDateTime.class), captor.capture());
+        verify(orderStatisticsRepository).findPopularProductsForDateRange(any(LocalDate.class), any(LocalDate.class), captor.capture());
 
         Pageable captured = captor.getValue();
         assertThat(result.size() == TOP_RANK).isTrue();
@@ -104,11 +105,11 @@ public class OrderStatisticsServiceTest {
                 new OrderStatisticsCommand.AggregateItem(2L, 30)
         );
 
+        LocalDate startDate = FIXED_NOW.toLocalDate();
+        LocalDate endDate = startDate.plusDays(1);
         OrderStatisticsCommand.Aggregate command
-                = new OrderStatisticsCommand.Aggregate(FIXED_NOW, itemsCommand);
+                = new OrderStatisticsCommand.Aggregate(startDate, endDate, itemsCommand);
 
-        LocalDateTime startDate = command.getStatisticsAt().toLocalDate().atStartOfDay();
-        LocalDateTime endDate = startDate.plusDays(1);
 
         given(orderStatisticsRepository.getByProductIdsAndDate(startDate, endDate, command.toSoldProductMap().keySet()))
                 .willReturn(List.of());
@@ -125,18 +126,15 @@ public class OrderStatisticsServiceTest {
     @DisplayName("조회한 날짜에 동일한 상품 통계 정보가 있다면, 판매 수량을 업데이트 한다.")
     void 두_상품_통계가_업데이트_되었는지_검증() {
         // given
-        LocalDateTime now = FIXED_NOW;
-
-        OrderStatisticsCommand.Aggregate command = new OrderStatisticsCommand.Aggregate(now, List.of(
+        LocalDate startDate = FIXED_NOW.toLocalDate();
+        LocalDate endDate = startDate.plusDays(1);
+        OrderStatisticsCommand.Aggregate command = new OrderStatisticsCommand.Aggregate(startDate, endDate, List.of(
                 new OrderStatisticsCommand.AggregateItem(1L, 10),
                 new OrderStatisticsCommand.AggregateItem(2L, 20)
         ));
 
-        OrderStatistics stat1 = spy(OrderStatistics.create(1L, 100, now));
-        OrderStatistics stat2 = spy(OrderStatistics.create(2L, 200, now));
-
-        LocalDateTime startDate = command.getStatisticsAt().toLocalDate().atStartOfDay();
-        LocalDateTime endDate = startDate.plusDays(1);
+        OrderStatistics stat1 = spy(OrderStatistics.create(1L, 100, endDate));
+        OrderStatistics stat2 = spy(OrderStatistics.create(2L, 200, endDate));
 
         given(orderStatisticsRepository.getByProductIdsAndDate(startDate, endDate, command.toSoldProductMap().keySet()))
                 .willReturn(List.of(stat1, stat2));

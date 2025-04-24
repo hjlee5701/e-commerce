@@ -18,8 +18,8 @@ public class OrderStatisticsFacade {
     private final OrderStatisticsService orderStatisticsService;
 
 
-    public void aggregateOrderStatistics(LocalDateTime statisticsAt) {
-        List<OrderInfo.Paid> info = orderService.getPaidOrderByDate(statisticsAt);
-        orderStatisticsService.aggregate(OrderStatisticsCommand.Aggregate.of(statisticsAt, info));
+    public void aggregateOrderStatistics(OrderStatisticsCriteria.Aggregate criteria) {
+        List<OrderInfo.Paid> info = orderService.getPaidOrderByDate(criteria.toPaidOrderCommand());
+        orderStatisticsService.aggregate(criteria.toAggregateCommand(info));
     }
 }

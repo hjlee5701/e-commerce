@@ -64,7 +64,7 @@ public class DummyDataGenerator {
                 OrderStatistics orderStatistics = Instancio.of(OrderStatistics.class)
                         .set(Select.field("totalSoldQuantity"), randomNumber(1, 100))
                         .set(Select.field("product"), Product.referenceById(productId))
-                        .set(Select.field("statisticsAt"), randomDate)
+                        .set(Select.field("statisticsDate"), randomDate)
                         .create();
 
                 orderStatisticsList.add(orderStatistics);

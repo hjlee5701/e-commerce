@@ -1,14 +1,14 @@
 package kr.hhplus.be.server.domain.statistics;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.shared.code.OrderStatisticsError;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class OrderStatistics {
 
     private int totalSoldQuantity;
 
-    private LocalDateTime statisticsAt;
+    private LocalDate statisticsDate;
 
     public void aggregateQuantity(Integer soldQuantity) {
         if (soldQuantity == null || soldQuantity <= 0) {
@@ -36,7 +36,7 @@ public class OrderStatistics {
         this.totalSoldQuantity += soldQuantity;
     }
 
-    public static OrderStatistics create(Long productId, int soldQuantity, LocalDateTime now) {
+    public static OrderStatistics create(Long productId, int soldQuantity, LocalDate now) {
         return new OrderStatistics(null, Product.referenceById(productId), soldQuantity, now);
     }
 }

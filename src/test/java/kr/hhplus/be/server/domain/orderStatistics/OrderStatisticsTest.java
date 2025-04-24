@@ -1,14 +1,14 @@
 package kr.hhplus.be.server.domain.orderStatistics;
 
-import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.statistics.OrderStatistics;
 import kr.hhplus.be.server.shared.code.OrderStatisticsError;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -20,7 +20,7 @@ public class OrderStatisticsTest {
     void 주문_통계_생() {
         // given
         Long productId = 1L;
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
 
         // when
         OrderStatistics statistics = OrderStatistics.create(
@@ -30,7 +30,7 @@ public class OrderStatisticsTest {
         );
         // then
         assertEquals(productId, statistics.getProduct().getId());
-        assertEquals(now, statistics.getStatisticsAt());
+        assertEquals(now, statistics.getStatisticsDate());
     }
 
 
@@ -40,7 +40,7 @@ public class OrderStatisticsTest {
     void 주문_통계의_판매량_누적_실패(int soldQuantity) {
         // given
         Long productId = 1L;
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         OrderStatistics statistics = OrderStatistics.create(
                 productId,
                 100,

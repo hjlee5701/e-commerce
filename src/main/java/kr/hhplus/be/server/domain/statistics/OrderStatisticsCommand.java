@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -17,11 +17,12 @@ public class OrderStatisticsCommand {
     @AllArgsConstructor
     public static class Aggregate {
 
-        private LocalDateTime statisticsAt;
+        private LocalDate startDate;
+        private LocalDate endDate;
         private List<AggregateItem> aggregateItems;
 
-        public static Aggregate of(LocalDateTime now, List<OrderInfo.Paid> info) {
-            return new Aggregate(now, AggregateItem.of(info));
+        public static Aggregate of(LocalDate startDate, LocalDate endDate, List<OrderInfo.Paid> info) {
+            return new Aggregate(startDate, endDate, AggregateItem.of(info));
         }
 
         public Map<Long, Integer> toSoldProductMap() {

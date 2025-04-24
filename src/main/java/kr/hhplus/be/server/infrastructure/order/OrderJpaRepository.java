@@ -17,7 +17,7 @@ public interface OrderJpaRepository extends JpaRepository<Order, Long> {
         join fetch o.member
         join fetch o.orderItems oi
         join fetch oi.product
-        where o.orderedAt between :start and :end
+        where o.orderedAt >= :start and o.orderedAt <= :end
           and o.status = :status
     """)
     List<Order> findByOrderedAtBetweenAndStatus(

@@ -50,10 +50,14 @@ public class OrderService {
     }
 
 
-    public List<OrderInfo.Paid> getPaidOrderByDate(LocalDateTime now) {
+    public List<OrderInfo.Paid> getPaidOrderByDate(OrderCommand.PaidStatistics command) {
         List<OrderInfo.Paid> info = new ArrayList<>();
-        LocalDateTime startDate = now.minusDays(PAID_ORDER_LOOKBACK_DAYS);
-        List<Order> orders = orderRepository.getPaidOrderByDate(startDate, now, OrderStatus.PAID);
+
+        List<Order> orders = orderRepository.getPaidOrderByDate(
+                command.getStartDate(),
+                command.getEndDate(),
+                OrderStatus.PAID
+        );
         for (Order order : orders) {
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {
