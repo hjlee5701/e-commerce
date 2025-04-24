@@ -69,7 +69,7 @@ public class CouponFacadeConcurrencyTest {
 
     @Test
     @DisplayName("동시에 3명의 사용자가 2개 남은 선착순 쿠폰을 발급하기 위해 시도한다.")
-    void 동시에_선착순_쿠폰_발급() {
+    void 동시에_선착순_쿠폰_발급() throws InterruptedException {
         // given
         int remainingQuantity = 2;
         int requestCount = 3;
@@ -80,6 +80,7 @@ public class CouponFacadeConcurrencyTest {
         // when
         int threadCount = 3; // 실행할 스레드 수
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch readyLatch = new CountDownLatch(threadCount);
         CountDownLatch startLatch = new CountDownLatch(1);
         AtomicInteger failedUserIds = new AtomicInteger();
 
@@ -88,6 +89,7 @@ public class CouponFacadeConcurrencyTest {
         for (Member member : members) {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
+                    readyLatch.countDown();
                     startLatch.await();
                     CouponCriteria.Issue criteria = CouponCriteria.Issue.of(coupon.getId(), member.getId());
                     facade.issue(criteria);
@@ -99,6 +101,7 @@ public class CouponFacadeConcurrencyTest {
             futures.add(future);
         }
 
+        readyLatch.await();
         startLatch.countDown();
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
