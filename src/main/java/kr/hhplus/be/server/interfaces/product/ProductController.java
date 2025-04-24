@@ -5,7 +5,7 @@ import kr.hhplus.be.server.domain.product.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.shared.dto.ApiResult;
 import kr.hhplus.be.server.shared.code.SuccessCode;
-import kr.hhplus.be.server.util.FakeStore;
+import kr.hhplus.be.server.support.fake.FakeStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
