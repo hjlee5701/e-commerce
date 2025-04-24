@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.application.memberPoint;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointInfo;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
-import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
+import kr.hhplus.be.server.shared.code.MemberPointErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;

@@ -1,12 +1,10 @@
 package kr.hhplus.be.server.domain.payment;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.coupon.CouponItem;
-import kr.hhplus.be.server.domain.member.Member;
-import kr.hhplus.be.server.domain.member.MemberFixture;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderFixture;
-import kr.hhplus.be.server.interfaces.code.PaymentErrorCode;
+import kr.hhplus.be.server.shared.code.PaymentErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

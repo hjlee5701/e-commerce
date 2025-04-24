@@ -2,8 +2,8 @@ package kr.hhplus.be.server.interfaces.orderStatistics;
 
 import kr.hhplus.be.server.domain.statistics.OrderStatisticsInfo;
 import kr.hhplus.be.server.domain.statistics.OrderStatisticsService;
-import kr.hhplus.be.server.interfaces.common.ApiResult;
-import kr.hhplus.be.server.interfaces.common.SuccessCode;
+import kr.hhplus.be.server.shared.dto.ApiResult;
+import kr.hhplus.be.server.shared.code.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.config.swagger;
+package kr.hhplus.be.server.shared.config.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

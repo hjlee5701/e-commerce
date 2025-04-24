@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.orderStatistics;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.statistics.OrderStatistics;
-import kr.hhplus.be.server.interfaces.code.OrderStatisticsError;
+import kr.hhplus.be.server.shared.code.OrderStatisticsError;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

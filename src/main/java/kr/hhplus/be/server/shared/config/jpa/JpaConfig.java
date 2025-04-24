@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.config.jpa;
+package kr.hhplus.be.server.shared.config.jpa;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

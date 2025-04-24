@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.hhplus.be.server.interfaces.common.ApiResult;
+import kr.hhplus.be.server.shared.dto.ApiResult;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "사용자 금액 관리", description = "사용자 금액 충전 및 조회")

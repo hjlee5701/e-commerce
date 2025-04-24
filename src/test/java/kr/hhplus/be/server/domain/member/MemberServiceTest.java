@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.domain.member;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
-import static kr.hhplus.be.server.interfaces.code.MemberErrorCode.MEMBER_NOT_FOUND;
+import static kr.hhplus.be.server.shared.code.MemberErrorCode.MEMBER_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 

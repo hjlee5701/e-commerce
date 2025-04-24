@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.domain.statistics;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.interfaces.code.OrderStatisticsError;
+import kr.hhplus.be.server.shared.code.OrderStatisticsError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,19 +1,16 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
-import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
+import kr.hhplus.be.server.shared.code.MemberPointErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
-import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER;
 import static kr.hhplus.be.server.common.FixtureTestSupport.ANY_MEMBER_ID;
 import static kr.hhplus.be.server.domain.memberPoint.MemberPointPolicy.MAX_CHARGE_AMOUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 public class MemberPointTest {
 

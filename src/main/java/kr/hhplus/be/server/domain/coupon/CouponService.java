@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
-import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
+import kr.hhplus.be.server.shared.code.CouponErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
