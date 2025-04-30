@@ -56,7 +56,7 @@ public class MemberPointServiceTest {
                 ANY_MEMBER_ID, BigDecimal.valueOf(100)
         );
 
-        given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
+        given(memberPointRepository.findByMemberIdForUpdate(ANY_MEMBER_ID))
                 .willReturn(Optional.of(new MemberPointFixture().maxBalanceMemberPoint()));
 
         // when, then
@@ -76,7 +76,7 @@ public class MemberPointServiceTest {
         var memberPoint = new MemberPointFixture().create();
         var expectBalance = memberPoint.getBalance().add(amount);
 
-        given(memberPointRepository.findByMemberId(ANY_MEMBER_ID))
+        given(memberPointRepository.findByMemberIdForUpdate(ANY_MEMBER_ID))
                 .willReturn(Optional.of(memberPoint));
 
         given(memberPointRepository.save(memberPoint))

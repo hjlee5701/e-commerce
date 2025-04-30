@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberRepository;
 import kr.hhplus.be.server.domain.memberPoint.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ public class MemberPointFacadeIntegrationTest {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
 
-        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), BigDecimal.TEN, null);
+        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), BigDecimal.TEN);
         memberPointRepository.save(memberPoint);
 
         cleanUp();
@@ -71,7 +70,7 @@ public class MemberPointFacadeIntegrationTest {
         cleanUp();
 
         // then
-        MemberPoint savedMemberPoint = memberPointRepository.findByMemberId(member.getId())
+        MemberPoint savedMemberPoint = memberPointRepository.findByMemberIdForUpdate(member.getId())
                 .orElse(null);
 
         MemberPointHistory chargeHistory = memberPointHistoryRepository.findByMemberId(member.getId())

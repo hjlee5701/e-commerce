@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.shared.code.MemberPointErrorCode;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,11 +28,8 @@ public class MemberPoint {
 
     private BigDecimal balance;
 
-    @Version
-    private Long version;
-
     public static MemberPoint createInitialPoint(Long memberId) {
-        return new MemberPoint(null, Member.referenceById(memberId), BigDecimal.ZERO, null);
+        return new MemberPoint(null, Member.referenceById(memberId), BigDecimal.ZERO);
     }
 
     public void charge(BigDecimal amount) {
