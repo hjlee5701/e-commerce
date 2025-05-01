@@ -11,6 +11,8 @@ import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductStockService;
+import kr.hhplus.be.server.support.lock.DistributedLock;
+import kr.hhplus.be.server.support.lock.LockType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ public class PaymentFacade {
     private final ProductStockService productStockService;
 
     @Transactional
+    @DistributedLock(type = LockType.PUB_SUB, keyExpression = "'ORDER:' + #criteria.orderId")
     public PaymentResult.Paid createPayment(PaymentCriteria.Pay criteria) {
         // 결제 요청자 조회
         MemberInfo.Detail memberInfo = memberService.findMemberById(criteria.toFindMemberCommand());

@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 public class DistributedLockAspect {
 
     private final SpinLockStrategy spinLockStrategy;
+    private final PubSubLockStrategy pubSubLockStrategy;
     private final LockManager lockManager;
 
     private static final String REDISSON_LOCK_PREFIX = "LOCK:";
@@ -48,6 +49,7 @@ public class DistributedLockAspect {
 
         // 5. 분산락 전략 선택
         LockStrategy selectedStrategy = switch (distributedLock.type()) {
+            case PUB_SUB -> pubSubLockStrategy;
             case SPIN -> spinLockStrategy;
             default -> throw new IllegalStateException("Unknown LockType: " + distributedLock.type());
         };
