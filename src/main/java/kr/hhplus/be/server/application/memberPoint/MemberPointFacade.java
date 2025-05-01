@@ -4,7 +4,8 @@ import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointInfo;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
-import kr.hhplus.be.server.shared.code.MemberPointErrorCode;
+import kr.hhplus.be.server.support.lock.DistributedLock;
+import kr.hhplus.be.server.support.lock.LockType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ public class MemberPointFacade {
     private final MemberPointService memberPointService;
 
     @Transactional
+    @DistributedLock(type = LockType.SPIN, keyExpression = "'MEMBER:' + #criteria.memberId")
     public MemberPointResult.ChargeBalance charge(MemberPointCriteria.Charge criteria) {
 
         // 존재하는 회원
