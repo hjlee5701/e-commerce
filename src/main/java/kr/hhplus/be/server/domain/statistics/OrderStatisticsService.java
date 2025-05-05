@@ -27,7 +27,7 @@ public class OrderStatisticsService {
         Pageable pageable = PageRequest.of(0, TOP_RANK);
         LocalDate now = LocalDateTime.now().toLocalDate().plusDays(1);
 
-        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now, now.minusDays(POPULAR_PERIOD), pageable);
+        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now.minusDays(POPULAR_PERIOD), now, pageable);
 
         List<PopularProductsProjection> populars = popularPage.getContent();
         return IntStream.range(0, populars.size())
