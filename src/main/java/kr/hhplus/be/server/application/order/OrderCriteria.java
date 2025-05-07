@@ -4,7 +4,6 @@ import kr.hhplus.be.server.domain.member.MemberCommand;
 import kr.hhplus.be.server.domain.order.OrderCommand;
 import kr.hhplus.be.server.domain.product.ProductCommand;
 import kr.hhplus.be.server.domain.product.ProductInfo;
-import kr.hhplus.be.server.domain.product.ProductStockCommand;
 import kr.hhplus.be.server.interfaces.order.OrderRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,16 +34,6 @@ public class OrderCriteria {
             return new MemberCommand.Find(memberId);
         }
 
-
-        public ProductStockCommand.Decrease toDecreaseStockCommand() {
-            Map<Long, Integer> productMap = orderItems.stream()
-                    .collect(Collectors.toMap(
-                            ItemCreate::getProductId,
-                            ItemCreate::getOrderQuantity,
-                            Integer::sum // 상품 ID 중복 처리: 값을 합침
-                    ));
-            return new ProductStockCommand.Decrease(productMap);
-        }
 
         public OrderCommand.Create toCreateOrderCommand(List<ProductInfo.Detail> productInfo) {
             // 조회한 상품들의 정보

@@ -25,14 +25,14 @@ public class Payment {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ORDER_ID")
+    @JoinColumn(name = "ORDER_ID", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COUPON_ITEM_ID")
+    @JoinColumn(name = "COUPON_ITEM_ID", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private CouponItem couponItem;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 

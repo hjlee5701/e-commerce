@@ -30,12 +30,12 @@ public class CouponService {
     }
 
     public CouponItem findByCouponItemId(CouponCommand.Find command) {
-        return couponItemRepository.findById(command.getCouponItemId())
+        return couponItemRepository.findByIdForUpdate(command.getCouponItemId())
                 .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_ITEM_NOT_FOUND));
     }
 
     public CouponInfo.Issued issue(CouponCommand.Issue command) {
-        Coupon coupon = couponRepository.findById(command.getCouponId())
+        Coupon coupon = couponRepository.findByIdForUpdate(command.getCouponId())
                 .orElseThrow(() -> new ECommerceException(CouponErrorCode.COUPON_NOT_FOUND));
 
         // 쿠폰 발급

@@ -1,10 +1,13 @@
 package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.interfaces.code.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +18,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
+    private final static int PAID_ORDER_LOOKBACK_DAYS = 1;
     public OrderInfo.Created create(OrderCommand.Create command) {
 
         // 주문 생성
@@ -46,4 +50,17 @@ public class OrderService {
     }
 
 
+    public List<OrderInfo.Paid> getPaidOrderByDate(LocalDateTime now) {
+        List<OrderInfo.Paid> info = new ArrayList<>();
+        LocalDateTime startDate = now.minusDays(PAID_ORDER_LOOKBACK_DAYS);
+        List<Order> orders = orderRepository.getPaidOrderByDate(startDate, now, OrderStatus.PAID);
+        for (Order order : orders) {
+            List<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+                Product product = orderItem.getProduct();
+                info.add(OrderInfo.Paid.of(product, orderItem));
+            }
+        }
+        return info;
+    }
 }

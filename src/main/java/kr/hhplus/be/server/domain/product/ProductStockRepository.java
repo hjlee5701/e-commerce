@@ -9,4 +9,7 @@ public interface ProductStockRepository {
     List<ProductStock> saveAll(Iterable<ProductStock> stocks);
 
     Optional<ProductStock> findByProductId(Long productId);
+
+
+    Optional<ProductStock> findByProductIdForUpdate(Long productId);
 }

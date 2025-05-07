@@ -42,29 +42,33 @@ public class MemberPointFacadeIntegrationTest {
     private Member member;
     private MemberPoint memberPoint;
 
-    @BeforeEach
     void setUp() {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
 
-        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), BigDecimal.TEN);
+        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), BigDecimal.TEN, null);
         memberPointRepository.save(memberPoint);
 
+        cleanUp();
+    }
+
+    void cleanUp() {
         entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
     @DisplayName("통합 테스트 - 회원 충전 성공한 경우 충전 후 잔액과 충전 이력이 저장된다.")
     void 회원_충전_성공() {
-
         // given
+        setUp();
         BigDecimal chargeAmount = BigDecimal.valueOf(100);
         BigDecimal amount = memberPoint.getBalance();
 
         // when
         MemberPointCriteria.Charge criteria = new MemberPointCriteria.Charge(member.getId(), chargeAmount);
         MemberPointResult.ChargeBalance result = facade.charge(criteria);
-        entityManager.flush();
+        cleanUp();
 
         // then
         MemberPoint savedMemberPoint = memberPointRepository.findByMemberId(member.getId())

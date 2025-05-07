@@ -10,19 +10,33 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface OrderStatisticsJpaRepository extends JpaRepository<OrderStatistics, Long> {
-    @Query("select new kr.hhplus.be.server.domain.statistics.PopularProductsProjection(" +
-            "      os.product.id," +
-            "      os.product.title," +
-            "      os.product.price," +
-            "      sum(os.totalSoldQuantity)" +
-            ") " +
-            " from OrderStatistics os " +
-            "where os.statisticsAt >= :startDate and os.statisticsAt <= :endDate " +
-            "group by os.product.id " +
-            "order by sum(os.totalSoldQuantity) desc")
+
+    @Query("""
+        select new kr.hhplus.be.server.domain.statistics.PopularProductsProjection(
+            os.product.id,
+            os.product.title,
+            os.product.price,
+            sum(os.totalSoldQuantity)
+        )
+        from OrderStatistics os
+        where os.statisticsAt between :startDate and :endDate
+        group by os.product.id
+        order by sum(os.totalSoldQuantity) desc
+    """)
     Page<PopularProductsProjection> findPopularProductsForDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, Pageable pageable);
 
+
+
+    @Query("""
+        select os
+        from OrderStatistics os
+        where os.statisticsAt >= :startDate and os.statisticsAt < :endDate
+          and os.product.id in :productIds
+    """)
+    List<OrderStatistics> findProductIdsAndDate(LocalDateTime startDate, LocalDateTime endDate, Set<Long> productIds);
 }

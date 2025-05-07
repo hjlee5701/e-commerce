@@ -9,4 +9,6 @@ public interface MemberPointRepository {
     Optional<MemberPoint> findById(Long id);
 
     MemberPoint save(MemberPoint memberPoint);
+
+    Optional<MemberPoint> findByMemberIdForUpdate(Long memberId);
 }

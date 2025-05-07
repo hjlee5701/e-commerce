@@ -7,7 +7,6 @@ import kr.hhplus.be.server.domain.member.MemberRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.OrderStatus;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +48,7 @@ class PaymentServiceIntegrationTest {
     private Order order;
     private Member member;
     private Coupon coupon;
-    private CouponItem couponItem;
 
-    @BeforeEach
     void setUp() {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
@@ -62,15 +59,21 @@ class PaymentServiceIntegrationTest {
         coupon = new Coupon(null, "선착순 쿠폰", 100, 100, BigDecimal.TEN, CouponStatus.ACTIVE, LocalDateTime.now().minusDays(7), LocalDateTime.now().plusDays(7));
         couponRepository.save(coupon);
 
-        couponItem = new CouponItem(null, member, coupon, CouponItemStatus.USABLE);
-        couponItemRepository.save(couponItem);
+        cleanUp();
+    }
+
+    void cleanUp() {
         entityManager.flush();
+        entityManager.clear();
     }
 
     @Test
     @DisplayName("통합 테스트 - 결제가 성공할 경우 결제 생성 및 쿠폰 적용 처리가 된다.")
     void 결제_생성_및_쿠폰_적용_성공() {
         // given
+        setUp();
+        CouponItem couponItem = new CouponItem(null, member, coupon, CouponItemStatus.USABLE);
+        couponItemRepository.save(couponItem);
         PaymentCommand.Pay command = new PaymentCommand.Pay(order, member.getId(), couponItem);
 
         // when
@@ -78,7 +81,7 @@ class PaymentServiceIntegrationTest {
 
         // then
         BigDecimal expectedFinalAmount = order.getTotalAmount().subtract(coupon.getDiscountAmount()).max(BigDecimal.ZERO);
-        entityManager.flush();
+        cleanUp();
 
         Payment savedPayment = paymentRepository.findById(payment.getId())
                 .orElse(null);
@@ -95,11 +98,12 @@ class PaymentServiceIntegrationTest {
     @DisplayName("통합 테스트 - 쿠폰 없이 결제가 성공할 경우 할인 없는 결제가 생성된다.")
     void 쿠폰_적용_없이_결제_성공() {
         // given
+        setUp();
         PaymentCommand.Pay command = new PaymentCommand.Pay(order, member.getId(), null);
 
         // when
         Payment payment = paymentService.pay(command);
-        entityManager.flush();
+        cleanUp();
 
         // then
         Payment savedPayment = paymentRepository.findById(payment.getId())

@@ -38,7 +38,7 @@ public class ProductStockServiceTest {
         ProductStock stockB = fixture.withId(2L);
         Map<Long, Integer> productMap = Map.of(stockA.getId(), stockA.getQuantity(), stockB.getId(), stockB.getQuantity());
 
-        when(productStockRepository.findByProductId(any())).thenReturn(Optional.of(stockA)).thenReturn(Optional.empty());
+        when(productStockRepository.findByProductIdForUpdate(any())).thenReturn(Optional.of(stockA)).thenReturn(Optional.empty());
 
         // when
         ProductStockCommand.Decrease command = new ProductStockCommand.Decrease(productMap);
@@ -59,7 +59,7 @@ public class ProductStockServiceTest {
         ProductStock stock = fixture.withIdAndQuantity(1L, 5);
         Map<Long, Integer> productMap = Map.of(stock.getId(), decreaseQuantity);
 
-        given(productStockRepository.findByProductId(stock.getId())).willReturn(Optional.of(stock));
+        given(productStockRepository.findByProductIdForUpdate(stock.getId())).willReturn(Optional.of(stock));
 
 
         // when
@@ -83,14 +83,14 @@ public class ProductStockServiceTest {
         ProductStock stockB = fixture.withIdAndQuantity(2L, 5);
         Map<Long, Integer> productMap = Map.of(stockA.getId(), stockA.getQuantity(), stockB.getId(), stockB.getQuantity());
 
-        given(productStockRepository.findByProductId(any())).willReturn(Optional.of(stockA)).willReturn(Optional.of(stockB));
+        given(productStockRepository.findByProductIdForUpdate(any())).willReturn(Optional.of(stockA)).willReturn(Optional.of(stockB));
 
         // when
         ProductStockCommand.Decrease command = new ProductStockCommand.Decrease(productMap);
         productStockService.decreaseStock(command);
 
         // then
-        verify(productStockRepository, times(2)).findByProductId(any());
+        verify(productStockRepository, times(2)).findByProductIdForUpdate(any());
         assertEquals(0, stockA.getQuantity());
         assertEquals(0, stockB.getQuantity());
 

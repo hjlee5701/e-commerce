@@ -15,7 +15,7 @@ public class ProductStockService {
     }
 
     private void decreaseStock(Long productId, Integer orderQuantity) {
-        ProductStock stock = productStockRepository.findByProductId(productId)
+        ProductStock stock = productStockRepository.findByProductIdForUpdate(productId)
                 .orElseThrow(() -> new ECommerceException(ProductErrorCode.PRODUCT_STOCK_NOT_FOUND));
 
         stock.decrease(orderQuantity);

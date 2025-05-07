@@ -2,10 +2,10 @@ package kr.hhplus.be.server.application.coupon;
 
 import kr.hhplus.be.server.domain.coupon.CouponInfo;
 import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -14,6 +14,7 @@ public class CouponFacade {
     private final MemberService memberService;
     private final CouponService couponService;
 
+    @Transactional
     public CouponResult.Issued issue(CouponCriteria.Issue criteria) {
 
         // 회원 조회

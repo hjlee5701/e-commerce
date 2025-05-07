@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.domain.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -46,5 +47,15 @@ public class OrderInfo {
         private BigDecimal unitPrice;
         private BigDecimal totalPrice;
         private Integer quantity;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Paid {
+        private Long productId;
+        private Integer orderQuantity;
+        public static Paid of(Product product, OrderItem orderItem) {
+            return new Paid(product.getId(), orderItem.getQuantity());
+        }
     }
 }

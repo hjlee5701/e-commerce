@@ -1,12 +1,10 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.EntityManager;
 import kr.hhplus.be.server.domain.member.Member;
-import kr.hhplus.be.server.domain.member.MemberRepository;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.ProductRepository;
+import kr.hhplus.be.server.support.TestDataFactory;
+import kr.hhplus.be.server.support.TestDataManager;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,46 +27,44 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class OrderServiceIntegrationTest {
 
     @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
     private OrderRepository orderRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
 
     @Autowired
     private OrderService orderService;
 
     @Autowired
-    private EntityManager entityManager;
+    private TestDataFactory factory;
+
+    @Autowired
+    private TestDataManager testDataManager;
 
     private Member member;
-    private Product shirts;
-    private Product pants;
+    private Product productA;
+    private Product productB;
 
-    @BeforeEach
     void setUp() {
-        member = new Member(null, "tester", LocalDateTime.now());
-        memberRepository.save(member);
+        List<Product> products = factory.createProducts(2);
+        testDataManager.persist(products);
+        productA = products.get(0);
+        productB = products.get(1);
 
-        shirts = new Product(null, "상품A", BigDecimal.valueOf(10000), 100);
-        pants = new Product(null, "상품B", BigDecimal.valueOf(20000), 100);
-        productRepository.saveAll(List.of(shirts, pants));
-
-        entityManager.flush();
+        member = factory.createMember();
+        testDataManager.persist(member);
     }
 
     @Test
     @DisplayName("통합 테스트 - 정상적인 상품 요청 시 주문이 성공적으로 생성된다")
     void 상품_주문_성공() {
         // given
+        setUp();
+        testDataManager.flushAndClear();
+
         int orderQuantityOfShirts = 1;
         int orderQuantityOfPants = 2;
 
         OrderCommand.Create command = getCommand(orderQuantityOfShirts, orderQuantityOfPants);
         OrderInfo.Created info = orderService.create(command);
-        entityManager.flush();
+        testDataManager.flushAndClear();
 
         // then
         Order order = orderRepository.findById(info.getOrderId())
@@ -80,8 +76,8 @@ public class OrderServiceIntegrationTest {
         List<OrderItem> orderItems = order.getOrderItems();
         assertThat(orderItems).isNotNull();
 
-        var totalPrice = shirts.getPrice().multiply(BigDecimal.valueOf(orderQuantityOfShirts))
-                .add(pants.getPrice().multiply(BigDecimal.valueOf(orderQuantityOfPants)));
+        var totalPrice = productA.getPrice().multiply(BigDecimal.valueOf(orderQuantityOfShirts))
+                .add(productB.getPrice().multiply(BigDecimal.valueOf(orderQuantityOfPants)));
 
         // 검증
         assertAll(
@@ -94,15 +90,47 @@ public class OrderServiceIntegrationTest {
     @NotNull
     private OrderCommand.Create getCommand(int orderQuantityOfShirts, int orderQuantityOfPants) {
         List<OrderCommand.ItemCreate> itemCommand = List.of(
-                new OrderCommand.ItemCreate(shirts.getId(), shirts.getTitle(), shirts.getPrice(), shirts.getQuantity()),
-                new OrderCommand.ItemCreate(pants.getId(), pants.getTitle(), pants.getPrice(), pants.getQuantity())
+                new OrderCommand.ItemCreate(productA.getId(), productA.getTitle(), productA.getPrice(), productA.getQuantity()),
+                new OrderCommand.ItemCreate(productB.getId(), productB.getTitle(), productB.getPrice(), productB.getQuantity())
         );
 
         Map<Long, Integer> orderProductMap = Map.of(
-                shirts.getId(), orderQuantityOfShirts, pants.getId(), orderQuantityOfPants
+                productA.getId(), orderQuantityOfShirts, productB.getId(), orderQuantityOfPants
         ); // 가격과 관계없이 주문 수량만 동일하게 설정
 
         return new OrderCommand.Create(member.getId(), itemCommand, orderProductMap);
     }
+
+
+    @Test
+    @DisplayName("1일 전부터 오늘까지 OrderInfo.Paid 인 주문이 반환된다")
+    void 결제완료_주문_조회() {
+        // given
+        setUp();
+        testDataManager.flushAndClear();
+
+        // 주문1: 포함되어야 함 (1일 전)
+        Order validOrder = factory.createPaidOrderByDays(member, FIXED_NOW, productA, 0);
+
+        // 주문2: 제외되어야 함 (5일 전)
+        Order order = factory.createPaidOrderByDays(member, FIXED_NOW, productB, 5);
+        testDataManager.persist(List.of(validOrder, order));
+        testDataManager.persist(validOrder.getOrderItems());
+        testDataManager.persist(order.getOrderItems());
+
+        testDataManager.flushAndClear();
+        // when
+        List<OrderInfo.Paid> result = orderService.getPaidOrderByDate(FIXED_NOW);
+
+        // then
+        assertThat(result).hasSize(1);
+
+        OrderInfo.Paid paid = result.get(0);
+        var soldQuantity = validOrder.getOrderItems().get(0).getQuantity();
+
+        assertEquals(paid.getProductId(), productA.getId());
+        assertEquals(soldQuantity, paid.getOrderQuantity());
+    }
+
 
 }

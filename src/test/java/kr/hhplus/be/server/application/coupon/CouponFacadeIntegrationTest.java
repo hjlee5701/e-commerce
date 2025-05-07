@@ -4,9 +4,6 @@ import jakarta.persistence.EntityManager;
 import kr.hhplus.be.server.domain.coupon.*;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.member.MemberRepository;
-import kr.hhplus.be.server.domain.memberPoint.MemberPointRepository;
-import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
-import kr.hhplus.be.server.domain.product.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,6 +40,7 @@ public class CouponFacadeIntegrationTest {
 
     private Member member;
     private Coupon coupon;
+
     @BeforeEach
     void setUp() {
         member = new Member(null, "tester", LocalDateTime.now());
@@ -51,8 +49,14 @@ public class CouponFacadeIntegrationTest {
         coupon = new Coupon(null, "선착순 쿠폰", 100, 100, BigDecimal.TEN, CouponStatus.ACTIVE, LocalDateTime.now().minusDays(7), LocalDateTime.now().plusDays(7));
         couponRepository.save(coupon);
 
-        entityManager.flush();
+        cleanUp();
     }
+
+    void cleanUp() {
+        entityManager.flush();
+        entityManager.clear();
+    }
+
 
     @Test
     @DisplayName("통합 테스트 - 쿠폰 발급 성공할 경우 발급 쿠폰은 저장되면 남은 수량은 차감된다.")
@@ -63,7 +67,7 @@ public class CouponFacadeIntegrationTest {
 
         // when
         CouponResult.Issued result = facade.issue(criteria);
-        entityManager.flush();
+        cleanUp();
 
         // then
         CouponItem couponItem = couponItemRepository.findById(result.getCouponItemId())

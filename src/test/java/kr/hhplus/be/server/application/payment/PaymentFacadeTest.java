@@ -11,6 +11,7 @@ import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.payment.PaymentStatus;
+import kr.hhplus.be.server.domain.product.ProductStockService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
@@ -42,6 +44,9 @@ public class PaymentFacadeTest {
     @Mock
     private PaymentService paymentService;
 
+    @Mock
+    private ProductStockService productStockService;
+
     @InjectMocks
     PaymentFacade facade;
 
@@ -60,6 +65,7 @@ public class PaymentFacadeTest {
         given(memberService.findMemberById(any())).willReturn(mock(MemberInfo.Detail.class));
         given(orderService.findByOrderId(any())).willReturn(order);
         given(couponService.findByCouponItemId(any())).willReturn(couponItem);
+        willDoNothing().given(productStockService).decreaseStock(any());
         given(paymentService.pay(any())).willReturn(payment);
         given(payment.getStatus()).willReturn(PaymentStatus.PENDING);
 
@@ -68,13 +74,14 @@ public class PaymentFacadeTest {
 
         // then
         InOrder inOrder = inOrder(
-                memberService, orderService, couponService, paymentService, memberPointService, payment
+                memberService, orderService, couponService, paymentService, productStockService, memberPointService, payment
         );
 
         inOrder.verify(memberService).findMemberById(any());
         inOrder.verify(orderService).findByOrderId(any());
         inOrder.verify(couponService).findByCouponItemId(any());
         inOrder.verify(paymentService).pay(any());
+        inOrder.verify(productStockService).decreaseStock(any());
         inOrder.verify(memberPointService).use(any());
         inOrder.verify(payment).markAsPaid();
     }

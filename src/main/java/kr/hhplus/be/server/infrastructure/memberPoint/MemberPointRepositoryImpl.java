@@ -27,4 +27,9 @@ public class MemberPointRepositoryImpl implements MemberPointRepository {
     public MemberPoint save(MemberPoint memberPoint) {
         return memberPointJpaRepository.save(memberPoint);
     }
+
+    @Override
+    public Optional<MemberPoint> findByMemberIdForUpdate(Long memberId) {
+        return memberPointJpaRepository.findByMemberIdForUpdate(memberId);
+    }
 }

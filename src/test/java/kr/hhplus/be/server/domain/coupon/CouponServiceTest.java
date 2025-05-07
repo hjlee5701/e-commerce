@@ -34,7 +34,7 @@ public class CouponServiceTest {
     void 존재하지_않는_쿠폰_조회_시_예외() {
 
         // given
-        given(couponItemRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(couponItemRepository.findByIdForUpdate(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> couponService.findByCouponItemId(new CouponCommand.Find(1L)))
                 .isInstanceOf(ECommerceException.class)
@@ -51,7 +51,7 @@ public class CouponServiceTest {
 
         CouponCommand.Issue command = new CouponCommand.Issue(coupon.getId(), ANY_MEMBER_ID);
 
-        given(couponRepository.findById(coupon.getId())).willReturn(Optional.of(coupon));
+        given(couponRepository.findByIdForUpdate(coupon.getId())).willReturn(Optional.of(coupon));
         given(coupon.issue(any(), any())).willReturn(couponItem);
         given(couponItemRepository.save(couponItem)).willReturn(couponItem);
 

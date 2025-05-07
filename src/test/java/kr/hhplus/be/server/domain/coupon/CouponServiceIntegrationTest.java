@@ -49,7 +49,8 @@ public class CouponServiceIntegrationTest {
 
     private Member member;
     private Coupon coupon;
-    @BeforeEach
+
+
     void setUp() {
         member = new Member(null, "tester", LocalDateTime.now());
         memberRepository.save(member);
@@ -57,18 +58,26 @@ public class CouponServiceIntegrationTest {
         coupon = new Coupon(null, "선착순 쿠폰", 100, 100, BigDecimal.TEN, CouponStatus.ACTIVE, LocalDateTime.now().minusDays(7), LocalDateTime.now().plusDays(7));
         couponRepository.save(coupon);
 
-        entityManager.flush();
+        cleanUp();
     }
+
+    void cleanUp() {
+        entityManager.flush();
+        entityManager.clear();
+    }
+    
+    
     @Test
     @DisplayName("통합 테스트 - 쿠폰 발급 성공할 경우 발급된 쿠폰 정보를 반환하며 잔여 수량은 감소한다.")
     void 쿠폰_발급_성공(){
         // given
+        setUp();
         int remainingQuantity = coupon.getRemainingQuantity();
         CouponCommand.Issue command = new CouponCommand.Issue(coupon.getId(), member.getId());
 
         // when
         CouponInfo.Issued info = couponService.issue(command);
-        entityManager.flush();
+        cleanUp();
 
         // then
         CouponItem couponItem = couponItemRepository.findById(info.getCouponItemId())
@@ -90,15 +99,18 @@ public class CouponServiceIntegrationTest {
     @DisplayName("통합 테스트 - 보유 쿠폰 조회 성공할 경우 보유한 쿠폰 리스트를 반환한다.")
     void 보유_쿠폰_조회_성공(){
         // given
+        setUp();
         for (int i = 0; i < 10; i++) {
-            CouponCommand.Issue issueCommand = new CouponCommand.Issue(coupon.getId(), member.getId());
-            couponService.issue(issueCommand);
+            CouponItem couponItem = coupon.issue(LocalDateTime.now(), member.getId());
+            couponItemRepository.save(couponItem);
+            entityManager.flush();
+            entityManager.clear();
         }
 
         // when
         CouponCommand.Holdings command = new CouponCommand.Holdings(member.getId());
         List<CouponInfo.ItemDetail> infos = couponService.findHoldingCoupons(command);
-        entityManager.flush();
+        cleanUp();
 
         // then
         List<CouponItem> couponItems = couponItemRepository.findAllByMemberId(member.getId());
@@ -122,6 +134,5 @@ public class CouponServiceIntegrationTest {
         }
 
     }
-    // curs pattern
 
 }
