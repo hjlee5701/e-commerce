@@ -19,7 +19,7 @@ public class MemberPointService {
             throw new ECommerceException(MemberPointErrorCode.INVALID_AMOUNT);
         }
         // 금액 조회 (금액 없을 경우, 초기화)
-        MemberPoint memberPoint = memberPointRepository.findByMemberId(command.getMemberId())
+        MemberPoint memberPoint = memberPointRepository.findByMemberIdForUpdate(command.getMemberId())
                 .orElseGet(() -> MemberPoint.createInitialPoint(command.getMemberId()));
 
         // 충전

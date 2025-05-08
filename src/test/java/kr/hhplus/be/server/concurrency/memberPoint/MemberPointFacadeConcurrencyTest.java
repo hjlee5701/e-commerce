@@ -1,5 +1,7 @@
-package kr.hhplus.be.server.application.memberPoint;
+package kr.hhplus.be.server.concurrency.memberPoint;
 
+import kr.hhplus.be.server.application.memberPoint.MemberPointCriteria;
+import kr.hhplus.be.server.application.memberPoint.MemberPointFacade;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.memberPoint.MemberPoint;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointRepository;
