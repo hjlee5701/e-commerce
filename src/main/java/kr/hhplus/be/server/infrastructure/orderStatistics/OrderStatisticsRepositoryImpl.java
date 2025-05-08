@@ -33,4 +33,9 @@ public class OrderStatisticsRepositoryImpl implements OrderStatisticsRepository 
     public List<OrderStatistics> getByProductIdsAndDate(LocalDate startDate, LocalDate endDate, Set<Long> productIds) {
         return orderStatisticsJpaRepository.findProductIdsAndDate(startDate, endDate, productIds);
     }
+
+    @Override
+    public Page<Long> findPopularProductIdsForDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        return orderStatisticsJpaRepository.findPopularProductIdsForDateRange(startDate, endDate, pageable);
+    }
 }

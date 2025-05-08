@@ -27,17 +27,12 @@ public class OrderStatisticsResponse {
         @Schema(title = "상품 가격", example = "10000")
         private BigDecimal price;
 
-        @Schema(title = "총 상품 수량", example = "300")
-        private Long totalSoldQuantity;
-
-
         public static Popular of(OrderStatisticsInfo.Popular info) {
             return new OrderStatisticsResponse.Popular(
                     info.getRank(),
                     info.getProductId(),
                     info.getTitle(),
-                    info.getPrice(),
-                    info.getTotalSoldQuantity()
+                    info.getPrice()
             );
         }
 

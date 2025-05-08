@@ -1,5 +1,7 @@
-package kr.hhplus.be.server.application.payment;
+package kr.hhplus.be.server.concurrency.payment;
 
+import kr.hhplus.be.server.application.payment.PaymentCriteria;
+import kr.hhplus.be.server.application.payment.PaymentFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.coupon.CouponItemRepository;

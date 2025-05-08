@@ -20,7 +20,10 @@ spring:
     properties:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
-
+  data:
+    redis:
+      port: 6379
+      host: localhost
 ---
 spring.config.activate.on-profile: local, test
 

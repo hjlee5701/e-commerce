@@ -12,6 +12,7 @@ import org.instancio.Select;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -26,8 +27,12 @@ public class DummyDataGenerator {
 
 
     // 10일 간의 랜덤 날짜 생성
-    private LocalDateTime generateRandomDate() {
-        return LocalDateTime.now().minusDays(randomNumber(1, 200));
+    private LocalDateTime generateRandomDateTime() {
+        return LocalDateTime.now().minusDays(randomNumber(0, 3));
+    }
+
+    private LocalDate generateRandomDate() {
+        return LocalDate.now().minusDays(randomNumber(0, 3));
     }
     private LocalDateTime generateBeforeDate(int minusDays) {
         int daysAgo = random.nextInt(minusDays);
@@ -54,10 +59,10 @@ public class DummyDataGenerator {
         List<OrderStatistics> orderStatisticsList = new ArrayList<>();
 
         for (Long productId : productsIds) {
-            LocalDateTime randomDate = generateRandomDate();
+            LocalDate randomDate = generateRandomDate();
 
             // 날짜만 비교하기 위해 randomDate의 시간 부분을 제외한 날짜만 사용
-            String combinationKey = randomDate.toLocalDate().toString() + "_" + productId;
+            String combinationKey = randomDate + "_" + productId;
 
             // 같은 날짜, 동일한 productId의 조합이 없다면 생성
             if (!usedCombinations.contains(combinationKey)) {
@@ -74,6 +79,8 @@ public class DummyDataGenerator {
         return orderStatisticsList;
 
     }
+
+
 
     public List<Coupon> generateCoupon(int count) {
 
@@ -110,7 +117,7 @@ public class DummyDataGenerator {
     public List<Member> generateMember(int count) {
         return Instancio.of(Member.class)
                 .set(Select.field("userId"), "Member-#{random.number()}")
-                .set(Select.field("regAt"), generateRandomDate())
+                .set(Select.field("regAt"), generateRandomDateTime())
                 .stream()
                 .limit(count)
                 .toList();

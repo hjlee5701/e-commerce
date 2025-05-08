@@ -56,9 +56,13 @@ dependencies {
 
 	// instancio
 	implementation("org.instancio:instancio-core:5.4.0")
-	// retryable
-	implementation("org.springframework.retry:spring-retry")
 
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.redisson:redisson-spring-boot-starter:3.17.6")
+
+	// Cache
+	implementation("org.springframework.boot:spring-boot-starter-cache")
 }
 
 tasks.withType<Test> {

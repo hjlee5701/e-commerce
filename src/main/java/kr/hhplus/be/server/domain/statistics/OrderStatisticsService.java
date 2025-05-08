@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.statistics;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class OrderStatisticsService {
         Pageable pageable = PageRequest.of(0, TOP_RANK);
         LocalDate now = LocalDateTime.now().toLocalDate().plusDays(1);
 
-        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now, now.minusDays(POPULAR_PERIOD), pageable);
+        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now.minusDays(POPULAR_PERIOD), now, pageable);
 
         List<PopularProductsProjection> populars = popularPage.getContent();
         return IntStream.range(0, populars.size())
@@ -66,4 +67,16 @@ public class OrderStatisticsService {
         }
     }
 
+    @Cacheable(
+            value = "PopularProductIds",
+            key = "'PopularProductIds:' + #command.startDate + ':' + #command.endDate + ':' + #command.count"
+    )
+    public List<Long> popularProductIds(OrderStatisticsCommand.PopularProductIds command) {
+        // 인기 상품의 ID 만 조회
+        Pageable pageable = PageRequest.of(0, command.getCount());
+        Page<Long> popularPage
+                = orderStatisticsRepository.findPopularProductIdsForDateRange(
+                        command.getStartDate(), command.getEndDate(), pageable);
+        return popularPage.getContent();
+    }
 }

@@ -26,4 +26,12 @@ public class ProductService {
                 .toList();
     }
 
+    public List<ProductInfo.Detail> findPopularProductsByIds(List<Long> productIds) {
+        return productIds.stream()
+                .map(id -> productRepository.findById(id)
+                        .map(ProductInfo.Detail::of)
+                        .orElse(null))
+                .toList();
+    }
+
 }

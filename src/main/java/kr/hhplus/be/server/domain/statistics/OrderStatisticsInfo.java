@@ -1,10 +1,12 @@
 package kr.hhplus.be.server.domain.statistics;
 
+import kr.hhplus.be.server.domain.product.ProductInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @NoArgsConstructor
 public class OrderStatisticsInfo {
@@ -16,15 +18,21 @@ public class OrderStatisticsInfo {
         private Long productId;
         private String title;
         private BigDecimal price;
-        private Long totalSoldQuantity;
 
         public static Popular of(int rank, PopularProductsProjection statistics) {
             return new Popular(
                     rank,
                     statistics.productId(),
                     statistics.title(),
-                    statistics.price(),
-                    statistics.totalSoldQuantity()
+                    statistics.price()
+            );
+        }
+        public static Popular of(int rank, ProductInfo.Detail productDetail) {
+            return new Popular(
+                    rank,
+                    productDetail.getProductId(),
+                    productDetail.getTitle(),
+                    productDetail.getPrice()
             );
         }
     }
