@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -34,4 +36,11 @@ public class OrderCommand {
         private Long orderId;
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class PaidStatistics {
+        private LocalDateTime startDate;
+        private LocalDateTime endDate;
+
+    }
 }

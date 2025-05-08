@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.application.memberPoint;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.member.MemberInfo;
 import kr.hhplus.be.server.domain.member.MemberService;
 import kr.hhplus.be.server.domain.memberPoint.MemberPointCommand;

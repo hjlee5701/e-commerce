@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.EntityManager;
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.infrastructure.product.ProductStockJpaRepository;
-import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
+import kr.hhplus.be.server.shared.code.ProductErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

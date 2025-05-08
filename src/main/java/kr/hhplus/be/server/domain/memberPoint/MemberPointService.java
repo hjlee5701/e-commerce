@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.member.MemberCommand;
-import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
+import kr.hhplus.be.server.shared.code.MemberPointErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

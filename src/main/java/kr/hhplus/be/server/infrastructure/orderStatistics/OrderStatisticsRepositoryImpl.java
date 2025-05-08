@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -25,12 +25,12 @@ public class OrderStatisticsRepositoryImpl implements OrderStatisticsRepository 
     }
 
     @Override
-    public Page<PopularProductsProjection> findPopularProductsForDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+    public Page<PopularProductsProjection> findPopularProductsForDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
         return orderStatisticsJpaRepository.findPopularProductsForDateRange(startDate, endDate, pageable);
     }
 
     @Override
-    public List<OrderStatistics> getByProductIdsAndDate(LocalDateTime startDate, LocalDateTime endDate, Set<Long> productIds) {
+    public List<OrderStatistics> getByProductIdsAndDate(LocalDate startDate, LocalDate endDate, Set<Long> productIds) {
         return orderStatisticsJpaRepository.findProductIdsAndDate(startDate, endDate, productIds);
     }
 }

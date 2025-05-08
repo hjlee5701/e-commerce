@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.domain.payment;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.member.Member;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.interfaces.code.PaymentErrorCode;
+import kr.hhplus.be.server.shared.code.PaymentErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

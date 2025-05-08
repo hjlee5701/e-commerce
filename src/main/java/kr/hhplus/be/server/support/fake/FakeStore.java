@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.util;
+package kr.hhplus.be.server.support.fake;
 
 import kr.hhplus.be.server.interfaces.coupon.CouponResponse;
 import kr.hhplus.be.server.interfaces.memberPoint.MemberPointResponse;

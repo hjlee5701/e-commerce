@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.interfaces.common;
+package kr.hhplus.be.server.shared.code;
 
-import kr.hhplus.be.server.interfaces.code.Code;
+import kr.hhplus.be.server.shared.code.Code;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

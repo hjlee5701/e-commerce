@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.common.ECommerceException;
-import kr.hhplus.be.server.interfaces.code.ProductErrorCode;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
+import kr.hhplus.be.server.shared.code.ProductErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

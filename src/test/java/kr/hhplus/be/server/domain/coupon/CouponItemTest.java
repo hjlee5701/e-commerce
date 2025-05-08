@@ -1,9 +1,8 @@
 package kr.hhplus.be.server.domain.coupon;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.member.Member;
-import kr.hhplus.be.server.domain.member.MemberFixture;
-import kr.hhplus.be.server.interfaces.code.CouponErrorCode;
+import kr.hhplus.be.server.shared.code.CouponErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
-import static kr.hhplus.be.server.interfaces.code.CouponErrorCode.*;
+import static kr.hhplus.be.server.shared.code.CouponErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;

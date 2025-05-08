@@ -160,7 +160,7 @@
 - 수량 부족 시 예외 발생
 
     ```java
-    kr.hhplus.be.server.domain.common.ECommerceException: 상품의 재고가 부족합니다.
+    kr.hhplus.be.server.shared.exception.ECommerceException: 상품의 재고가 부족합니다.
     ```
 
 
@@ -201,7 +201,7 @@ Optional<CouponItem> findByIdForUpdate(Long id);
 - 이후 요청은 **이미 사용된 쿠폰**으로 판단 → 아래와 같은 예외 발생 처리
 
 ```java
-kr.hhplus.be.server.domain.common.ECommerceException: 사용할 수 없는 쿠폰입니다.
+kr.hhplus.be.server.shared.exception.ECommerceException: 사용할 수 없는 쿠폰입니다.
 ```
 
 ### ✅ 적용 효과
@@ -247,7 +247,8 @@ Optional<MemberPoint> findByMemberIdForUpdate(Long memberId);
 - 이후 트랜잭션은 **차감된 잔액**으로 판단 → **잔액 부족 예외 처리**
 
 ```java
-kr.hhplus.be.server.domain.common.ECommerceException: 잔액이 부족합니다.
+kr.hhplus.be.server.shared.exception.ECommerceException: 잔액이 부족합니다.
+
 ```
 
 ### ✅ 적용 효과

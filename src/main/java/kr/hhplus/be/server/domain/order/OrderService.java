@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.interfaces.code.OrderErrorCode;
+import kr.hhplus.be.server.shared.code.OrderErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,10 +50,14 @@ public class OrderService {
     }
 
 
-    public List<OrderInfo.Paid> getPaidOrderByDate(LocalDateTime now) {
+    public List<OrderInfo.Paid> getPaidOrderByDate(OrderCommand.PaidStatistics command) {
         List<OrderInfo.Paid> info = new ArrayList<>();
-        LocalDateTime startDate = now.minusDays(PAID_ORDER_LOOKBACK_DAYS);
-        List<Order> orders = orderRepository.getPaidOrderByDate(startDate, now, OrderStatus.PAID);
+
+        List<Order> orders = orderRepository.getPaidOrderByDate(
+                command.getStartDate(),
+                command.getEndDate(),
+                OrderStatus.PAID
+        );
         for (Order order : orders) {
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {

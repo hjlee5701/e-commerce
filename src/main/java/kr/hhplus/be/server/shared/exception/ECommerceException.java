@@ -1,7 +1,7 @@
-package kr.hhplus.be.server.domain.common;
+package kr.hhplus.be.server.shared.exception;
 
 
-import kr.hhplus.be.server.interfaces.code.ErrorCode;
+import kr.hhplus.be.server.shared.code.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

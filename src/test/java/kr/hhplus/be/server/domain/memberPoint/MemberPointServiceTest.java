@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.memberPoint;
 
-import kr.hhplus.be.server.domain.common.ECommerceException;
-import kr.hhplus.be.server.interfaces.code.MemberPointErrorCode;
+import kr.hhplus.be.server.shared.exception.ECommerceException;
+import kr.hhplus.be.server.shared.code.MemberPointErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.statistics.OrderStatistics;
 import kr.hhplus.be.server.domain.statistics.OrderStatisticsRepository;
+import kr.hhplus.be.server.infrastructure.order.OrderJpaRepository;
 import kr.hhplus.be.server.support.TestDataFactory;
 import kr.hhplus.be.server.support.TestDataManager;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +31,8 @@ public class OrderStatisticsFacadeIntegrationTest {
     @Autowired
     private OrderStatisticsRepository orderStatisticsRepository;
 
+    @Autowired
+    private OrderJpaRepository orderRepository;
     @Autowired
     private OrderStatisticsFacade facade;
 
@@ -67,15 +71,14 @@ public class OrderStatisticsFacadeIntegrationTest {
             testDataManager.persist(order.getOrderItems());
         }
         testDataManager.flushAndClear();
+        LocalDate startDate = FIXED_NOW.toLocalDate();
+        LocalDate endDate = startDate.plusDays(1);
 
         // when
-        facade.aggregateOrderStatistics(FIXED_NOW);
+        facade.aggregateOrderStatistics(OrderStatisticsCriteria.Aggregate.of(endDate));
         testDataManager.flushAndClear();
 
         // then
-        LocalDateTime startDate = FIXED_NOW.toLocalDate().atStartOfDay();
-        LocalDateTime endDate = startDate.plusDays(1);
-
         List<OrderStatistics> stats = orderStatisticsRepository.getByProductIdsAndDate(
                 startDate, endDate, Set.of(product.getId())
         );
@@ -97,8 +100,8 @@ public class OrderStatisticsFacadeIntegrationTest {
 
         int quantity = order.getOrderItems().get(0).getQuantity();
 
-        LocalDateTime startDate = FIXED_NOW.toLocalDate().atStartOfDay();
-        LocalDateTime endDate = startDate.plusDays(1);
+        LocalDate startDate = FIXED_NOW.toLocalDate();
+        LocalDate endDate = startDate.plusDays(1);
 
         List<OrderStatistics> before = orderStatisticsRepository.getByProductIdsAndDate(
                 startDate,
@@ -108,7 +111,7 @@ public class OrderStatisticsFacadeIntegrationTest {
         assertThat(before).isEmpty();
 
         // when
-        facade.aggregateOrderStatistics(FIXED_NOW);
+        facade.aggregateOrderStatistics(OrderStatisticsCriteria.Aggregate.of(endDate));
         testDataManager.flushAndClear();
 
         // then
