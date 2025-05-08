@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.interfaces.orderStatistics;
 
+import kr.hhplus.be.server.application.orderStatistics.OrderStatisticsFacade;
 import kr.hhplus.be.server.domain.statistics.OrderStatisticsInfo;
-import kr.hhplus.be.server.domain.statistics.OrderStatisticsService;
-import kr.hhplus.be.server.shared.dto.ApiResult;
 import kr.hhplus.be.server.shared.code.SuccessCode;
+import kr.hhplus.be.server.shared.dto.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 @RestController
 public class OrderStatisticsController implements OrderStatisticsApi {
 
-    private final OrderStatisticsService service;
+    private final OrderStatisticsFacade facade;
 
     @Override
     @GetMapping("/products/popular")
     public ResponseEntity<ApiResult<List<OrderStatisticsResponse.Popular>>> findPopularProducts() {
 
-        List<OrderStatisticsInfo.Popular> responses = service.popular();
+        List<OrderStatisticsInfo.Popular> responses = facade.popular();
         var data = Optional.ofNullable(responses)
                 .orElse(Collections.emptyList())
                 .stream()

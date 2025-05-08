@@ -40,4 +40,14 @@ public interface OrderStatisticsJpaRepository extends JpaRepository<OrderStatist
           and os.product.id in :productIds
     """)
     List<OrderStatistics> findProductIdsAndDate(LocalDate startDate, LocalDate endDate, Set<Long> productIds);
+
+
+    @Query("""
+        select os.product.id
+        from OrderStatistics os
+        where os.statisticsDate between :startDate and :endDate
+        group by os.product.id
+        order by sum(os.totalSoldQuantity) desc
+    """)
+    Page<Long> findPopularProductIdsForDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable);
 }
