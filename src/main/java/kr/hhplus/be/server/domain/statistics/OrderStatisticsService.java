@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,15 +19,15 @@ import java.util.stream.IntStream;
 public class OrderStatisticsService {
 
     private final OrderStatisticsRepository orderStatisticsRepository;
-    private final static int POPULAR_PERIOD = 3;
-    private final static int TOP_RANK = 5;
 
+    @Cacheable(
+            value = "Ranking",
+            key = "'Ranking:' + #command.startDate + ':' + #command.endDate + ':' + #command.count"
+    )
+    public List<OrderStatisticsInfo.Popular> popular(OrderStatisticsCommand.Popular command) {
+        Pageable pageable = PageRequest.of(0, command.getCount());
 
-    public List<OrderStatisticsInfo.Popular> popular() {
-        Pageable pageable = PageRequest.of(0, TOP_RANK);
-        LocalDate now = LocalDateTime.now().toLocalDate().plusDays(1);
-
-        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(now.minusDays(POPULAR_PERIOD), now, pageable);
+        Page<PopularProductsProjection> popularPage = orderStatisticsRepository.findPopularProductsForDateRange(command.getStartDate(), command.getEndDate(), pageable);
 
         List<PopularProductsProjection> populars = popularPage.getContent();
         return IntStream.range(0, populars.size())
@@ -67,11 +66,11 @@ public class OrderStatisticsService {
         }
     }
 
-    @Cacheable(
-            value = "PopularProductIds",
-            key = "'PopularProductIds:' + #command.startDate + ':' + #command.endDate + ':' + #command.count"
-    )
-    public List<Long> popularProductIds(OrderStatisticsCommand.PopularProductIds command) {
+//    @Cacheable(
+//            value = "PopularProductIds",
+//            key = "'PopularProductIds:' + #command.startDate + ':' + #command.endDate + ':' + #command.count"
+//    )
+    public List<Long> popularProductIds(OrderStatisticsCommand.Popular command) {
         // 인기 상품의 ID 만 조회
         Pageable pageable = PageRequest.of(0, command.getCount());
         Page<Long> popularPage

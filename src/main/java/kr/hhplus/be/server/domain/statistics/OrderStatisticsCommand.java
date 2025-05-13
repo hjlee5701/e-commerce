@@ -54,12 +54,12 @@ public class OrderStatisticsCommand {
 
     @Getter
     @AllArgsConstructor
-    public static class PopularProductIds {
+    public static class Popular {
         private LocalDate startDate;
         private LocalDate endDate;
         private int count;
-        public static PopularProductIds of(LocalDate startDate, LocalDate endDate, int count) {
-            return new PopularProductIds(startDate, endDate, count);
+        public static Popular of(LocalDate startDate, LocalDate endDate, int count) {
+            return new Popular(startDate, endDate, count);
         }
     }
 }

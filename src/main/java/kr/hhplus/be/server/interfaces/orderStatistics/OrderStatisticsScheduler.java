@@ -30,15 +30,15 @@ public class OrderStatisticsScheduler {
         orderStatisticsFacade.aggregateOrderStatistics(OrderStatisticsCriteria.Aggregate.of(now));
 
         // 캐시 무효화
-        Cache cachedProductIds = cacheManager.getCache("PopularProductIds");
-        if (cachedProductIds != null) {
-            cachedProductIds.clear();
+        Cache cachedProducts = cacheManager.getCache("Ranking");
+        if (cachedProducts != null) {
+            cachedProducts.clear();
         } else {
-            log.warn("PopularProductIds 캐시를 찾을 수 없습니다.");
+            log.warn("Ranking 캐시를 찾을 수 없습니다.");
         }
 
         // 캐시 저장
-        OrderStatisticsCommand.PopularProductIds command = OrderStatisticsCommand.PopularProductIds.of(now.minusDays(3), now, 5);
-        orderStatisticsService.popularProductIds(command);
+        OrderStatisticsCommand.Popular command = OrderStatisticsCommand.Popular.of(now.minusDays(3), now, 5);
+        orderStatisticsService.popular(command);
     }
 }
