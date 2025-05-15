@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.statistics.PopularProductsProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.Set;
 public class OrderStatisticsRepositoryImpl implements OrderStatisticsRepository {
 
     private final OrderStatisticsJpaRepository orderStatisticsJpaRepository;
+    private final OrderStatisticsRedisRepository orderStatisticsRedisRepository;
 
 
     @Override
@@ -37,5 +39,20 @@ public class OrderStatisticsRepositoryImpl implements OrderStatisticsRepository 
     @Override
     public Page<Long> findPopularProductIdsForDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
         return orderStatisticsJpaRepository.findPopularProductIdsForDateRange(startDate, endDate, pageable);
+    }
+
+    @Override
+    public boolean incrementProductScoreByDate(String dateKey, Long productId, Integer quantity) {
+        return orderStatisticsRedisRepository.incrementProductScore(dateKey, productId, quantity);
+    }
+
+    @Override
+    public Set<ZSetOperations.TypedTuple<String>> getTopProducts(String dateKey, int topN) {
+        return orderStatisticsRedisRepository.getTopProducts(dateKey, topN);
+    }
+
+    @Override
+    public void aggregateTopProductsByPeriod(String rankingKey, List<String> dailyKeys) {
+        orderStatisticsRedisRepository.aggregateTopProductsByPeriod(rankingKey, dailyKeys);
     }
 }
