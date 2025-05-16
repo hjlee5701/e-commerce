@@ -51,4 +51,15 @@ public class OrderStatisticsCommand {
             ).toList();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class PopularProductIds {
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private int count;
+        public static PopularProductIds of(LocalDate startDate, LocalDate endDate, int count) {
+            return new PopularProductIds(startDate, endDate, count);
+        }
+    }
 }
