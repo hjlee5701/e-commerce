@@ -5,15 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 @NoArgsConstructor
 public class OrderStatisticsInfo {
 
     @Getter
     @AllArgsConstructor
-    public static class Popular {
+    public static class Popular implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private int rank;
         private Long productId;
         private String title;

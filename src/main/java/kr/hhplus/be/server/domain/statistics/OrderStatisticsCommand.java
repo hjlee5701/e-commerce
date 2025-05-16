@@ -1,11 +1,13 @@
 package kr.hhplus.be.server.domain.statistics;
 
 import kr.hhplus.be.server.domain.order.OrderInfo;
+import kr.hhplus.be.server.domain.order.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,12 +56,43 @@ public class OrderStatisticsCommand {
 
     @Getter
     @AllArgsConstructor
-    public static class PopularProductIds {
+    public static class Popular {
         private LocalDate startDate;
         private LocalDate endDate;
         private int count;
-        public static PopularProductIds of(LocalDate startDate, LocalDate endDate, int count) {
-            return new PopularProductIds(startDate, endDate, count);
+        public static Popular of(LocalDate startDate, LocalDate endDate, int count) {
+            return new Popular(startDate, endDate, count);
         }
     }
+
+
+    @Getter
+    @AllArgsConstructor
+    public static class AggregatePaidProduct {
+
+        private LocalDateTime startDateTime;
+        private Map<Long, Integer> productMap;
+
+        public static AggregatePaidProduct of(List<OrderItem> orderItems) {
+            Map<Long, Integer> productMap = orderItems.stream()
+                    .collect(Collectors.toMap(orderItem ->
+                                    orderItem.getProduct().getId(),
+                            OrderItem::getQuantity,
+                            Integer::sum // 상품 ID 중복 처리: 값을 합침
+                    ));
+            return new AggregatePaidProduct(LocalDateTime.now(), productMap);
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class PopularWithRedis {
+        private LocalDate yesterday;
+        private int days;
+        private int topN;
+        public static PopularWithRedis of(LocalDate yesterday, int days, int count) {
+            return new PopularWithRedis(yesterday, days, count);
+        }
+    }
+
 }

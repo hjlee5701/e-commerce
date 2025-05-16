@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static kr.hhplus.be.server.common.FixtureTestSupport.FIXED_NOW;
@@ -51,7 +50,9 @@ public class OrderStatisticsServiceTest {
                 .willReturn(projectionPage);
 
         // when
-        List<OrderStatisticsInfo.Popular> result = orderStatisticsService.popular();
+        LocalDate localDate = FIXED_NOW.toLocalDate();
+        var command = OrderStatisticsCommand.Popular.of(localDate.minusDays(3), localDate, 5);
+        List<OrderStatisticsInfo.Popular> result = orderStatisticsService.popular(command);
 
         // then
         assertThat(result).hasSize(3);
@@ -82,7 +83,9 @@ public class OrderStatisticsServiceTest {
                 .willReturn(page);
 
         // when
-        List<OrderStatisticsInfo.Popular> result = orderStatisticsService.popular();
+        LocalDate localDate = FIXED_NOW.toLocalDate();
+        var command = OrderStatisticsCommand.Popular.of(localDate.minusDays(3), localDate, 5);
+        List<OrderStatisticsInfo.Popular> result = orderStatisticsService.popular(command);
 
         // then
         verify(orderStatisticsRepository).findPopularProductsForDateRange(any(LocalDate.class), any(LocalDate.class), captor.capture());

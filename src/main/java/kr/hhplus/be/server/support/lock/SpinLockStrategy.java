@@ -4,6 +4,7 @@ import kr.hhplus.be.server.shared.code.LockErrorCode;
 import kr.hhplus.be.server.shared.exception.ECommerceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,37 @@ public class SpinLockStrategy implements LockStrategy {
         UNLOCK_SCRIPT.setResultType(Long.class);
     }
 
+    @Override
+    public LockType getLockType() {
+        return LockType.SPIN;
+    }
+
+    @Override
+    public Object executeWithLock(String lockKey, long waitTime, long leaseTime, TimeUnit timeUnit, ProceedingJoinPoint joinPoint) {
+        try {
+            // 1. 락 획득
+            boolean acquired = tryLock(
+                    lockKey,
+                    waitTime,
+                    leaseTime,
+                    timeUnit
+            );
+            // 획득 실패
+            if (!acquired) {
+                throw new ECommerceException(LockErrorCode.ALREADY_LOCKED, lockKey);
+            }
+            log.info("Acquire Lock, {}", lockKey);
+
+            // 2. 실행
+            return joinPoint.proceed();
+
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            unlock(lockKey);
+        }
+    }
     /**
      * 락 획득
      */
@@ -56,7 +88,7 @@ public class SpinLockStrategy implements LockStrategy {
         return false;
     }
 
-    @Override
+
     public void unlock(String lockKey) {
         String lockValue = lockValueHolder.get();
         if (lockValue == null) {
