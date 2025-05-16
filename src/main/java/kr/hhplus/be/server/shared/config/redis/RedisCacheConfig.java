@@ -26,7 +26,7 @@ public class RedisCacheConfig {
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
 
         // 인기 상품 Product Id는 1일 유지
-        cacheConfigurations.put("PopularProductIds", RedisCacheConfiguration.defaultCacheConfig()
+        cacheConfigurations.put("Ranking", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofHours(30)));
 
         return RedisCacheManager.builder(redisConnectionFactory)

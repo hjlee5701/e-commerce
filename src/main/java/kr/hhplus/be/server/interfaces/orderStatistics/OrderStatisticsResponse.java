@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.interfaces.orderStatistics;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import kr.hhplus.be.server.application.orderStatistics.OrderStatisticsResult;
 import kr.hhplus.be.server.domain.statistics.OrderStatisticsInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +29,15 @@ public class OrderStatisticsResponse {
         private BigDecimal price;
 
         public static Popular of(OrderStatisticsInfo.Popular info) {
+            return new OrderStatisticsResponse.Popular(
+                    info.getRank(),
+                    info.getProductId(),
+                    info.getTitle(),
+                    info.getPrice()
+            );
+        }
+
+        public static Popular of(OrderStatisticsResult.PopularWithRedis info) {
             return new OrderStatisticsResponse.Popular(
                     info.getRank(),
                     info.getProductId(),

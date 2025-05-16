@@ -78,7 +78,7 @@ public class Coupon {
         }
     }
 
-    private void validateQuantity() {
+    public void validateQuantity() {
         if (remainingQuantity <= 0) {
             throw new ECommerceException(CouponErrorCode.COUPON_NO_REMAINING);
         }

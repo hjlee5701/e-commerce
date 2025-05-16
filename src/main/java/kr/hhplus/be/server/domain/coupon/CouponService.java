@@ -4,12 +4,16 @@ import kr.hhplus.be.server.shared.exception.ECommerceException;
 import kr.hhplus.be.server.shared.code.CouponErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.lang.Long.parseLong;
 
 @RequiredArgsConstructor
 @Service
@@ -17,6 +21,8 @@ public class CouponService {
 
     private final CouponItemRepository couponItemRepository;
     private final CouponRepository couponRepository;
+    private static final String COUPON_REQUEST_ZSET = "coupon:requests:";
+    private static final String COUPON_ISSUED_SET = "coupon:issued:";
 
     public List<CouponInfo.ItemDetail> findHoldingCoupons(CouponCommand.Holdings command) {
 
@@ -45,5 +51,55 @@ public class CouponService {
         CouponItem savedCouponItem = couponItemRepository.save(couponItem);
 
         return CouponInfo.Issued.of(coupon, savedCouponItem);
+    }
+
+    // 요청 등록 (중복 체크 및 Sorted Set에 시간 기준 저장)
+
+    /**
+     * 사용자 요청 : 쿠폰 발급
+     */
+    public boolean requestCoupon(String couponId, String memberId) {
+        // 중복 확인 (발급된 적 있는지)
+        String couponRequestKey = COUPON_REQUEST_ZSET + couponId; // 쿠폰별 요청 Sorted Set 키
+
+        // Sorted Set에 요청 시간 점수로 추가, userId를 멤버로 저장
+        Double score = (double) LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+        return couponRepository.request(couponRequestKey, memberId, score);
+    }
+
+
+    // 스케줄러에서 순차 발급 처리
+    @Transactional
+    public void processCoupon(Coupon coupon, int count) {
+        String couponRequestKey = COUPON_REQUEST_ZSET + coupon.getId();
+        String couponIssuedSet = COUPON_ISSUED_SET + coupon.getId();
+
+        while (coupon.getRemainingQuantity() > 0) {
+            String memberId = couponRepository.findOldMembersByCouponId(couponRequestKey, count);
+            if (memberId == null) {
+                break;
+            }
+
+            // 중복 확인 (발급 상태 체크)
+            if (couponRepository.isDuplicate(couponIssuedSet, memberId)) {
+                couponRepository.removeMemberInCouponRequest(couponRequestKey, memberId);
+                continue;
+            }
+
+            // 쿠폰 발급 (발급자 Set에 추가)
+            couponRepository.issue(couponIssuedSet, memberId);
+
+            // 요청에서 삭제
+            couponRepository.removeMemberInCouponRequest(couponRequestKey, memberId);
+
+            // DB 저장
+            CouponItem couponItem = coupon.issue(LocalDateTime.now(), parseLong(memberId));
+            couponItemRepository.save(couponItem);
+        }
+    }
+
+
+    public List<Coupon> getAllAvailable() {
+        return couponRepository.getAllAvailable();
     }
 }

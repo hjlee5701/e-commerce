@@ -31,6 +31,12 @@ public class OrderStatisticsCriteria {
         public OrderStatisticsCommand.Aggregate toAggregateCommand(List<OrderInfo.Paid> info) {
             return OrderStatisticsCommand.Aggregate.of(startDate, endDate, info);
         }
+
+        public OrderStatisticsCommand.Aggregate toDailyCommand(List<OrderInfo.Paid> info) {
+            return OrderStatisticsCommand.Aggregate.of(null, endDate, info);
+        }
+
+
     }
 
 }

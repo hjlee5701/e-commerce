@@ -32,12 +32,22 @@ public class CouponController implements CouponApi {
             @PathVariable("couponId") Long couponId,
             @PathVariable("id") Long memberId
     ) {
-
         CouponResult.Issued result = facade.issue(CouponCriteria.Issue.of(couponId, memberId));
         var data = CouponResponse.Issued.of(result);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResult.of(SuccessCode.ISSUE_COUPON, data));
+    }
+    @Override
+    @PostMapping("/redis/{couponId}/member/{id}")
+    public ResponseEntity<ApiResult<Boolean>> requestIssue (
+            @PathVariable("couponId") String couponId,
+            @PathVariable("id") String memberId
+    ) {
+        boolean success = couponService.requestCoupon(couponId, memberId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResult.of(SuccessCode.ISSUE_COUPON, success));
     }
 
 
