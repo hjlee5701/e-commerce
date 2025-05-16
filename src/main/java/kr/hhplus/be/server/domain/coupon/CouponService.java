@@ -70,12 +70,12 @@ public class CouponService {
 
     // 스케줄러에서 순차 발급 처리
     @Transactional
-    public void processCoupon(Coupon coupon) {
+    public void processCoupon(Coupon coupon, int count) {
         String couponRequestKey = COUPON_REQUEST_ZSET + coupon.getId();
         String couponIssuedSet = COUPON_ISSUED_SET + coupon.getId();
 
         while (coupon.getRemainingQuantity() > 0) {
-            String memberId = couponRepository.findOldestMemberByCouponId(couponRequestKey);
+            String memberId = couponRepository.findOldMembersByCouponId(couponRequestKey, count);
             if (memberId == null) {
                 break;
             }

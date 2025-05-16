@@ -17,8 +17,9 @@ public class CouponScheduler {
     @Transactional
     public void issueCoupon() {
         List<Coupon> coupons = couponService.getAllAvailable();
+        int count = 20;
         for (Coupon coupon : coupons) {
-            couponService.processCoupon(coupon);
+            couponService.processCoupon(coupon, count);
         }
     }
 }

@@ -29,8 +29,8 @@ public class CouponRedisRepository {
         return redisTemplate.opsForZSet().add(couponRequestKey, memberId, score);
     }
 
-    public String findOldestMemberByCouponId(String couponRequestKey) {
-        Set<String> oldestUsers = redisTemplate.opsForZSet().range(couponRequestKey, 0, 0);
+    public String findOldMembersByCouponId(String couponRequestKey, int count) {
+        Set<String> oldestUsers = redisTemplate.opsForZSet().range(couponRequestKey, 0, count-1);
         return oldestUsers.isEmpty() ? null : oldestUsers.iterator().next();
     }
 

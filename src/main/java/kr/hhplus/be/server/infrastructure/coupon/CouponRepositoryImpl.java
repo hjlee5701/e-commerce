@@ -40,8 +40,8 @@ public class CouponRepositoryImpl implements CouponRepository {
     }
 
     @Override
-    public String findOldestMemberByCouponId(String couponRequestKey) {
-        return couponRedisRepository.findOldestMemberByCouponId(couponRequestKey);
+    public String findOldMembersByCouponId(String couponRequestKey, int count) {
+        return couponRedisRepository.findOldMembersByCouponId(couponRequestKey, count);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class CouponServiceRedisIntegrationTest {
         String couponIssuedSet = COUPON_ISSUED_SET + coupon.getId();
 
         // 4. processCoupon 실행
-        couponService.processCoupon(coupon);
+        couponService.processCoupon(coupon, 2);
 
         // 5. 검증
         boolean isDuplicate = couponRepository.isDuplicate(couponIssuedSet, memberId);

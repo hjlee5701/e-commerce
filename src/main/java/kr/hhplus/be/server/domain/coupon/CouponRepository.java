@@ -14,7 +14,7 @@ public interface CouponRepository {
 
     List<Coupon> getAllAvailable();
 
-    String findOldestMemberByCouponId(String couponRequestKey);
+    String findOldMembersByCouponId(String couponRequestKey, int count);
 
     void removeMemberInCouponRequest(String couponRequestKey, String memberId);
 
