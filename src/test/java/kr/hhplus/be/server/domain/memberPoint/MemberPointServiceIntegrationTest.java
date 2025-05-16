@@ -45,7 +45,7 @@ public class MemberPointServiceIntegrationTest {
         memberRepository.save(member);
 
         BigDecimal amount = BigDecimal.valueOf(100);
-        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), amount, null);
+        memberPoint = new MemberPoint(null, Member.referenceById(member.getId()), amount);
         memberPointRepository.save(memberPoint);
         cleanUp();
     }
