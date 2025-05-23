@@ -37,7 +37,7 @@ public class LockManager {
         } finally {
             try {
                 // 3. 락 해제
-                lockStrategy.unlock(lockKey);
+//                lockStrategy.unlock(lockKey);
                 log.info("Unlock : {}", lockKey);
 
             } catch (Exception e) {

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -20,5 +19,9 @@ public class ProductCommand {
     @AllArgsConstructor
     public static class FindAll {
         private Set<Long> productIds;
+
+        public static FindAll of(Set<Long> productIds) {
+            return new FindAll(productIds);
+        }
     }
 }
