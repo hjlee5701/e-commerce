@@ -9,9 +9,9 @@ import kr.hhplus.be.server.domain.memberPoint.MemberPointService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.payment.Payment;
+import kr.hhplus.be.server.domain.payment.PaymentEvent;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.product.ProductStockService;
-import kr.hhplus.be.server.domain.statistics.OrderStatisticsCommand;
 import kr.hhplus.be.server.support.lock.DistributedLock;
 import kr.hhplus.be.server.support.lock.LockType;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +60,7 @@ public class PaymentFacade {
         // 결제 완료
         payment.markAsPaid();
 
-        applicationEventPublisher.publishEvent(OrderStatisticsCommand.AggregatePaidProduct.of(order.getOrderItems()));
+        applicationEventPublisher.publishEvent(new PaymentEvent.Completed(payment.getId()));
         return PaymentResult.Paid.of(payment, order.getId());
 
     }
