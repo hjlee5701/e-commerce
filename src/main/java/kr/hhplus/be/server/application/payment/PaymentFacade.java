@@ -15,7 +15,7 @@ import kr.hhplus.be.server.domain.product.ProductStockService;
 import kr.hhplus.be.server.support.lock.DistributedLock;
 import kr.hhplus.be.server.support.lock.LockType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +29,7 @@ public class PaymentFacade {
     private final PaymentService paymentService;
     private final MemberPointService memberPointService;
     private final ProductStockService productStockService;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     @DistributedLock(type = LockType.PUB_SUB, keyExpression = "'ORDER:' + #criteria.orderId")
@@ -59,8 +59,7 @@ public class PaymentFacade {
 
         // 결제 완료
         payment.markAsPaid();
-
-        applicationEventPublisher.publishEvent(new PaymentEvent.Completed(payment.getId()));
+        kafkaTemplate.send("PAYMENT", "DATA_PLATFORM", new PaymentEvent.Completed(payment.getId()));
         return PaymentResult.Paid.of(payment, order.getId());
 
     }
