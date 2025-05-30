@@ -44,7 +44,8 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
+	testImplementation("org.testcontainers:kafka:1.21.0")
+	
 	// Swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
 
@@ -63,6 +64,10 @@ dependencies {
 
 	// Cache
 	implementation("org.springframework.boot:spring-boot-starter-cache")
+
+	// Kafka
+	implementation("org.springframework.boot:spring-boot-starter")
+	implementation("org.springframework.kafka:spring-kafka")
 }
 
 tasks.withType<Test> {

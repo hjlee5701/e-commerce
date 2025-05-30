@@ -111,11 +111,6 @@ public class OrderStatisticsService {
     }
 
 
-    /**
-     * 결제 완료(커밋 이후)될 경우, 호출되는 비동기 이벤트 메서드
-     */
-    @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void paidProductAggregateWithRedis(OrderStatisticsCommand.AggregatePaidProduct command) {
         Map<Long, Integer> soldProduct = command.getProductMap();
         LocalDateTime startDateTime = command.getStartDateTime();
